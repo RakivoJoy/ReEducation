@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection.Metadata.Ecma335;
 
 class EightQueens
 {
@@ -75,17 +76,60 @@ class EightQueens
         }
 
         // Check diagonals
-        for (int k = -7; k <= 7; k++)
+        int row = i, col = j;
+
+        while(row >= 0 && col >= 0)
         {
-            if (i + k >= 0 && i + k < 8 && j + k >= 0 && j + k < 8)
+            if (board[row, col] == '*' && (row != i || col != j))
             {
-                if (board[i + k, j + k] == '*' && !(i + k == i && j + k == j))
-                {
-                    return true;
-                }
+                return true;
             }
+            row--;
+            col--;
+
+        }
+
+        row = i;
+        col = j;
+        while (row < 8 && col < 8)
+        {
+            if (board[row, col] == '*' && (row != i || col != j))
+            {
+                return true;
+            }
+            row++;
+            col++;
+
+        }
+
+        row = i;
+        col = j;
+        while (row >= 0 && col < 8)
+        {
+            if (board[row, col] == '*' && (row != i || col != j))
+            {
+                return true;
+            }
+            row--;
+            col++;
+
+        }
+
+        row = i;
+        col = j;
+        while (row < 8 && col >= 0)
+        {
+            if (board[row, col] == '*' && (row != i || col != j))
+            {
+                return true;
+            }
+            row++;
+            col--;
+
         }
 
         return false;
     }
+
+   
 }
