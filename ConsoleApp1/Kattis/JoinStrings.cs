@@ -1,40 +1,66 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 class JoinStrings
 {
-    public static void Main()
+    static void Main()
     {
+        // Streams for better I/O performance
+        var input = new StreamReader(Console.OpenStandardInput(), Encoding.ASCII, false, 1 << 20);
+        var output = new StreamWriter(Console.OpenStandardOutput(), Encoding.ASCII, 1 << 20);
+        Console.SetOut(output);
 
-        TextReader tIn = Console.In;
-        TextWriter tOut = Console.Out;
+        int n = int.Parse(input.ReadLine().Trim());
 
-        string start = tIn.ReadLine();
-        string[] starts = start.Split(' ');
-        int X = int.Parse(starts[0]);
+        // Setting up head and tails to trace strings.
+        string[] s = new string[n + 1];
+        int[] head = new int[n + 1];
+        int[] tail = new int[n + 1];
+        int[] next = new int[n + 1]; // 0 = end of chain
+        bool[] alive = new bool[n + 1]; // Overwritten strings are marked as false.
 
-        string[] lines = new string[X];
-
-        for(int i = 0; i < X; i++)
+        for (int i = 1; i <= n; i++)
         {
-            lines[i] = tIn.ReadLine();
+            s[i] = input.ReadLine().Trim();
+            head[i] = i;
+            tail[i] = i;
+            next[i] = 0;
+            alive[i] = true;
         }
 
-
-        int lastIndex = -1;
-        for (int i = 0; i < X-1; i++)
+        // Operations
+        int ops = n - 1; 
+        for (int op = 0; op < ops; op++)
         {
-            string operations = tIn.ReadLine();
-            string[] ops = start.Split(' ');
-            int a = int.Parse(ops[0]);
-            int b = int.Parse(ops[1]);
+            string line = input.ReadLine();
+            int sp = line.IndexOf(' ');
+            int x = int.Parse(line.Substring(0, sp).Trim());
+            int y = int.Parse(line.Substring(sp + 1).Trim());
 
-            lines[a] = lines[a] + lines[b];
-            lines[b] = "";
-
-            lastIndex = a;
+            // a[x] = a[x] + a[y]; a[y] = ""  --> Quick O(1) pointer relinking
+            next[tail[x]] = head[y];
+            tail[x] = tail[y];
+            alive[y] = false;
         }
 
-        tOut.WriteLine(lines[lastIndex]);
+        // Finding the answer by traversal
+        int answer = -1;
+        for (int i = 1; i <= n; i++)
+        {
+            if (alive[i]) { answer = i; break; }
+        }
+
+        // Output the final string by traversing the linked list of strings starting from head[ans].
+        var sb = new StringBuilder();
+        int current = head[answer];
+        while (current != 0)
+        {
+            sb.Append(s[current]);
+            current = next[current];
+        }
+
+        output.WriteLine(sb.ToString());
+        output.Flush();
     }
 }
