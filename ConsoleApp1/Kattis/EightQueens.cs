@@ -25,6 +25,7 @@ class EightQueens
             }
         }
 
+        int queenCount = 0;
 
         for (int i = 0; i < 8; i++)
         {
@@ -33,13 +34,20 @@ class EightQueens
                 char c = board[i, j];
                 if(c.Equals('*'))
                 {
-                    if(IsInLineOfQueen(i, j))
+                    queenCount++;
+                    if (IsInLineOfQueen(i, j))
                     {
                         tOut.WriteLine("invalid");
                         return; // Early exit if a queen can attack another
                     }
                 }
             }
+        }
+
+        if(queenCount != 8)
+        {
+            tOut.WriteLine("invalid");
+            return;
         }
 
         tOut.WriteLine("valid");
