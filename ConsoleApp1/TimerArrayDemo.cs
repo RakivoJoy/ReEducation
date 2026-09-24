@@ -24,6 +24,7 @@ namespace TimerArrayDemo
         private readonly int[] initialNumbers;
         private double timeUntilAction;
 
+        // Properties
         public int Id { get; }
         public int[] Numbers { get; private set; }
 
@@ -50,10 +51,10 @@ namespace TimerArrayDemo
             timeUntilAction = NextInterval();
 
             ArrayAction[] actions = Enum.GetValues<ArrayAction>();
-            ArrayAction action = actions[random.Next(actions.Length)];
+            ArrayAction action = actions[random.Next(actions.Length)]; //TODO: Static method?
 
             Perform(action);
-            ActionPerformed?.Invoke(this, action);
+            ActionPerformed?.Invoke(this, action); // Event invocation with null-conditional operator
         }
 
         private void Perform(ArrayAction action)
@@ -77,7 +78,10 @@ namespace TimerArrayDemo
                     break;
             }
         }
-
+        /**
+         * Generates an array of random integers between 1 and 99 using LINQ.
+         * @returns An array of random integers.
+         */
         private int[] CreateRandomNumbers()
         {
             return Enumerable.Range(0, ArraySize)
@@ -120,20 +124,20 @@ namespace TimerArrayDemo
         private void Spawn()
         {
             TimerArray timerArray = new(nextId++, random);
-            timerArray.ActionPerformed += OnActionPerformed;
+            timerArray.ActionPerformed += OnActionPerformed; // Event subscription
             timerArrays.Add(timerArray);
 
             Console.WriteLine(
-                $"[Timer {timerArray.Id}] Created ({timerArrays.Count}/{MaxTimerArrays}): {Format(timerArray.Numbers)}"); // Interpolated string
+                $"[Timer {timerArray.Id}] Created ({timerArrays.Count}/{MaxTimerArrays}): {FormatNumbers(timerArray.Numbers)}"); // Interpolated string
         }
 
         private void OnActionPerformed(TimerArray timerArray, ArrayAction action)
         {
             Console.WriteLine(
-                $"[Timer {timerArray.Id.ToString().PadLeft(2)}] {action.ToString().PadRight(16)}: {Format(timerArray.Numbers)}");
+                $"[Timer {timerArray.Id.ToString().PadLeft(2)}] {action.ToString().PadRight(16)}: {FormatNumbers(timerArray.Numbers)}"); // Adding padding for better alignment
         }
 
-        private string Format(int[] numbers)
+        private string FormatNumbers(int[] numbers)
         {
             return string.Join(", ", numbers.Select(n => n.ToString().PadLeft(2)));
         }
