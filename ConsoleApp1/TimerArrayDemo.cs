@@ -14,7 +14,7 @@ namespace TimerArrayDemo
         SortDescending
     }
 
-    internal class TimerArray
+    internal class TimerArray //TODO: Seperate files for all classes
     {
         private const int ArraySize = 5;
         private const double MinInterval = 3.0;
@@ -28,7 +28,7 @@ namespace TimerArrayDemo
         public int Id { get; }
         public int[] Numbers { get; private set; }
 
-        public event Action<TimerArray, ArrayAction>? ActionPerformed;
+        public event Action<TimerArray, ArrayAction>? ActionPerformed; // Nullable event handler
 
         public TimerArray(int id, Random random)
         {
@@ -143,6 +143,11 @@ namespace TimerArrayDemo
         }
     }
 
+
+    /**
+     * A program that demonstrates the use of multiple TimerArray instances. 
+     * Each performing random actions on an array of integers at random intervals.
+     */
     internal class Program
     {
         private readonly TimerArrayManager manager = new();

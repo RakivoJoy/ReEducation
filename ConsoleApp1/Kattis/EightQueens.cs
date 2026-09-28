@@ -75,7 +75,7 @@ class EightQueens
             }
         }
 
-        // Check diagonals
+        // Check diagonals. TODO: Refactorino into method?
         int row = i, col = j;
 
         while(row >= 0 && col >= 0)
