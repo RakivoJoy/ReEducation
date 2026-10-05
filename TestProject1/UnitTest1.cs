@@ -32,6 +32,44 @@ namespace Uppgift1.Tests
         }
 
 
+    
+
+   // ---------- Name validation ----------
+
+       [Theory]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData("   ")]
+        public void Constructor_EmptyOrWhitespaceName_ThrowsArgumentException(string invalidName)
+        {
+            var ex = Assert.Throws<ArgumentException>(() => new Employee(invalidName, 30000m));
+
+            Assert.Equal("name", ex.ParamName);
+        }
+
+        [Fact]
+        public void Constructor_NullName_ThrowsArgumentException()
+        {
+            var ex = Assert.Throws<ArgumentException>(() => new Employee(null, 30000m));
+
+            Assert.Equal("name", ex.ParamName);
+        }
+
+        // ---------- Salary validation ----------
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(-100)]
+        [InlineData(-32000)]
+        public void Constructor_NegativeSalary_ThrowsArgumentOutOfRangeException(int invalidSalary)
+        {
+            var ex = Assert.Throws<ArgumentOutOfRangeException>(
+                () => new Employee("Anna Svensson", invalidSalary));
+
+            Assert.Equal("salary", ex.ParamName);
+        }
+
+
     }
 
 }
