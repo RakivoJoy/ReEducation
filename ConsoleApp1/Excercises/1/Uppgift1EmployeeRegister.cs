@@ -3,26 +3,16 @@ using System.Collections.Generic;
 
 namespace Uppgift1
 {
-    /// <summary>
-    /// Holds the collection of employees, adds new ones and prints the register.
-    /// </summary>
     public class EmployeeRegister
     {
-        private readonly List<Employee> employees;
+        private List<Employee> employees = new List<Employee>();
 
-        public EmployeeRegister()
+        public void AddEmployee(Employee e)
         {
-            employees = new List<Employee>();
-        }
+            if (e == null)
+                throw new ArgumentNullException("e");
 
-        public void AddEmployee(Employee employee)
-        {
-            if (employee == null)
-            {
-                throw new ArgumentNullException(nameof(employee));
-            }
-
-            employees.Add(employee);
+            employees.Add(e);
         }
 
         public void PrintRegister()
@@ -33,21 +23,8 @@ namespace Uppgift1
                 return;
             }
 
-            foreach (Employee employee in employees)
-            {
-                Console.WriteLine(employee);
-            }
-        }
-
-        // Stubs (optional extras)
-        public int GetCount()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsEmpty()
-        {
-            throw new NotImplementedException();
+            foreach (var e in employees)
+                Console.WriteLine(e);
         }
     }
 }
