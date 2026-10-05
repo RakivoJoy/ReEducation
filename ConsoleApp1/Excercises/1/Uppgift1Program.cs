@@ -2,12 +2,9 @@ using System;
 
 namespace Uppgift1
 {
-    /// <summary>
-    /// Entry point. Handles the console menu and user input.
-    /// </summary>
     public class Program
     {
-        private static EmployeeRegister register;
+        static EmployeeRegister register;
 
         public static void Main(string[] args)
         {
@@ -18,30 +15,18 @@ namespace Uppgift1
                 ShowMenu();
                 string choice = Console.ReadLine();
 
-                // End of input (e.g. redirected input ran out): stop.
-                if (choice == null)
-                {
-                    return;
-                }
+                if (choice == null) return; // no more input
 
-                switch (choice.Trim())
-                {
-                    case "1":
-                        ReadEmployee();
-                        break;
-                    case "2":
-                        register.PrintRegister();
-                        break;
-                    case "0":
-                        return;
-                    default:
-                        Console.WriteLine("Invalid choice.");
-                        break;
-                }
+                choice = choice.Trim();
+
+                if (choice == "1") ReadEmployee();
+                else if (choice == "2") register.PrintRegister();
+                else if (choice == "0") return;
+                else Console.WriteLine("Invalid choice.");
             }
         }
 
-        private static void ShowMenu()
+        static void ShowMenu()
         {
             Console.WriteLine();
             Console.WriteLine("1. Add employee");
@@ -50,15 +35,14 @@ namespace Uppgift1
             Console.Write("Choice: ");
         }
 
-        private static void ReadEmployee()
+        static void ReadEmployee()
         {
             Console.Write("Name: ");
             string name = Console.ReadLine();
 
             Console.Write("Salary: ");
-            decimal? salary = ReadSalary();
-
-            if (salary == null)
+            decimal salary;
+            if (!decimal.TryParse(Console.ReadLine(), out salary))
             {
                 Console.WriteLine("Invalid salary. Employee was not added.");
                 return;
@@ -66,27 +50,13 @@ namespace Uppgift1
 
             try
             {
-                register.AddEmployee(new Employee(name, salary.Value));
+                register.AddEmployee(new Employee(name, salary));
                 Console.WriteLine("Employee added.");
             }
             catch (ArgumentException ex)
             {
-                // Employee rejects empty names and negative salaries.
                 Console.WriteLine("Could not add employee: " + ex.Message);
             }
-        }
-
-        // Returns null if the input is not a number.
-        private static decimal? ReadSalary()
-        {
-            string input = Console.ReadLine();
-
-            if (decimal.TryParse(input, out decimal salary))
-            {
-                return salary;
-            }
-
-            return null;
         }
     }
 }
