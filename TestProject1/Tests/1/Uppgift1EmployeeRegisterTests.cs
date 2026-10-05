@@ -4,6 +4,7 @@ using Xunit;
 
 namespace Uppgift1.Tests
 {
+    [Collection("Console")]
     public class EmployeeRegisterTests
     {
         // Runs PrintRegister and returns what it wrote to the console.
