@@ -15,14 +15,27 @@ namespace Uppgift1
                 ShowMenu();
                 string choice = Console.ReadLine();
 
-                if (choice == null) return; // no more input
+                // End of input (e.g. redirected input ran out): stop.
+                if (choice == null)
+                {
+                    return;
+                }
 
-                choice = choice.Trim();
-
-                if (choice == "1") ReadEmployee();
-                else if (choice == "2") register.PrintRegister();
-                else if (choice == "0") return;
-                else Console.WriteLine("Invalid choice.");
+                //TODO: Use enum for menu choices instead of magic strings.
+                switch (choice.Trim())
+                {
+                    case "1":
+                        ReadEmployee();
+                        break;
+                    case "2":
+                        register.PrintRegister();
+                        break;
+                    case "0":
+                        return;
+                    default:
+                        Console.WriteLine("Invalid choice.");
+                        break;
+                }
             }
         }
 
