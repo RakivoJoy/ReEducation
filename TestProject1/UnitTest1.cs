@@ -70,6 +70,16 @@ namespace Uppgift1.Tests
         }
 
 
+
+                // ---------- ToString ----------
+
+        [Fact]
+        public void ToString_ReturnsNameAndSalaryFormatted()
+        {
+            var employee = new Employee("Anna Svensson", 32000m);
+
+            Assert.Equal("Anna Svensson - 32000 kr", employee.ToString());
+        }
     }
 
 }
