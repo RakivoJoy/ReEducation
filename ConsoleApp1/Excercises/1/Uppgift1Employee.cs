@@ -2,35 +2,21 @@ using System;
 
 namespace Uppgift1
 {
-    /// <summary>
-    /// Represents a single employee with a name and a salary.
-    /// </summary>
     public class Employee
     {
-        private readonly string name;
-        private readonly decimal salary;
+        private string name;
+        private decimal salary;
 
-        public string Name
-        {
-            get { return name; }
-        }
-
-        public decimal Salary
-        {
-            get { return salary; }
-        }
+        public string Name => name;
+        public decimal Salary => salary;
 
         public Employee(string name, decimal salary)
         {
             if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new ArgumentException("Name cannot be empty.", nameof(name));
-            }
+                throw new ArgumentException("Name can't be empty", "name");
 
             if (salary < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(salary), "Salary cannot be negative.");
-            }
+                throw new ArgumentOutOfRangeException("salary", "Salary can't be negative");
 
             this.name = name;
             this.salary = salary;
@@ -38,7 +24,7 @@ namespace Uppgift1
 
         public override string ToString()
         {
-            return $"{name} - {salary} kr";
+            return name + " - " + salary + " kr";
         }
     }
 }
