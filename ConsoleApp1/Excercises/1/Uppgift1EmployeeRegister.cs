@@ -26,5 +26,16 @@ namespace Uppgift1
             foreach (var e in employees)
                 Console.WriteLine(e);
         }
+
+        // Stubs (optional extras)
+        public int GetCount()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsEmpty()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
