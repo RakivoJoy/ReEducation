@@ -8,24 +8,38 @@ namespace Uppgift1
     /// </summary>
     public class EmployeeRegister
     {
-        private List<Employee> employees;
+        private readonly List<Employee> employees;
 
         public EmployeeRegister()
         {
-            throw new NotImplementedException();
+            employees = new List<Employee>();
         }
 
         public void AddEmployee(Employee employee)
         {
-            throw new NotImplementedException();
+            if (employee == null)
+            {
+                throw new ArgumentNullException(nameof(employee));
+            }
+
+            employees.Add(employee);
         }
 
         public void PrintRegister()
         {
-            throw new NotImplementedException();
+            if (employees.Count == 0)
+            {
+                Console.WriteLine("The register is empty.");
+                return;
+            }
+
+            foreach (Employee employee in employees)
+            {
+                Console.WriteLine(employee);
+            }
         }
 
-        // Optional extras
+        // Stubs (optional extras)
         public int GetCount()
         {
             throw new NotImplementedException();
