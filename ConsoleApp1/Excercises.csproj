@@ -9,10 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Excercises\1\README" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Kattis\TestExamples\EightQueens\" />
   </ItemGroup>
 
