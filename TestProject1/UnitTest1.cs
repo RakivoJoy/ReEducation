@@ -99,4 +99,34 @@ namespace Uppgift1.Tests
         }
     }
 
+    /*
+ * TODO: Additional tests for Employee
+ *
+ * Constructor / validation
+ * - Salary just below the boundary (-0.01m) throws ArgumentOutOfRangeException.
+ * - Salary just above the boundary (0.01m) is accepted.
+ * - Very large salary (decimal.MaxValue) is accepted.
+ * - Exception messages: verify the text for the invalid name and invalid salary cases.
+ * - Invalid name is checked before invalid salary when both are invalid
+ *   (documents which exception is thrown first).
+ *
+ * Name handling
+ * - Name with non-ASCII characters (e.g. "Åsa Öberg") is stored unchanged.
+ * - Name with leading/trailing whitespace is stored as-is 
+ *
+ * ToString
+ * - Zero salary produces "Name - 0 kr".
+ * - Name containing " - " does not break the output format.
+ *
+ * Behavior / design
+ * - Two Employee objects with identical data are not equal (reference equality),
+ *   or are equal if Equals/GetHashCode is implemented later.
+ * - Private fields are readonly (reflection: FieldInfo.IsInitOnly is true).
+ *
+ * Test style
+ * - Convert repeated cases to [Theory] with [InlineData] or [MemberData]
+ *   (decimal values can't go in [InlineData] as decimal literals, so use
+ *   double/int there or [MemberData]).
+ */
+
 }
