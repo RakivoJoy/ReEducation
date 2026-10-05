@@ -1,0 +1,11 @@
+﻿Uppgift 1
+Vilka klasser bör ingå i programmet?
+
+Employee, EmployeeRegister och Program
+
+Uppgift 2
+Vilka attribut och metoder bör ingå i dessa klasser?
+
+Employee.Name och Employee.Salary.
+
+EmployeeRegister.AddEmployee(Employee employee), EmployeeRegister.GetEmployees() och EmployeeRegister.GetTotalSalary().
