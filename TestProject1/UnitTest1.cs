@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Linq;
 using Xunit;
 
 namespace Uppgift1.Tests
@@ -79,6 +80,22 @@ namespace Uppgift1.Tests
             var employee = new Employee("Anna Svensson", 32000m);
 
             Assert.Equal("Anna Svensson - 32000 kr", employee.ToString());
+        }
+
+
+        // ---------- Immutability ----------
+        //*
+        //This test checks that Name and Salary can't be assigned to from outside the class.
+        //It does this with reflection, which lets code inspect the structure of types at runtime.
+
+        [Fact]
+        public void Properties_AreReadOnly()
+        {
+            var nameProperty = typeof(Employee).GetProperty(nameof(Employee.Name));
+            var salaryProperty = typeof(Employee).GetProperty(nameof(Employee.Salary));
+
+            Assert.Null(nameProperty.SetMethod);
+            Assert.Null(salaryProperty.SetMethod);
         }
     }
 
