@@ -7,27 +7,38 @@ namespace Uppgift1
     /// </summary>
     public class Employee
     {
-        private string name;
-        private decimal salary;
+        private readonly string name;
+        private readonly decimal salary;
+
+        public string Name
+        {
+            get { return name; }
+        }
+
+        public decimal Salary
+        {
+            get { return salary; }
+        }
 
         public Employee(string name, decimal salary)
         {
-            throw new NotImplementedException();
-        }
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Name cannot be empty.", nameof(name));
+            }
 
-        public string GetName()
-        {
-            throw new NotImplementedException();
-        }
+            if (salary < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(salary), "Salary cannot be negative.");
+            }
 
-        public decimal GetSalary()
-        {
-            throw new NotImplementedException();
+            this.name = name;
+            this.salary = salary;
         }
 
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return $"{name} - {salary} kr";
         }
     }
 }
