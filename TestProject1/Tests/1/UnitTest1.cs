@@ -84,9 +84,6 @@ namespace Uppgift1.Tests
 
 
         // ---------- Immutability ----------
-        //*
-        //This test checks that Name and Salary can't be assigned to from outside the class.
-        //It does this with reflection, which lets code inspect the structure of types at runtime.
 
         [Fact]
         public void Properties_AreReadOnly()
