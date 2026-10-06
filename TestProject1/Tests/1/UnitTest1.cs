@@ -33,11 +33,11 @@ namespace Uppgift1.Tests
         }
 
 
-    
 
-   // ---------- Name validation ----------
 
-       [Theory]
+        // ---------- Name validation ----------
+
+        [Theory]
         [InlineData("")]
         [InlineData(" ")]
         [InlineData("   ")]
@@ -72,7 +72,7 @@ namespace Uppgift1.Tests
 
 
 
-                // ---------- ToString ----------
+        // ---------- ToString ----------
 
         [Fact]
         public void ToString_ReturnsNameAndSalaryFormatted()
@@ -114,36 +114,56 @@ namespace Uppgift1.Tests
             Assert.True(nameProperty.SetMethod == null || HasInitOnlySetter(nameProperty));
             Assert.True(salaryProperty.SetMethod == null || HasInitOnlySetter(salaryProperty));
         }
-    }
 
-    /*
- * TODO: Additional tests for Employee
- *
- * Constructor / validation
- * - Salary just below the boundary (-0.01m) throws ArgumentOutOfRangeException.
- * - Salary just above the boundary (0.01m) is accepted.
- * - Very large salary (decimal.MaxValue) is accepted.
- * - Exception messages: verify the text for the invalid name and invalid salary cases.
- * - Invalid name is checked before invalid salary when both are invalid
- *   (documents which exception is thrown first).
- *
- * Name handling
- * - Name with non-ASCII characters (e.g. "Åsa Öberg") is stored unchanged.
- * - Name with leading/trailing whitespace is stored as-is 
- *
- * ToString
- * - Zero salary produces "Name - 0 kr".
- * - Name containing " - " does not break the output format.
- *
- * Behavior / design
- * - Two Employee objects with identical data are not equal (reference equality),
- *   or are equal if Equals/GetHashCode is implemented later.
- * - Private fields are readonly (reflection: FieldInfo.IsInitOnly is true).
- *
- * Test style
- * - Convert repeated cases to [Theory] with [InlineData] or [MemberData]
- *   (decimal values can't go in [InlineData] as decimal literals, so use
- *   double/int there or [MemberData]).
- */
+        [Fact]
+        public void Constructor_SalaryJustBelowBoundary_ThrowsArgumentOutOfRangeException()
+        {
+            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => new Employee("Anna", -0.01m));
+
+            Assert.Equal("salary", ex.ParamName);
+        }
+
+        [Fact]
+        public void Constructor_SalaryJustAboveBoundary_IsAccepted()
+        {
+            var employee = new Employee("Junior", 0.01m);
+
+            Assert.Equal(0.01m, employee.Salary);
+        }
+
+        [Fact]
+        public void Constructor_VeryLargeSalary_IsAccepted()
+        {
+            var employee = new Employee("Ceo", decimal.MaxValue);
+
+            Assert.Equal(decimal.MaxValue, employee.Salary);
+        }
+
+        [Fact]
+        public void Constructor_InvalidNameCheckedBeforeSalary()
+        {
+            var ex = Assert.Throws<ArgumentException>(() => new Employee("", -1m));
+
+            // Name validation should run first
+            Assert.Equal("name", ex.ParamName);
+        }
+
+        [Fact]
+        public void Constructor_InvalidName_MessageContainsText()
+        {
+            var ex = Assert.Throws<ArgumentException>(() => new Employee("", 100m));
+
+            Assert.Contains("Name can't be empty", ex.Message);
+        }
+
+        [Fact]
+        public void Constructor_NegativeSalary_MessageContainsText()
+        {
+            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => new Employee("Anna", -5m));
+
+            Assert.Contains("Salary can't be negative", ex.Message);
+        }
+
+    }
 
 }
