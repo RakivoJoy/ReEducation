@@ -22,4 +22,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+	<ItemGroup>
+		<None Update="Tests\1\TestData\*.json" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+
 </Project>
