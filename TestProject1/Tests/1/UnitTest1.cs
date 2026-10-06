@@ -32,9 +32,6 @@ namespace Uppgift1.Tests
             Assert.Equal(0m, employee.Salary);
         }
 
-
-
-
         // ---------- Name validation ----------
 
         [Theory]
@@ -54,6 +51,32 @@ namespace Uppgift1.Tests
             var ex = Assert.Throws<ArgumentException>(() => new Employee(null, 30000m));
 
             Assert.Equal("name", ex.ParamName);
+
+        }
+
+        [Fact]
+        public void Constructor_InvalidNameCheckedBeforeSalary()
+        {
+            var ex = Assert.Throws<ArgumentException>(() => new Employee("", -1m));
+
+            // Name validation should run first
+            Assert.Equal("name", ex.ParamName);
+        }
+
+        [Fact]
+        public void Constructor_InvalidName_MessageContainsText()
+        {
+            var ex = Assert.Throws<ArgumentException>(() => new Employee("", 100m));
+
+            Assert.Contains("Name can't be empty", ex.Message);
+        }
+
+        [Fact]
+        public void Constructor_InvalidName_WhiteSpace()
+        {
+            var ex = Assert.Throws<ArgumentException>(() => new Employee(" ", 100m));
+
+            Assert.Contains("Name can't be empty", ex.Message);
         }
 
         // ---------- Salary validation ----------
@@ -70,7 +93,37 @@ namespace Uppgift1.Tests
             Assert.Equal("salary", ex.ParamName);
         }
 
+        [Fact]
+        public void Constructor_SalaryJustBelowBoundary_ThrowsArgumentOutOfRangeException()
+        {
+            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => new Employee("Anna", -0.01m));
 
+            Assert.Equal("salary", ex.ParamName);
+        }
+
+        [Fact]
+        public void Constructor_SalaryJustAboveBoundary_IsAccepted()
+        {
+            var employee = new Employee("Junior", 0.01m);
+
+            Assert.Equal(0.01m, employee.Salary);
+        }
+
+        [Fact]
+        public void Constructor_VeryLargeSalary_IsAccepted()
+        {
+            var employee = new Employee("Ceo", decimal.MaxValue);
+
+            Assert.Equal(decimal.MaxValue, employee.Salary);
+        }
+
+        [Fact]
+        public void Constructor_NegativeSalary_MessageContainsText()
+        {
+            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => new Employee("Anna", -5m));
+
+            Assert.Contains("Salary can't be negative", ex.Message); //TODO: Store message in a constant in Employee class and use it in both place.
+        }
 
         // ---------- ToString ----------
 
@@ -114,56 +167,6 @@ namespace Uppgift1.Tests
             Assert.True(nameProperty.SetMethod == null || HasInitOnlySetter(nameProperty));
             Assert.True(salaryProperty.SetMethod == null || HasInitOnlySetter(salaryProperty));
         }
-
-        [Fact]
-        public void Constructor_SalaryJustBelowBoundary_ThrowsArgumentOutOfRangeException()
-        {
-            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => new Employee("Anna", -0.01m));
-
-            Assert.Equal("salary", ex.ParamName);
-        }
-
-        [Fact]
-        public void Constructor_SalaryJustAboveBoundary_IsAccepted()
-        {
-            var employee = new Employee("Junior", 0.01m);
-
-            Assert.Equal(0.01m, employee.Salary);
-        }
-
-        [Fact]
-        public void Constructor_VeryLargeSalary_IsAccepted()
-        {
-            var employee = new Employee("Ceo", decimal.MaxValue);
-
-            Assert.Equal(decimal.MaxValue, employee.Salary);
-        }
-
-        [Fact]
-        public void Constructor_InvalidNameCheckedBeforeSalary()
-        {
-            var ex = Assert.Throws<ArgumentException>(() => new Employee("", -1m));
-
-            // Name validation should run first
-            Assert.Equal("name", ex.ParamName);
-        }
-
-        [Fact]
-        public void Constructor_InvalidName_MessageContainsText()
-        {
-            var ex = Assert.Throws<ArgumentException>(() => new Employee("", 100m));
-
-            Assert.Contains("Name can't be empty", ex.Message);
-        }
-
-        [Fact]
-        public void Constructor_NegativeSalary_MessageContainsText()
-        {
-            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => new Employee("Anna", -5m));
-
-            Assert.Contains("Salary can't be negative", ex.Message);
-        }
-
     }
 
 }
