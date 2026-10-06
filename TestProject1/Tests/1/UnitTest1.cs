@@ -94,8 +94,28 @@ namespace Uppgift1.Tests
             var nameProperty = typeof(Employee).GetProperty(nameof(Employee.Name));
             var salaryProperty = typeof(Employee).GetProperty(nameof(Employee.Salary));
 
-            Assert.Null(nameProperty.SetMethod);
-            Assert.Null(salaryProperty.SetMethod);
+            // Accept either no setter (classic read-only) or an init-only setter
+            // (C# 9+ record init). Detect init-only by checking for the
+            // IsExternalInit required custom modifier on the setter parameter.
+            bool HasInitOnlySetter(System.Reflection.PropertyInfo p)
+            {
+                var set = p.SetMethod;
+                if (set == null) return false;
+
+                var parameters = set.GetParameters();
+                if (parameters.Length == 0) return false;
+
+                var mods = parameters[0].GetRequiredCustomModifiers();
+                foreach (var m in mods)
+                {
+                    if (m.FullName == "System.Runtime.CompilerServices.IsExternalInit")
+                        return true;
+                }
+                return false;
+            }
+
+            Assert.True(nameProperty.SetMethod == null || HasInitOnlySetter(nameProperty));
+            Assert.True(salaryProperty.SetMethod == null || HasInitOnlySetter(salaryProperty));
         }
     }
 
