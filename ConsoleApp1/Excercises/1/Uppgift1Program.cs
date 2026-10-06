@@ -30,6 +30,12 @@ namespace Uppgift1
                     case "2":
                         register.PrintRegister();
                         break;
+                    case "3":
+                        SaveRegister();
+                        break;
+                    case "4":
+                        LoadRegister();
+                        break;
                     case "0":
                         return;
                     default:
