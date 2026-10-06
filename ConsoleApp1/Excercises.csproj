@@ -5,11 +5,15 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <StartupObject>TimerArrayDemo.Program</StartupObject>
+    <StartupObject>Uppgift1.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="Kattis\TestExamples\EightQueens\" />
   </ItemGroup>
+
+	<ItemGroup>
+		<None Update="Tests\1\TestData\*.json" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
 
 </Project>

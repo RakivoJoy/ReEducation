@@ -44,6 +44,8 @@ namespace Uppgift1
             Console.WriteLine();
             Console.WriteLine("1. Add employee");
             Console.WriteLine("2. Print register");
+            Console.WriteLine("3. Save to file");
+            Console.WriteLine("4. Load from file");
             Console.WriteLine("0. Exit");
             Console.Write("Choice: ");
         }
@@ -69,6 +71,38 @@ namespace Uppgift1
             catch (ArgumentException ex)
             {
                 Console.WriteLine("Could not add employee: " + ex.Message);
+            }
+        }
+
+        static void SaveRegister()
+        {
+            Console.Write("File path: ");
+            string path = Console.ReadLine();
+
+            try
+            {
+                register.SaveToFile(path);
+                Console.WriteLine("Saved.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Could not save: " + ex.Message);
+            }
+        }
+
+        static void LoadRegister()
+        {
+            Console.Write("File path: ");
+            string path = Console.ReadLine();
+
+            try
+            {
+                register.LoadFromFile(path);
+                Console.WriteLine("Loaded.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Could not load: " + ex.Message);
             }
         }
     }
