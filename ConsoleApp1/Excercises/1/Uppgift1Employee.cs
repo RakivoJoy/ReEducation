@@ -1,30 +1,30 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace Uppgift1
 {
-    public class Employee
+    // Property-based record with validation. A [JsonConstructor] ensures
+    // System.Text.Json will call the validating constructor during deserialization.
+    public record Employee
     {
-        private string name;
-        private decimal salary;
+        public string Name { get; } = string.Empty;
+        public decimal Salary { get; }
 
-        public string Name => name;
-        public decimal Salary => salary;
+        public Employee() { }
 
+        [JsonConstructor]
         public Employee(string name, decimal salary)
         {
             if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Name can't be empty", "name");
+                throw new ArgumentException("Name can't be empty", nameof(name));
 
             if (salary < 0)
-                throw new ArgumentOutOfRangeException("salary", "Salary can't be negative");
+                throw new ArgumentOutOfRangeException(nameof(salary), "Salary can't be negative");
 
-            this.name = name;
-            this.salary = salary;
+            Name = name;
+            Salary = salary;
         }
 
-        public override string ToString()
-        {
-            return name + " - " + salary + " kr";
-        }
+        public override string ToString() => $"{Name} - {Salary} kr";
     }
 }
