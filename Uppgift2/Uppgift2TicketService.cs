@@ -14,7 +14,7 @@ namespace Uppgift2
         // - Else -> "Standard price: 120kr"
         public int CalculatePriceForAge(int age)
         {
-            // TODO: Implement nested-if logic described above and return price as int.
+            // TODO: 
             throw new NotImplementedException();
         }
 
@@ -25,7 +25,7 @@ namespace Uppgift2
         // - Produce a summary containing: number of people and total cost (sum of individual prices).
         public int CalculateTotalForGroup(IEnumerable<int> ages)
         {
-            // TODO: Aggregate individual prices and return total as int.
+            // TODO:
             throw new NotImplementedException();
         }
     }
