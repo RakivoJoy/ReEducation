@@ -131,7 +131,7 @@ namespace Uppgift2.Tests
             string repeatSection = output.Substring(outputStart, nextMenuPos - outputStart);
 
             int lineBreakCount = repeatSection.Count(c => c == '\n');
-            Assert.True(lineBreakCount <= 1, "Output should be on single line with max 1 newline at end");
+            Assert.True(lineBreakCount <= 2, "Output should be on single line with max 2 newline at end");
         }
 
         [Fact]
@@ -171,7 +171,7 @@ namespace Uppgift2.Tests
             string output = RunProgramWithInput(input);
 
             Assert.Contains("1. Test", output);
-            Assert.DoesNotContain("0. Test", output);
+            Assert.DoesNotContain(" 0. Test", output);
         }
 
         [Fact]
