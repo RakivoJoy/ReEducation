@@ -5,6 +5,9 @@ using Uppgift2;
 
 namespace Uppgift2.Tests
 {
+    [CollectionDefinition("Program Tests", DisableParallelization = true)]
+
+    [Collection("Console Program Tests")]
     public class Uppgift2ProgramTests
     {
         /**

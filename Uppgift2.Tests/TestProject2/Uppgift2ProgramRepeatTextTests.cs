@@ -5,6 +5,13 @@ using Uppgift2;
 
 namespace Uppgift2.Tests
 {
+    [CollectionDefinition("Console Output Tests", DisableParallelization = true)]
+    public class ConsoleOutputCollection
+    {
+        // This collection definition disables parallel execution for tests in it
+    }
+
+    [Collection("Console Output Tests")]
     public class Uppgift2ProgramRepeatTextTests
     {
         private string RunProgramWithInput(string input)
