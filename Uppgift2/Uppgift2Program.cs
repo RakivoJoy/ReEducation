@@ -23,6 +23,7 @@ namespace Uppgift2
                 Console.Out.WriteLine("1. Calculate single person price");
                 Console.Out.WriteLine("2. Calculate group price");
                 Console.Out.WriteLine("3. Repeat text ten times");
+                Console.Out.WriteLine("4. Extract third word from sentence");
                 Console.Out.Write("Enter your choice: ");
 
                 string choice = Console.ReadLine();
@@ -38,12 +39,15 @@ namespace Uppgift2
                     case "3":
                         HandleRepeatText();
                         break;
+                    case "4":
+                        HandleThirdWord();
+                        break;
                     case "0":
                         running = false;
                         Console.Out.WriteLine("Goodbye!");
                         break;
                     default:
-                        Console.Out.WriteLine("Invalid choice. Please enter 0, 1, 2, or 3.");
+                        Console.Out.WriteLine("Invalid choice. Please enter 0, 1, 2, 3, or 4.");
                         break;
                 }
             }
@@ -111,6 +115,17 @@ namespace Uppgift2
                     Console.Out.Write(", ");
             }
             Console.Out.WriteLine();
+        }
+
+        // TODO: Implement HandleThirdWord
+        // 1. Prompt user to enter a sentence with at least 3 words
+        // 2. Validate that the input contains at least 3 words
+        // 3. Use .Split(' ') to split the sentence into words array
+        // 4. Extract the third word (index 2 from array)
+        // 5. Display the third word to the user
+        private static void HandleThirdWord()
+        {
+            // Implementation coming soon
         }
     }
 }
