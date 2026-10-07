@@ -1,7 +1,8 @@
 using System;
 using System.IO;
-using Xunit;
+using System.Numerics;
 using Uppgift2;
+using Xunit;
 
 namespace Uppgift2.Tests
 {
@@ -52,8 +53,8 @@ namespace Uppgift2.Tests
         {
             string input = "5\n0\n";
             string output = RunProgramWithInput(input);
-
-            Assert.Contains("Invalid choice. Please enter 0, 1, 2, or 3.", output);
+            // "Invalid choice. Please enter 0, 1, 2, 3, or 4."
+            Assert.Contains("Invalid choice. Please enter 0, 1, 2, 3, or 4.", output);
         }
 
         [Fact]
