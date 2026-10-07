@@ -28,6 +28,13 @@ namespace Uppgift2
 
                 string choice = Console.ReadLine();
 
+                // Exit if no input is available (e.g., when running in a test environment)
+                if (choice == null)
+                {
+                    running = false;
+                    break;
+                }
+
                 switch (choice)
                 {
                     case "1":
