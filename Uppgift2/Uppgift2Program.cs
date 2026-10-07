@@ -22,6 +22,7 @@ namespace Uppgift2
                 Console.Out.WriteLine("0. Exit");
                 Console.Out.WriteLine("1. Calculate single person price");
                 Console.Out.WriteLine("2. Calculate group price");
+                Console.Out.WriteLine("3. Repeat text ten times");
                 Console.Out.Write("Enter your choice: ");
 
                 string choice = Console.ReadLine();
@@ -34,12 +35,15 @@ namespace Uppgift2
                     case "2":
                         HandleGroupPrice(service);
                         break;
+                    case "3":
+                        HandleRepeatText();
+                        break;
                     case "0":
                         running = false;
                         Console.Out.WriteLine("Goodbye!");
                         break;
                     default:
-                        Console.Out.WriteLine("Invalid choice. Please enter 0, 1, or 2.");
+                        Console.Out.WriteLine("Invalid choice. Please enter 0, 1, 2, or 3.");
                         break;
                 }
             }
@@ -86,6 +90,27 @@ namespace Uppgift2
             {
                 Console.Out.WriteLine("Invalid number. Please enter a positive number.");
             }
+        }
+
+        private static void HandleRepeatText()
+        {
+            Console.Out.Write("Enter text to repeat: ");
+            string input = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                Console.Out.WriteLine("Text cannot be empty.");
+                return;
+            }
+
+            Console.Out.Write("Output: ");
+            for (int i = 1; i <= 10; i++)
+            {
+                Console.Out.Write($"{i}. {input}");
+                if (i < 10)
+                    Console.Out.Write(", ");
+            }
+            Console.Out.WriteLine();
         }
     }
 }

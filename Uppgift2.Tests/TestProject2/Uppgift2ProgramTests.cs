@@ -50,7 +50,7 @@ namespace Uppgift2.Tests
             string input = "5\n0\n";
             string output = RunProgramWithInput(input);
 
-            Assert.Contains("Invalid choice. Please enter 0, 1, or 2.", output);
+            Assert.Contains("Invalid choice. Please enter 0, 1, 2, or 3.", output);
         }
 
         [Fact]
