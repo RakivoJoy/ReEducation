@@ -117,15 +117,27 @@ namespace Uppgift2
             Console.Out.WriteLine();
         }
 
-        // TODO: Implement HandleThirdWord
-        // 1. Prompt user to enter a sentence with at least 3 words
-        // 2. Validate that the input contains at least 3 words
-        // 3. Use .Split(' ') to split the sentence into words array
-        // 4. Extract the third word (index 2 from array)
-        // 5. Display the third word to the user
         private static void HandleThirdWord()
         {
-            // Implementation coming soon
+            Console.Out.Write("Enter a sentence with at least 3 words: ");
+            string input = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                Console.Out.WriteLine("Sentence cannot be empty.");
+                return;
+            }
+
+            string[] words = input.Split(' ');
+
+            if (words.Length < 3)
+            {
+                Console.Out.WriteLine("Sentence must contain at least 3 words.");
+                return;
+            }
+
+            string thirdWord = words[2];
+            Console.Out.WriteLine($"The third word is: {thirdWord}");
         }
     }
 }
