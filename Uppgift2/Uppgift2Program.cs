@@ -8,27 +8,28 @@ namespace Uppgift2
     public static class Uppgift2Program
     {
         // Entry point used by the final application.
-
         public static void Main(string[] args)
         {
             var service = new Uppgift2TicketService();
             bool running = true;
 
-            Console.Out.WriteLine("Welcome to the ticket price calculator!");
+            Console.Out.WriteLine(
+                "Welcome to your next assignment with ticket prices, repeats and third words!" +
+                "Use the menu below to navigate. Input numbers depending on what you want to do.");
 
             while (running)
             {
                 Console.Out.WriteLine("\n--- Menu ---");
                 Console.Out.WriteLine("0. Exit");
-                Console.Out.WriteLine("1. Calculate single person price");
-                Console.Out.WriteLine("2. Calculate group price");
+                Console.Out.WriteLine("1. Calculate single person ticket price");
+                Console.Out.WriteLine("2. Calculate group ticket price");
                 Console.Out.WriteLine("3. Repeat text ten times");
                 Console.Out.WriteLine("4. Extract third word from sentence");
                 Console.Out.Write("Enter your choice: ");
 
                 string choice = Console.ReadLine();
 
-                // Exit if no input is available (e.g., when running in a test environment)
+                // Exit if no input is available (e.g. when running in a test environment)
                 if (choice == null)
                 {
                     running = false;
@@ -63,6 +64,7 @@ namespace Uppgift2
         private static void HandleSinglePerson(Uppgift2TicketService service)
         {
             Console.Out.Write("Enter age: ");
+            // Safe parsing: TryParse prevents exceptions on bad input and returns false instead.
             if (int.TryParse(Console.ReadLine(), out int age))
             {
                 int price = service.CalculatePriceForAge(age);
@@ -77,6 +79,7 @@ namespace Uppgift2
         private static void HandleGroupPrice(Uppgift2TicketService service)
         {
             Console.Out.Write("Enter number of people: ");
+            // If parsing fails, the right-hand condition is not evaluated.
             if (int.TryParse(Console.ReadLine(), out int count) && count > 0)
             {
                 var ages = new List<int>();
@@ -90,6 +93,8 @@ namespace Uppgift2
                     else
                     {
                         Console.Out.WriteLine("Invalid age. Please enter a number.");
+                        // Decrement 'i' to retry the same person index on invalid input.
+                        // Without this, an invalid entry would still count toward the total loop iterations.
                         i--;
                     }
                 }
@@ -118,6 +123,7 @@ namespace Uppgift2
             for (int i = 1; i <= 10; i++)
             {
                 Console.Out.Write($"{i}. {input}");
+                // Tricky formatting: add a comma between items but avoid a trailing comma after the last item
                 if (i < 10)
                     Console.Out.Write(", ");
             }
@@ -135,6 +141,8 @@ namespace Uppgift2
                 return;
             }
 
+            // Split on a single space character. Note: consecutive spaces produce empty entries.
+            // TODO: to ignore multiple spaces, consider using input.Split(' ', StringSplitOptions.RemoveEmptyEntries).
             string[] words = input.Split(' ');
 
             if (words.Length < 3)
