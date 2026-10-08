@@ -8,35 +8,13 @@ namespace Uppgift2.Tests
     [Collection("Console Output Tests")]
     public class Uppgift2ProgramThirdWordTests
     {
-        private string RunProgramWithInput(string input)
-        {
-            var originalIn = Console.In;
-            var originalOut = Console.Out;
-
-            try
-            {
-                var inputReader = new StringReader(input);
-                var outputWriter = new StringWriter();
-
-                Console.SetIn(inputReader);
-                Console.SetOut(outputWriter);
-
-                Uppgift2Program.Main(Array.Empty<string>());
-
-                return outputWriter.ToString();
-            }
-            finally
-            {
-                Console.SetIn(originalIn);
-                Console.SetOut(originalOut);
-            }
-        }
+        // Use ConsoleTestHelper.RunProgramWithInput to run the console program and capture output.
 
         [Fact]
         public void UserSelectsThirdWordOption_DisplaysPrompt()
         {
              string input = "4\n0\n";
-            string output = RunProgramWithInput(input);
+            string output = ConsoleTestHelper.RunProgramWithInput(input);
 
             Assert.Contains("Enter a sentence with at least 3 words:", output);
         }
@@ -45,7 +23,7 @@ namespace Uppgift2.Tests
         public void UserEntersValidSentence_ExtractsThirdWord()
         {
             string input = "4\nHello World Test\n0\n";
-            string output = RunProgramWithInput(input);
+            string output = ConsoleTestHelper.RunProgramWithInput(input);
 
             Assert.Contains("The third word is: Test", output);
         }
@@ -54,7 +32,7 @@ namespace Uppgift2.Tests
         public void UserEntersSentenceWithMoreThanThreeWords_ExtractsThirdWordCorrectly()
         {
             string input = "4\nThe quick brown fox jumps\n0\n";
-            string output = RunProgramWithInput(input);
+            string output = ConsoleTestHelper.RunProgramWithInput(input);
 
             Assert.Contains("The third word is: brown", output);
         }
@@ -63,7 +41,7 @@ namespace Uppgift2.Tests
         public void UserEntersEmptySentence_DisplaysError()
         {
             string input = "4\n\n0\n";
-            string output = RunProgramWithInput(input);
+            string output = ConsoleTestHelper.RunProgramWithInput(input);
 
             Assert.Contains("Sentence cannot be empty.", output);
         }
@@ -72,7 +50,7 @@ namespace Uppgift2.Tests
         public void UserEntersSentenceWithOnlyOneWord_DisplaysError()
         {
            string input = "4\nHello\n0\n";
-            string output = RunProgramWithInput(input);
+            string output = ConsoleTestHelper.RunProgramWithInput(input);
 
             Assert.Contains("Sentence must contain at least 3 words.", output);
         }
@@ -81,7 +59,7 @@ namespace Uppgift2.Tests
         public void UserEntersSentenceWithTwoWords_DisplaysError()
         {
             string input = "4\nHello World\n0\n";
-            string output = RunProgramWithInput(input);
+            string output = ConsoleTestHelper.RunProgramWithInput(input);
 
             Assert.Contains("Sentence must contain at least 3 words.", output);
         }
@@ -90,7 +68,7 @@ namespace Uppgift2.Tests
         public void UserEntersSentenceWithExtraSpaces_HandlesCorrectly()
         {
              string input = "4\nHello  World  Test\n0\n";
-            string output = RunProgramWithInput(input);
+            string output = ConsoleTestHelper.RunProgramWithInput(input);
 
             // With Split(' '), double spaces create empty strings in array
             // So "Hello  World  Test" becomes ["Hello", "", "World", "", "Test"]
@@ -102,7 +80,7 @@ namespace Uppgift2.Tests
         public void UserEntersThirdWordOption_MultipleTimesContinues()
         {
               string input = "4\nFirst Second Third\n4\nOne Two Three\n0\n";
-            string output = RunProgramWithInput(input);
+            string output = ConsoleTestHelper.RunProgramWithInput(input);
 
             Assert.Contains("The third word is: Third", output);
             Assert.Contains("The third word is: Three", output);
@@ -112,7 +90,7 @@ namespace Uppgift2.Tests
         public void ThirdWordOutput_DisplaysCorrectly()
         {
             string input = "4\nProgramming is Fun\n0\n";
-            string output = RunProgramWithInput(input);
+            string output = ConsoleTestHelper.RunProgramWithInput(input);
 
             Assert.Contains("The third word is: Fun", output);
         }
@@ -121,7 +99,7 @@ namespace Uppgift2.Tests
         public void UserEntersSentenceWithNumbers_ExtractsThirdWordCorrectly()
         {
              string input = "4\nTest123 Word456 Number789\n0\n";
-            string output = RunProgramWithInput(input);
+            string output = ConsoleTestHelper.RunProgramWithInput(input);
 
             Assert.Contains("The third word is: Number789", output);
         }
