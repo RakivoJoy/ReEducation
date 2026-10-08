@@ -14,8 +14,9 @@ namespace Uppgift2
             bool running = true;
 
             Console.Out.WriteLine(
-                "Welcome to your next assignment with ticket prices, repeats and third words!" +
-                "Use the menu below to navigate. Input numbers depending on what you want to do.");
+                "Welcome to your next assignment with ticket prices, repeats and third words!");
+            Console.Out.WriteLine(
+                "Use the menu below to navigate. Input numbers depending on what you want to do.\n");
 
             while (running)
             {
