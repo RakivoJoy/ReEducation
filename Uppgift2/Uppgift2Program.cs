@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Uppgift2
 {
@@ -10,150 +11,279 @@ namespace Uppgift2
         // Entry point used by the final application.
         public static void Main(string[] args)
         {
-            var service = new Uppgift2TicketService();
-            bool running = true;
-
-            Console.Out.WriteLine(
-                "Welcome to your next assignment with ticket prices, repeats and third words!");
-            Console.Out.WriteLine(
-                "Use the menu below to navigate. Input numbers depending on what you want to do.\n");
-
-            while (running)
+            try
             {
-                Console.Out.WriteLine("\n--- Menu ---");
-                Console.Out.WriteLine("0. Exit");
-                Console.Out.WriteLine("1. Calculate single person ticket price");
-                Console.Out.WriteLine("2. Calculate group ticket price");
-                Console.Out.WriteLine("3. Repeat text ten times");
-                Console.Out.WriteLine("4. Extract third word from sentence");
-                Console.Out.Write("Enter your choice: ");
+                var service = new Uppgift2TicketService();
+                bool running = true;
 
-                string choice = Console.ReadLine();
+                Console.Out.WriteLine(
+                    "Welcome to your next assignment with ticket prices, repeats and third words!");
+                Console.Out.WriteLine(
+                    "Use the menu below to navigate. Input numbers depending on what you want to do.\n");
 
-                // Exit if no input is available (e.g. when running in a test environment)
-                if (choice == null)
+                while (running)
                 {
-                    running = false;
-                    break;
-                }
+                    try
+                    {
+                        Console.Out.WriteLine("\n--- Menu ---");
+                        Console.Out.WriteLine("0. Exit");
+                        Console.Out.WriteLine("1. Calculate single person ticket price");
+                        Console.Out.WriteLine("2. Calculate group ticket price");
+                        Console.Out.WriteLine("3. Repeat text ten times");
+                        Console.Out.WriteLine("4. Extract third word from sentence");
+                        Console.Out.Write("Enter your choice: ");
 
-                switch (choice)
-                {
-                    case "1":
-                        HandleSinglePerson(service);
-                        break;
-                    case "2":
-                        HandleGroupPrice(service);
-                        break;
-                    case "3":
-                        HandleRepeatText();
-                        break;
-                    case "4":
-                        HandleThirdWord();
-                        break;
-                    case "0":
+                        string choice = Console.ReadLine();
+
+                        // Exit if no input is available (e.g. when running in a test environment)
+                        if (choice == null)
+                        {
+                            running = false;
+                            break;
+                        }
+
+                        switch (choice)
+                        {
+                            case "1":
+                                HandleSinglePerson(service);
+                                break;
+                            case "2":
+                                HandleGroupPrice(service);
+                                break;
+                            case "3":
+                                HandleRepeatText();
+                                break;
+                            case "4":
+                                HandleThirdWord();
+                                break;
+                            case "0":
+                                running = false;
+                                Console.Out.WriteLine("Goodbye!");
+                                break;
+                            default:
+                                Console.Out.WriteLine("Invalid choice. Please enter 0, 1, 2, 3, or 4.");
+                                break;
+                        }
+                    }
+                    catch (IOException ioEx)
+                    {
+                        Console.Out.WriteLine($"I/O Error: {ioEx.Message}");
                         running = false;
-                        Console.Out.WriteLine("Goodbye!");
-                        break;
-                    default:
-                        Console.Out.WriteLine("Invalid choice. Please enter 0, 1, 2, 3, or 4.");
-                        break;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Out.WriteLine($"Unexpected error in menu loop: {ex.GetType().Name}: {ex.Message}");
+                        running = false;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine($"Fatal error in application: {ex.GetType().Name}: {ex.Message}");
             }
         }
 
         private static void HandleSinglePerson(Uppgift2TicketService service)
         {
-            Console.Out.Write("Enter age: ");
-            // Safe parsing: TryParse prevents exceptions on bad input and returns false instead.
-            if (int.TryParse(Console.ReadLine(), out int age))
+            try
             {
-                int price = service.CalculatePriceForAge(age);
-                Console.Out.WriteLine($"Price for age {age}: {price} kr");
+                Console.Out.Write("Enter age: ");
+                string input = Console.ReadLine();
+
+                if (input == null)
+                {
+                    Console.Out.WriteLine("No input provided.");
+                    return;
+                }
+
+                // Safe parsing: TryParse prevents exceptions on bad input and returns false instead.
+                if (int.TryParse(input, out int age))
+                {
+                    try
+                    {
+                        int price = service.CalculatePriceForAge(age);
+                        Console.Out.WriteLine($"Price for age {age}: {price} kr");
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Console.Out.WriteLine($"Validation error: {ex.Message}");
+                    }
+                }
+                else
+                {
+                    Console.Out.WriteLine("Invalid age. Please enter a number.");
+                }
             }
-            else
+            catch (IOException ioEx)
             {
-                Console.Out.WriteLine("Invalid age. Please enter a number.");
+                Console.Out.WriteLine($"I/O error reading input: {ioEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine($"Error in single person handler: {ex.GetType().Name}: {ex.Message}");
             }
         }
 
         private static void HandleGroupPrice(Uppgift2TicketService service)
         {
-            Console.Out.Write("Enter number of people: ");
-            // If parsing fails, the right-hand condition is not evaluated.
-            if (int.TryParse(Console.ReadLine(), out int count) && count > 0)
+            try
             {
-                var ages = new List<int>();
-                for (int i = 0; i < count; i++)
+                Console.Out.Write("Enter number of people: ");
+                string countInput = Console.ReadLine();
+
+                if (countInput == null)
                 {
-                    Console.Out.Write($"Enter age for person {i + 1}: ");
-                    if (int.TryParse(Console.ReadLine(), out int age))
-                    {
-                        ages.Add(age);
-                    }
-                    else
-                    {
-                        Console.Out.WriteLine("Invalid age. Please enter a number.");
-                        // Decrement 'i' to retry the same person index on invalid input.
-                        // Without this, an invalid entry would still count toward the total loop iterations.
-                        i--;
-                    }
+                    Console.Out.WriteLine("No input provided.");
+                    return;
                 }
 
-                int total = service.CalculateTotalForGroup(ages);
-                Console.Out.WriteLine($"Total cost for {count} people: {total} kr");
+                // If parsing fails, the right-hand condition is not evaluated.
+                if (int.TryParse(countInput, out int count) && count > 0)
+                {
+                    var ages = new List<int>();
+                    for (int i = 0; i < count; i++)
+                    {
+                        try
+                        {
+                            Console.Out.Write($"Enter age for person {i + 1}: ");
+                            string ageInput = Console.ReadLine();
+
+                            if (ageInput == null)
+                            {
+                                Console.Out.WriteLine("No input provided.");
+                                i--;
+                                continue;
+                            }
+
+                            if (int.TryParse(ageInput, out int age))
+                            {
+                                ages.Add(age);
+                            }
+                            else
+                            {
+                                Console.Out.WriteLine("Invalid age. Please enter a number.");
+                                // Decrement 'i' to retry the same person index on invalid input.
+                                // Without this, an invalid entry would still count toward the total loop iterations.
+                                i--;
+                            }
+                        }
+                        catch (ArgumentException ex)
+                        {
+                            Console.Out.WriteLine($"Age validation error: {ex.Message}");
+                            i--;
+                        }
+                    }
+
+                    try
+                    {
+                        int total = service.CalculateTotalForGroup(ages);
+                        Console.Out.WriteLine($"Total cost for {count} people: {total} kr");
+                    }
+                    catch (ArgumentNullException ex)
+                    {
+                        Console.Out.WriteLine($"Group calculation error: {ex.Message}");
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        Console.Out.WriteLine($"Calculation error: {ex.Message}");
+                    }
+                }
+                else
+                {
+                    Console.Out.WriteLine("Invalid number. Please enter a positive number.");
+                }
             }
-            else
+            catch (IOException ioEx)
             {
-                Console.Out.WriteLine("Invalid number. Please enter a positive number.");
+                Console.Out.WriteLine($"I/O error reading input: {ioEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine($"Error in group price handler: {ex.GetType().Name}: {ex.Message}");
             }
         }
 
         private static void HandleRepeatText()
         {
-            Console.Out.Write("Enter text to repeat: ");
-            string input = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(input))
+            try
             {
-                Console.Out.WriteLine("Text cannot be empty.");
-                return;
-            }
+                Console.Out.Write("Enter text to repeat: ");
+                string input = Console.ReadLine();
 
-            Console.Out.Write("Output: ");
-            for (int i = 1; i <= 10; i++)
-            {
-                Console.Out.Write($"{i}. {input}");
-                // Tricky formatting: add a comma between items but avoid a trailing comma after the last item
-                if (i < 10)
-                    Console.Out.Write(", ");
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    Console.Out.WriteLine("Text cannot be empty.");
+                    return;
+                }
+
+                try
+                {
+                    Console.Out.Write("Output: ");
+                    for (int i = 1; i <= 10; i++)
+                    {
+                        Console.Out.Write($"{i}. {input}");
+                        // Tricky formatting: add a comma between items but avoid a trailing comma after the last item
+                        if (i < 10)
+                            Console.Out.Write(", ");
+                    }
+                    Console.Out.WriteLine();
+                }
+                catch (IOException ioEx)
+                {
+                    Console.Out.WriteLine($"I/O error during output: {ioEx.Message}");
+                }
             }
-            Console.Out.WriteLine();
+            catch (IOException ioEx)
+            {
+                Console.Out.WriteLine($"I/O error reading input: {ioEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine($"Error in repeat text handler: {ex.GetType().Name}: {ex.Message}");
+            }
         }
 
         private static void HandleThirdWord()
         {
-            Console.Out.Write("Enter a sentence with at least 3 words: ");
-            string input = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(input))
+            try
             {
-                Console.Out.WriteLine("Sentence cannot be empty.");
-                return;
+                Console.Out.Write("Enter a sentence with at least 3 words: ");
+                string input = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    Console.Out.WriteLine("Sentence cannot be empty.");
+                    return;
+                }
+
+                try
+                {
+                    // Split on a single space character. Note: consecutive spaces produce empty entries.
+                    // TODO: to ignore multiple spaces, consider using input.Split(' ', StringSplitOptions.RemoveEmptyEntries).
+                    string[] words = input.Split(' ');
+
+                    if (words.Length < 3)
+                    {
+                        Console.Out.WriteLine("Sentence must contain at least 3 words.");
+                        return;
+                    }
+
+                    string thirdWord = words[2];
+                    Console.Out.WriteLine($"The third word is: {thirdWord}");
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.Out.WriteLine($"Error processing sentence: {ex.Message}");
+                }
             }
-
-            // Split on a single space character. Note: consecutive spaces produce empty entries.
-            // TODO: to ignore multiple spaces, consider using input.Split(' ', StringSplitOptions.RemoveEmptyEntries).
-            string[] words = input.Split(' ');
-
-            if (words.Length < 3)
+            catch (IOException ioEx)
             {
-                Console.Out.WriteLine("Sentence must contain at least 3 words.");
-                return;
+                Console.Out.WriteLine($"I/O error reading input: {ioEx.Message}");
             }
-
-            string thirdWord = words[2];
-            Console.Out.WriteLine($"The third word is: {thirdWord}");
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine($"Error in third word handler: {ex.GetType().Name}: {ex.Message}");
+            }
         }
     }
 }
