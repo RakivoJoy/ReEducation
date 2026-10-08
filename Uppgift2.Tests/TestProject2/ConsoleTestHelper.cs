@@ -16,43 +16,73 @@ namespace Uppgift2.Tests
 
             try
             {
+                SetupConsoleForTesting(input, out inputReader, out outputWriter);
+                RunProgramSafely();
+                return outputWriter.ToString();
+            }
+            finally
+            {
+                RestoreConsoleStreams(originalIn, originalOut, inputReader, outputWriter);
+            }
+        }
+
+        private static void SetupConsoleForTesting(string input, out StringReader inputReader, out StringWriter outputWriter)
+        {
+            try
+            {
                 inputReader = new StringReader(input);
                 outputWriter = new StringWriter();
 
                 Console.SetIn(inputReader);
                 Console.SetOut(outputWriter);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error setting up test console: {ex.Message}");
+                throw;
+            }
+        }
 
-                try
-                {
-                    Uppgift2.Uppgift2Program.Main(Array.Empty<string>());
-                }
-                catch (Exception ex)
-                {
-                    // Log the exception and rethrow to let the test handle it
-                    Console.Out.WriteLine($"Program threw an exception: {ex.GetType().Name}: {ex.Message}");
-                    throw;
-                }
+        private static void RunProgramSafely()
+        {
+            try
+            {
+                Uppgift2.Uppgift2Program.Main(Array.Empty<string>());
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine($"Program threw an exception: {ex.GetType().Name}: {ex.Message}");
+                throw;
+            }
+        }
 
-                return outputWriter.ToString();
+        private static void RestoreConsoleStreams(TextReader originalIn, TextWriter originalOut, StringReader inputReader, StringWriter outputWriter)
+        {
+            try
+            {
+                Console.SetIn(originalIn);
+                Console.SetOut(originalOut);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error restoring console streams: {ex.Message}");
             }
             finally
             {
-                try
-                {
-                    Console.SetIn(originalIn);
-                    Console.SetOut(originalOut);
-                }
-                catch (Exception ex)
-                {
-                    // Ensure we don't lose the original exception by exception handling in finally
-                    Console.Error.WriteLine($"Error restoring console streams: {ex.Message}");
-                }
-                finally
-                {
-                    // Dispose of resources
-                    inputReader?.Dispose();
-                    outputWriter?.Dispose();
-                }
+                DisposeResources(inputReader, outputWriter);
+            }
+        }
+
+        private static void DisposeResources(StringReader inputReader, StringWriter outputWriter)
+        {
+            try
+            {
+                inputReader?.Dispose();
+                outputWriter?.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error disposing resources: {ex.Message}");
             }
         }
     }

@@ -99,15 +99,7 @@ namespace Uppgift2
                 // Safe parsing: TryParse prevents exceptions on bad input and returns false instead.
                 if (int.TryParse(input, out int age))
                 {
-                    try
-                    {
-                        int price = service.CalculatePriceForAge(age);
-                        Console.Out.WriteLine($"Price for age {age}: {price} kr");
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        Console.Out.WriteLine($"Validation error: {ex.Message}");
-                    }
+                    DisplayTicketPrice(service, age);
                 }
                 else
                 {
@@ -121,6 +113,19 @@ namespace Uppgift2
             catch (Exception ex)
             {
                 Console.Out.WriteLine($"Error in single person handler: {ex.GetType().Name}: {ex.Message}");
+            }
+        }
+
+        private static void DisplayTicketPrice(Uppgift2TicketService service, int age)
+        {
+            try
+            {
+                int price = service.CalculatePriceForAge(age);
+                Console.Out.WriteLine($"Price for age {age}: {price} kr");
+            }
+            catch (ArgumentException ex)
+            {
+                Console.Out.WriteLine($"Validation error: {ex.Message}");
             }
         }
 
@@ -140,53 +145,8 @@ namespace Uppgift2
                 // If parsing fails, the right-hand condition is not evaluated.
                 if (int.TryParse(countInput, out int count) && count > 0)
                 {
-                    var ages = new List<int>();
-                    for (int i = 0; i < count; i++)
-                    {
-                        try
-                        {
-                            Console.Out.Write($"Enter age for person {i + 1}: ");
-                            string ageInput = Console.ReadLine();
-
-                            if (ageInput == null)
-                            {
-                                Console.Out.WriteLine("No input provided.");
-                                i--;
-                                continue;
-                            }
-
-                            if (int.TryParse(ageInput, out int age))
-                            {
-                                ages.Add(age);
-                            }
-                            else
-                            {
-                                Console.Out.WriteLine("Invalid age. Please enter a number.");
-                                // Decrement 'i' to retry the same person index on invalid input.
-                                // Without this, an invalid entry would still count toward the total loop iterations.
-                                i--;
-                            }
-                        }
-                        catch (ArgumentException ex)
-                        {
-                            Console.Out.WriteLine($"Age validation error: {ex.Message}");
-                            i--;
-                        }
-                    }
-
-                    try
-                    {
-                        int total = service.CalculateTotalForGroup(ages);
-                        Console.Out.WriteLine($"Total cost for {count} people: {total} kr");
-                    }
-                    catch (ArgumentNullException ex)
-                    {
-                        Console.Out.WriteLine($"Group calculation error: {ex.Message}");
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        Console.Out.WriteLine($"Calculation error: {ex.Message}");
-                    }
+                    var ages = CollectAgesFromUser(count);
+                    CalculateAndDisplayGroupTotal(service, ages, count);
                 }
                 else
                 {
@@ -203,6 +163,61 @@ namespace Uppgift2
             }
         }
 
+        private static List<int> CollectAgesFromUser(int count)
+        {
+            var ages = new List<int>();
+            for (int i = 0; i < count; i++)
+            {
+                try
+                {
+                    Console.Out.Write($"Enter age for person {i + 1}: ");
+                    string ageInput = Console.ReadLine();
+
+                    if (ageInput == null)
+                    {
+                        Console.Out.WriteLine("No input provided.");
+                        i--;
+                        continue;
+                    }
+
+                    if (int.TryParse(ageInput, out int age))
+                    {
+                        ages.Add(age);
+                    }
+                    else
+                    {
+                        Console.Out.WriteLine("Invalid age. Please enter a number.");
+                                // Decrement 'i' to retry the same person index on invalid input.
+                                // Without this, an invalid entry would still count toward the total loop iterations.
+                        i--;
+                    }
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.Out.WriteLine($"Age validation error: {ex.Message}");
+                    i--;
+                }
+            }
+            return ages;
+        }
+
+        private static void CalculateAndDisplayGroupTotal(Uppgift2TicketService service, List<int> ages, int count)
+        {
+            try
+            {
+                int total = service.CalculateTotalForGroup(ages);
+                Console.Out.WriteLine($"Total cost for {count} people: {total} kr");
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.Out.WriteLine($"Group calculation error: {ex.Message}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.Out.WriteLine($"Calculation error: {ex.Message}");
+            }
+        }
+
         private static void HandleRepeatText()
         {
             try
@@ -216,22 +231,7 @@ namespace Uppgift2
                     return;
                 }
 
-                try
-                {
-                    Console.Out.Write("Output: ");
-                    for (int i = 1; i <= 10; i++)
-                    {
-                        Console.Out.Write($"{i}. {input}");
-                        // Tricky formatting: add a comma between items but avoid a trailing comma after the last item
-                        if (i < 10)
-                            Console.Out.Write(", ");
-                    }
-                    Console.Out.WriteLine();
-                }
-                catch (IOException ioEx)
-                {
-                    Console.Out.WriteLine($"I/O error during output: {ioEx.Message}");
-                }
+                DisplayRepeatedText(input);
             }
             catch (IOException ioEx)
             {
@@ -240,6 +240,26 @@ namespace Uppgift2
             catch (Exception ex)
             {
                 Console.Out.WriteLine($"Error in repeat text handler: {ex.GetType().Name}: {ex.Message}");
+            }
+        }
+
+        private static void DisplayRepeatedText(string input)
+        {
+            try
+            {
+                Console.Out.Write("Output: ");
+                for (int i = 1; i <= 10; i++)
+                {
+                    Console.Out.Write($"{i}. {input}");
+                    // Tricky formatting: add a comma between items but avoid a trailing comma after the last item
+                    if (i < 10)
+                        Console.Out.Write(", ");
+                }
+                Console.Out.WriteLine();
+            }
+            catch (IOException ioEx)
+            {
+                Console.Out.WriteLine($"I/O error during output: {ioEx.Message}");
             }
         }
 
@@ -256,25 +276,7 @@ namespace Uppgift2
                     return;
                 }
 
-                try
-                {
-                    // Split on a single space character. Note: consecutive spaces produce empty entries.
-                    // TODO: to ignore multiple spaces, consider using input.Split(' ', StringSplitOptions.RemoveEmptyEntries).
-                    string[] words = input.Split(' ');
-
-                    if (words.Length < 3)
-                    {
-                        Console.Out.WriteLine("Sentence must contain at least 3 words.");
-                        return;
-                    }
-
-                    string thirdWord = words[2];
-                    Console.Out.WriteLine($"The third word is: {thirdWord}");
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.Out.WriteLine($"Error processing sentence: {ex.Message}");
-                }
+                ExtractAndDisplayThirdWord(input);
             }
             catch (IOException ioEx)
             {
@@ -283,6 +285,29 @@ namespace Uppgift2
             catch (Exception ex)
             {
                 Console.Out.WriteLine($"Error in third word handler: {ex.GetType().Name}: {ex.Message}");
+            }
+        }
+
+        private static void ExtractAndDisplayThirdWord(string input)
+        {
+            try
+            {
+                // Split on a single space character. Note: consecutive spaces produce empty entries.
+                // TODO: to ignore multiple spaces, consider using input.Split(' ', StringSplitOptions.RemoveEmptyEntries).
+                string[] words = input.Split(' ');
+
+                if (words.Length < 3)
+                {
+                    Console.Out.WriteLine("Sentence must contain at least 3 words.");
+                    return;
+                }
+
+                string thirdWord = words[2];
+                Console.Out.WriteLine($"The third word is: {thirdWord}");
+            }
+            catch (ArgumentException ex)
+            {
+                Console.Out.WriteLine($"Error processing sentence: {ex.Message}");
             }
         }
     }
