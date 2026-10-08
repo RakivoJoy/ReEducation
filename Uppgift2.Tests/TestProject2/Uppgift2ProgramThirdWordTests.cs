@@ -5,7 +5,9 @@ using Uppgift2;
 
 namespace Uppgift2.Tests
 {
-    [Collection("Console Output Tests")]
+    [CollectionDefinition("Console Program Tests", DisableParallelization = true)]
+
+    [Collection("Console Program Tests")]
     public class Uppgift2ProgramThirdWordTests
     {
         // Use ConsoleTestHelper.RunProgramWithInput to run the console program and capture output.

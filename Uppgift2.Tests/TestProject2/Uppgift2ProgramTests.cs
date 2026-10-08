@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Uppgift2.Tests
 {
-    [CollectionDefinition("Program Tests", DisableParallelization = true)]
+    [CollectionDefinition("Console Program Tests", DisableParallelization = true)]
 
     [Collection("Console Program Tests")]
     public class Uppgift2ProgramTests

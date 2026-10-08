@@ -5,13 +5,9 @@ using Uppgift2;
 
 namespace Uppgift2.Tests
 {
-    [CollectionDefinition("Console Output Tests", DisableParallelization = true)]
-    public class ConsoleOutputCollection
-    {
-        // This collection definition disables parallel execution for tests in it
-    }
+    [CollectionDefinition("Console Program Tests", DisableParallelization = true)]
 
-    [Collection("Console Output Tests")]
+    [Collection("Console Program Tests")]
     public class Uppgift2ProgramRepeatTextTests
     {
         // Use ConsoleTestHelper.RunProgramWithInput to run the console program and capture output.
