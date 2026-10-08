@@ -44,7 +44,7 @@ namespace Uppgift2.Tests
             string input = "0\n";
             string output = RunProgramWithInput(input);
 
-            Assert.Contains("Welcome to the ticket price calculator!", output);
+            Assert.Contains("Welcome to your next assignment with", output);
             Assert.Contains("Goodbye!", output);
         }
 
