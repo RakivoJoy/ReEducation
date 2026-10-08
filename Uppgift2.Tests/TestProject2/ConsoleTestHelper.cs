@@ -11,23 +11,48 @@ namespace Uppgift2.Tests
         {
             var originalIn = Console.In;
             var originalOut = Console.Out;
+            StringReader inputReader = null;
+            StringWriter outputWriter = null;
 
             try
             {
-                var inputReader = new StringReader(input);
-                var outputWriter = new StringWriter();
+                inputReader = new StringReader(input);
+                outputWriter = new StringWriter();
 
                 Console.SetIn(inputReader);
                 Console.SetOut(outputWriter);
 
-                Uppgift2.Uppgift2Program.Main(Array.Empty<string>());
+                try
+                {
+                    Uppgift2.Uppgift2Program.Main(Array.Empty<string>());
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception and rethrow to let the test handle it
+                    Console.Out.WriteLine($"Program threw an exception: {ex.GetType().Name}: {ex.Message}");
+                    throw;
+                }
 
                 return outputWriter.ToString();
             }
             finally
             {
-                Console.SetIn(originalIn);
-                Console.SetOut(originalOut);
+                try
+                {
+                    Console.SetIn(originalIn);
+                    Console.SetOut(originalOut);
+                }
+                catch (Exception ex)
+                {
+                    // Ensure we don't lose the original exception by exception handling in finally
+                    Console.Error.WriteLine($"Error restoring console streams: {ex.Message}");
+                }
+                finally
+                {
+                    // Dispose of resources
+                    inputReader?.Dispose();
+                    outputWriter?.Dispose();
+                }
             }
         }
     }
