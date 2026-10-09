@@ -29,8 +29,23 @@ namespace ExceptionsDemo
                 // Försöker omvandla text till tal
                 int number = int.Parse(line); // Kan ge FormatException
 
+
+                if (number == 0)
+                    throw new DivideByZeroException("Kan inte dividera med noll.");
+
                 // Division: kan ge DivideByZeroException
                 return 100.0 / number;
+            }
+            catch (FileNotFoundException ex)
+            {
+                // Specifikt fel om filen inte finns
+                Console.WriteLine($"Filen hittades inte: {ex.Message}");
+                throw;
+            }
+            catch (DivideByZeroException ex)
+            {
+                Console.WriteLine($"Division med noll: {ex.Message}");
+                throw;
             }
             catch (FormatException ex)
             {

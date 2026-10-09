@@ -134,10 +134,10 @@ namespace ExceptionsDemoTests
 
         /// <summary>
         /// Note: In .NET, dividing a double by zero doesn't throw an exception - it returns Infinity
-        /// This test verifies we get Infinity instead of an exception
+        /// This test verifies we get an exception explicitly for zero input, as per the modified service code that throws DivideByZeroException for zero.
         /// </summary>
         [Fact]
-        public void ProcessFile_WithZero_ReturnsInfinity()
+        public void ProcessFile_WithZero_ReturnsDivideByZeroException()
         {
             // Arrange
             string zeroFile = Path.Combine(_testDirectory, "zero.txt");
@@ -145,11 +145,9 @@ namespace ExceptionsDemoTests
 
             try
             {
-                // Act
-                double result = _service.ProcessFile(zeroFile);
-
-                // Assert - Dividing by 0.0 returns positive infinity
-                Assert.True(double.IsPositiveInfinity(result));
+                // Act & Assert
+                var ex = Assert.Throws<DivideByZeroException>(() => _service.ProcessFile(zeroFile));
+                Assert.NotNull(ex.Message);
             }
             finally
             {
