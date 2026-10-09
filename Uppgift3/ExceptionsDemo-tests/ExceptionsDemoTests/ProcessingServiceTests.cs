@@ -58,8 +58,6 @@ namespace ExceptionsDemoTests
             // Act & Assert
             var ex = Assert.Throws<FileNotFoundException>(() => _service.ProcessFile(nonExistentFile));
             Assert.Contains("Could not find file ", ex.Message);
-            // TODO: Figure out why InnerException is still null
-            // Assert.IsType<FileNotFoundException>(ex.InnerException);
 
         }
 
