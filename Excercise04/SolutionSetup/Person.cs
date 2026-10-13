@@ -33,6 +33,26 @@ public class Person
 
     public Person(string firstName, string lastName, int age, decimal salary = Person.DefaultMinimumSalary)
     {
+        if (firstName == null || firstName.Length < 3)
+        {
+            throw new ArgumentException("First name cannot contain fewer than 3 symbols!");
+        }
+
+        if (lastName == null || lastName.Length < 3)
+        {
+            throw new ArgumentException("Last name cannot contain fewer than 3 symbols!");
+        }
+
+        if (age <= 0)
+        {
+            throw new ArgumentException("Age cannot be zero or a negative integer!");
+        }
+
+        if (salary < DefaultMinimumSalary)
+        {
+            throw new ArgumentException($"Salary cannot be less than {DefaultMinimumSalary} dollar!");
+        }
+
         this._firstName = firstName;
         this._lastName = lastName;
         this._age = age;
