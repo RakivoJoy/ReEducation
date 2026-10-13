@@ -1,3 +1,5 @@
+using System.Globalization;
+
 public class Person
 {
     private string _firstName = string.Empty;
@@ -86,6 +88,6 @@ public class Person
 
     public override string ToString()
     {
-        return $"{this.FirstName} {this.LastName} is {this.Age} years old. Salary: ${this.Salary}";
+        return $"{this.FirstName} {this.LastName} is {this.Age} years old. Salary: ${this.Salary.ToString("F2", CultureInfo.InvariantCulture)}";
     }
 }
