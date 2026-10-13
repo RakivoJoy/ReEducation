@@ -8,64 +8,72 @@ public class Person
     public string FirstName
     {
         get { return _firstName; }
-        set { _firstName = value; }
+        set
+        {
+            if (value == null || value.Length < 3)
+            {
+                throw new ArgumentException("First name cannot contain fewer than 3 symbols!");
+            }
+            _firstName = value;
+        }
     }
 
     public string LastName
     {
         get { return _lastName; }
-        set { _lastName = value; }
+        set
+        {
+            if (value == null || value.Length < 3)
+            {
+                throw new ArgumentException("Last name cannot contain fewer than 3 symbols!");
+            }
+            _lastName = value;
+        }
     }
 
     public int Age
     {
         get { return _age; }
-        set { _age = value; }
+        set
+        {
+            if (value <= 0)
+            {
+                throw new ArgumentException("Age cannot be zero or a negative integer!");
+            }
+            _age = value;
+        }
     }
 
     public decimal Salary
     {
         get { return _salary; }
-        set { _salary = value; }
+        set
+        {
+            if (value < DefaultMinimumSalary)
+            {
+                throw new ArgumentException($"Salary cannot be less than {DefaultMinimumSalary} dollar!");
+            }
+            _salary = value;
+        }
     }
 
     public const decimal DefaultMinimumSalary = 460;
 
     public Person(string firstName, string lastName, int age, decimal salary = Person.DefaultMinimumSalary)
     {
-        if (firstName == null || firstName.Length < 3)
-        {
-            throw new ArgumentException("First name cannot contain fewer than 3 symbols!");
-        }
-
-        if (lastName == null || lastName.Length < 3)
-        {
-            throw new ArgumentException("Last name cannot contain fewer than 3 symbols!");
-        }
-
-        if (age <= 0)
-        {
-            throw new ArgumentException("Age cannot be zero or a negative integer!");
-        }
-
-        if (salary < DefaultMinimumSalary)
-        {
-            throw new ArgumentException($"Salary cannot be less than {DefaultMinimumSalary} dollar!");
-        }
-
-        this._firstName = firstName;
-        this._lastName = lastName;
-        this._age = age;
-        this._salary = salary;
+        FirstName = firstName;
+        LastName = lastName;
+        Age = age;
+        Salary = salary;
     }
 
     public void IncreaseSalary(decimal percentage)
     {
-        this._salary += this._salary * (percentage / 100);
+        Salary += Salary * (percentage / 100);
     }
 
     public override string ToString()
     {
-        return $"{_firstName} {_lastName}, Age: {_age}, Salary: {_salary:F2}";
+        return $"{FirstName} {LastName}, Age: {Age}, Salary: {Salary    :F2}";
     }
 }
