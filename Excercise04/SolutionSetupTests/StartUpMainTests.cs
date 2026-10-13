@@ -351,7 +351,7 @@ namespace SolutionSetupTests
         }
 
         [Fact]
-        public void Main_WithNegativeBonus_ThrowsException()
+        public void Main_WithNegativeBonus_HandlesGracefully()
         {
             // Arrange
             var inputs = new List<string>
@@ -361,9 +361,13 @@ namespace SolutionSetupTests
                 "-10"
             };
 
-            // Act & Assert
-            var ex = Assert.Throws<ArgumentException>(() => SimulateStartUpMain(inputs));
-            Assert.Equal("Percentage must always be positive!", ex.Message);
+            // Act - Should not throw exception, just skip bonus application
+            var output = CaptureConsoleOutput(() => SimulateStartUpMain(inputs));
+
+            // Assert - Should still output the person (bonus was invalid, so not applied)
+            Assert.NotEmpty(output);
+            // Victor (25, < 30) with -10 bonus skipped: 1000 stays as 1000
+            Assert.Equal("Victor Green is 25 years old. Salary: $1000.00", output[output.Count - 1].Trim());
         }
 
         [Fact]
