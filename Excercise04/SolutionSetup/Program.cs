@@ -8,8 +8,14 @@ namespace SolutionSetup
     {
         public static void Main()
         {
-            var lines = 5;
-            var persons = new List<Person>();
+            var linesInput = Console.ReadLine();
+            if (!int.TryParse(linesInput, out var lines))
+            {
+                // Invalid input for the number of lines; exit the program
+                return;
+            }
+
+            var persons = new List<Person>(lines);
 
             for (int i = 0; i < lines; i++)
             {
