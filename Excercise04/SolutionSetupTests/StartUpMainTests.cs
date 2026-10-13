@@ -1,5 +1,7 @@
 namespace SolutionSetupTests
 {
+    [CollectionDefinition("Sequential", DisableParallelization = true)]
+    [Collection("Sequential")] 
     public class StartUpMainTests
     {
         private List<string> CaptureConsoleOutput(Action action)
