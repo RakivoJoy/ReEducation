@@ -1,19 +1,46 @@
-﻿namespace SolutionSetup
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace SolutionSetup
 {
     internal class Program
     {
         public static void Main()
         {
             var lines = 5;
-            var persons = new List<Person>(); for (int i = 0; i < lines; i++)
+            var persons = new List<Person>();
+
+            for (int i = 0; i < lines; i++)
             {
-                var cmdArgs = Console.ReadLine().Split();
-                var person = new Person(cmdArgs[0], cmdArgs[1], int.Parse(cmdArgs[2])); persons.Add(person);
+                var input = Console.ReadLine();
+                if (input is null)
+                {
+                    // No more input available; stop reading further lines
+                    break;
+                }
+
+                var cmdArgs = input.Split();
+                if (cmdArgs.Length < 3)
+                {
+                    // Invalid input format; skip this line
+                    continue;
+                }
+
+                if (!int.TryParse(cmdArgs[2], out var age))
+                {
+                    // Invalid age value; skip this line
+                    continue;
+                }
+
+                var person = new Person(cmdArgs[0], cmdArgs[1], age);
+                persons.Add(person);
             }
+
             persons.OrderBy(p => p.FirstName)
-            .ThenBy(p => p.Age)
-            .ToList()
-            .ForEach(p => Console.WriteLine(p.ToString()));
+                   .ThenBy(p => p.Age)
+                   .ToList()
+                   .ForEach(p => Console.WriteLine(p.ToString()));
         }
     }
 }
