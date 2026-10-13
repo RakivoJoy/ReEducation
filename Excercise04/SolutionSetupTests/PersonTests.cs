@@ -165,7 +165,7 @@ namespace SolutionSetupTests
         }
 
         [Fact]
-        public void IncreaseSalary_WithPositivePercentage_IncreasesCorrectly()
+        public void IncreaseSalary_WithPositivePercentage_Age30_ReceivesHalfIncrease()
         {
             // Arrange
             var person = new Person("John", "Doe", 30, 1000);
@@ -174,7 +174,8 @@ namespace SolutionSetupTests
             person.IncreaseSalary(10);
 
             // Assert
-            Assert.Equal(1100m, person.Salary);
+            // Age 30 (>= 30): 1000 + 1000 * (10/200) = 1050
+            Assert.Equal(1050m, person.Salary);
         }
 
         [Fact]
@@ -182,13 +183,17 @@ namespace SolutionSetupTests
         {
             // Arrange
             var person = new Person("John", "Doe", 30, 1000);
+            var originalSalary = person.Salary;
 
-            // Act & Assert
-            Assert.Throws<ArgumentException>(() => person.IncreaseSalary(0));
+            // Act
+            person.IncreaseSalary(0);
+
+            // Assert
+            Assert.Equal(originalSalary, person.Salary);
         }
 
         [Fact]
-        public void IncreaseSalary_WithHighPercentage_IncreasesCorrectly()
+        public void IncreaseSalary_WithHighPercentage_Age30_ReceivesHalfIncrease()
         {
             // Arrange
             var person = new Person("John", "Doe", 30, 1000);
@@ -197,7 +202,8 @@ namespace SolutionSetupTests
             person.IncreaseSalary(50);
 
             // Assert
-            Assert.Equal(1500m, person.Salary);
+            // Age 30 (>= 30): 1000 + 1000 * (50/200) = 1250
+            Assert.Equal(1250m, person.Salary);
         }
     }
 
