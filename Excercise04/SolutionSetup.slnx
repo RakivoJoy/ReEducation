@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SolutionSetup/SolutionSetup.csproj" />
+  <Project Path="SolutionSetupTests/SolutionSetupTests.csproj" />
+</Solution>
