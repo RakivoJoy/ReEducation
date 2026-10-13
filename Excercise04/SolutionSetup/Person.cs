@@ -78,6 +78,6 @@ public class Person
 
     public override string ToString()
     {
-        return $"{this.FirstName} {this.LastName} is {this.Age} years old.";
+        return $"{this.FirstName} {this.LastName} is {this.Age} years old. Salary: ${this.Salary}";
     }
 }
