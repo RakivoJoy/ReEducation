@@ -69,11 +69,19 @@ public class Person
 
     public void IncreaseSalary(decimal percentage)
     {
-        if (percentage <= 0)
+        if (percentage < 0)
         {
             throw new ArgumentException("Percentage must always be positive!");
         }
-        Salary += Salary * (percentage / 100);
+
+        if(Age < 30)
+        {
+            Salary += Salary * (percentage / 100);
+        }
+        else
+        {
+            Salary += Salary * (percentage / 200);
+        }
     }
 
     public override string ToString()
