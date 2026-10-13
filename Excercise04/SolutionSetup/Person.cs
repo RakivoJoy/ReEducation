@@ -53,7 +53,7 @@ public class Person
             {
                 throw new ArgumentException($"Salary cannot be less than {DefaultMinimumSalary} dollar!");
             }
-            _salary = value;
+            _salary = Math.Round(value, 2);
         }
     }
 
@@ -69,6 +69,10 @@ public class Person
 
     public void IncreaseSalary(decimal percentage)
     {
+        if (percentage <= 0)
+        {
+            throw new ArgumentException("Percentage must always be positive!");
+        }
         Salary += Salary * (percentage / 100);
     }
 

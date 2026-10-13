@@ -183,11 +183,8 @@ namespace SolutionSetupTests
             // Arrange
             var person = new Person("John", "Doe", 30, 1000);
 
-            // Act
-            person.IncreaseSalary(0);
-
-            // Assert
-            Assert.Equal(1000m, person.Salary);
+            // Act & Assert
+            Assert.Throws<ArgumentException>(() => person.IncreaseSalary(0));
         }
 
         [Fact]
