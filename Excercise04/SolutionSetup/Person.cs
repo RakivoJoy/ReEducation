@@ -76,11 +76,11 @@ public class Person
 
         if(Age < 30)
         {
-            Salary += Salary * (percentage / 100);
+            Salary += Salary * (percentage / 200);
         }
         else
         {
-            Salary += Salary * (percentage / 200);
+            Salary += Salary * (percentage / 100);
         }
     }
 

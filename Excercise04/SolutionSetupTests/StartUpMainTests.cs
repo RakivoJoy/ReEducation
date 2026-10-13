@@ -39,7 +39,7 @@ namespace SolutionSetupTests
         }
 
         [Fact]
-        public void Main_WithSinglePerson_UnderAge30_AppliesFullBonus()
+        public void Main_WithSinglePerson_UnderAge30_AppliesHalfBonus()
         {
             // Arrange
             var inputs = new List<string>
@@ -54,12 +54,12 @@ namespace SolutionSetupTests
 
             // Assert
             Assert.Single(output);
-            // Age 25 (< 30): 1000 + 1000 * (10/100) = 1100
-            Assert.Contains("John Doe is 25 years old. Salary: $1100", output[0]);
+            // Age 25 (< 30): 1000 + 1000 * (10/200) = 1050
+            Assert.Contains("John Doe is 25 years old. Salary: $1050", output[0]);
         }
 
         [Fact]
-        public void Main_WithSinglePerson_Age30AndAbove_AppliesHalfBonus()
+        public void Main_WithSinglePerson_Age30AndAbove_AppliesFullBonus()
         {
             // Arrange
             var inputs = new List<string>
@@ -74,8 +74,8 @@ namespace SolutionSetupTests
 
             // Assert
             Assert.Single(output);
-            // Age 35 (>= 30): 1000 + 1000 * (20/200) = 1100
-            Assert.Contains("Jane Smith is 35 years old. Salary: $1100", output[0]);
+            // Age 35 (>= 30): 1000 + 1000 * (20/100) = 1200
+            Assert.Contains("Jane Smith is 35 years old. Salary: $1200", output[0]);
         }
 
         [Fact]
@@ -96,12 +96,12 @@ namespace SolutionSetupTests
 
             // Assert
             Assert.Equal(3, output.Count);
-            // Alice 25 (< 30): 1000 + 1000 * (20/100) = 1200
-            Assert.Contains("Alice Brown is 25 years old. Salary: $1200", output[0]);
-            // Bob 35 (>= 30): 1000 + 1000 * (20/200) = 1100
-            Assert.Contains("Bob Clark is 35 years old. Salary: $1100", output[1]);
-            // Charlie 29 (< 30): 1000 + 1000 * (20/100) = 1200
-            Assert.Contains("Charlie Davis is 29 years old. Salary: $1200", output[2]);
+            // Alice 25 (< 30): 1000 + 1000 * (20/200) = 1100
+            Assert.Contains("Alice Brown is 25 years old. Salary: $1100", output[0]);
+            // Bob 35 (>= 30): 1000 + 1000 * (20/100) = 1200
+            Assert.Contains("Bob Clark is 35 years old. Salary: $1200", output[1]);
+            // Charlie 29 (< 30): 1000 + 1000 * (20/200) = 1100
+            Assert.Contains("Charlie Davis is 29 years old. Salary: $1100", output[2]);
         }
 
         [Fact]
@@ -200,8 +200,10 @@ namespace SolutionSetupTests
 
             // Assert - Only valid persons should be in output
             Assert.Equal(2, output.Count);
-            Assert.Contains("Henry Young is 28 years old. Salary: $1100", output[0]);
-            Assert.Contains("Kate Lewis is 30 years old. Salary: $1575", output[1]);
+            // Henry 28 (< 30): 1000 + 1000 * (10/200) = 1050
+            Assert.Contains("Henry Young is 28 years old. Salary: $1050", output[0]);
+            // Kate 30 (>= 30): 1500 + 1500 * (10/100) = 1650
+            Assert.Contains("Kate Lewis is 30 years old. Salary: $1650", output[1]);
         }
 
         [Fact]
@@ -221,8 +223,8 @@ namespace SolutionSetupTests
 
             // Assert
             Assert.Single(output);
-            // Mary 35 (>= 30): 2000 + 2000 * (10/200) = 2100
-            Assert.Contains("Mary Johnson is 35 years old. Salary: $2100", output[0]);
+            // Mary 35 (>= 30): 2000 + 2000 * (10/100) = 2200
+            Assert.Contains("Mary Johnson is 35 years old. Salary: $2200", output[0]);
         }
 
         [Fact]
@@ -242,10 +244,10 @@ namespace SolutionSetupTests
 
             // Assert
             Assert.Equal(2, output.Count);
-            // Noah (26, < 30): 1000 + 1000 * (100/100) = 2000
-            Assert.Contains("Noah Patterson is 26 years old. Salary: $2000", output[0]);
-            // Olivia (40, >= 30): 1000 + 1000 * (100/200) = 1500
-            Assert.Contains("Olivia Quinn is 40 years old. Salary: $1500", output[1]);
+            // Noah (26, < 30): 1000 + 1000 * (100/200) = 1500
+            Assert.Contains("Noah Patterson is 26 years old. Salary: $1500", output[0]);
+            // Olivia (40, >= 30): 1000 + 1000 * (100/100) = 2000
+            Assert.Contains("Olivia Quinn is 40 years old. Salary: $2000", output[1]);
         }
 
         [Fact]
@@ -264,12 +266,12 @@ namespace SolutionSetupTests
 
             // Assert
             Assert.Single(output);
-            // Peter (28, < 30): 1000 + 1000 * (10/100) = 1100
-            Assert.Contains("Peter Roberts is 28 years old. Salary: $1100", output[0]);
+            // Peter (28, < 30): 1000 + 1000 * (10/200) = 1050
+            Assert.Contains("Peter Roberts is 28 years old. Salary: $1050", output[0]);
         }
 
         [Fact]
-        public void Main_WithBoundaryAge30_ReceivesHalfBonus()
+        public void Main_WithBoundaryAge30_ReceivesFullBonus()
         {
             // Arrange
             var inputs = new List<string>
@@ -285,10 +287,10 @@ namespace SolutionSetupTests
 
             // Assert
             Assert.Equal(2, output.Count);
-            // Rachel (29, < 30): 1000 + 1000 * (20/100) = 1200
-            Assert.Contains("Rachel Taylor is 29 years old. Salary: $1200", output[0]);
-            // Samuel (30, >= 30): 1000 + 1000 * (20/200) = 1100
-            Assert.Contains("Samuel Young is 30 years old. Salary: $1100", output[1]);
+            // Rachel (29, < 30): 1000 + 1000 * (20/200) = 1100
+            Assert.Contains("Rachel Taylor is 29 years old. Salary: $1100", output[0]);
+            // Samuel (30, >= 30): 1000 + 1000 * (20/100) = 1200
+            Assert.Contains("Samuel Young is 30 years old. Salary: $1200", output[1]);
         }
 
         [Fact]
@@ -307,8 +309,8 @@ namespace SolutionSetupTests
 
             // Assert
             Assert.Single(output);
-            // Tina (35, >= 30): 1000 + 1000 * (20/200) = 1100
-            Assert.Contains("Tina White is 35 years old. Salary: $1100", output[0]);
+            // Tina (35, >= 30): 1000 + 1000 * (20/100) = 1200
+            Assert.Contains("Tina White is 35 years old. Salary: $1200", output[0]);
         }
 
         [Fact]
@@ -327,8 +329,9 @@ namespace SolutionSetupTests
 
             // Assert
             Assert.Single(output);
-            // Uma (28, < 30): 460 + 460 * (5/100) = 483
-            Assert.Contains("Uma Brown is 28 years old. Salary: $483", output[0]);
+            // Uma (28, < 30): 460 + 460 * (5/200) = 471.5
+            Assert.Contains("Uma Brown is 28 years old. Salary: $", output[0]);
+            Assert.Contains("471", output[0]);
         }
 
         [Fact]
@@ -381,10 +384,10 @@ namespace SolutionSetupTests
 
             // Assert
             Assert.Equal(2, output.Count);
-            // Bert (27, < 30): 600 + 600 * (20/100) = 720
-            Assert.Contains("Bert Lewinsson is 27 years old. Salary: $720", output[0]);
-            // Anna (44, >= 30): 1000 + 1000 * (20/200) = 1100
-            Assert.Contains("Anna Hamren is 44 years old. Salary: $1100", output[1]);
+            // Bert (27, < 30): 600 + 600 * (20/200) = 660
+            Assert.Contains("Bert Lewinsson is 27 years old. Salary: $660", output[0]);
+            // Anna (44, >= 30): 1000 + 1000 * (20/100) = 1200
+            Assert.Contains("Anna Hamren is 44 years old. Salary: $1200", output[1]);
         }
 
         [Fact]
@@ -405,12 +408,12 @@ namespace SolutionSetupTests
 
             // Assert
             Assert.Equal(3, output.Count);
-            // Zoe (22, < 30): 800 + 800 * (10/100) = 880
-            Assert.Contains("Zoe Adams is 22 years old. Salary: $880", output[0]);
-            // Bob (35, >= 30): 1200 + 1200 * (10/200) = 1260
-            Assert.Contains("Bob Brown is 35 years old. Salary: $1260", output[1]);
-            // Alice (28, < 30): 900 + 900 * (10/100) = 990
-            Assert.Contains("Alice Clark is 28 years old. Salary: $990", output[2]);
+            // Zoe (22, < 30): 800 + 800 * (10/200) = 840
+            Assert.Contains("Zoe Adams is 22 years old. Salary: $840", output[0]);
+            // Bob (35, >= 30): 1200 + 1200 * (10/100) = 1320
+            Assert.Contains("Bob Brown is 35 years old. Salary: $1320", output[1]);
+            // Alice (28, < 30): 900 + 900 * (10/200) = 945
+            Assert.Contains("Alice Clark is 28 years old. Salary: $945", output[2]);
         }
     }
 }

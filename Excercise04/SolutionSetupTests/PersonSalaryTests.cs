@@ -7,14 +7,13 @@ namespace SolutionSetupTests
         {
             // Arrange
             var person = new Person("John", "Doe", 25, 1000m);
-            var originalSalary = person.Salary;
 
             // Act
             person.IncreaseSalary(10);
 
             // Assert
-            var expectedSalary = originalSalary * 1.1m;
-            Assert.Equal(expectedSalary, person.Salary);
+            // Age 25 (< 30): 1000 + 1000 * (10/200) = 1050
+            Assert.Equal(1050m, person.Salary);
         }
 
         [Fact]
@@ -27,7 +26,8 @@ namespace SolutionSetupTests
             person.IncreaseSalary(5);
 
             // Assert
-            Assert.Equal(525m, person.Salary);
+            // Age 25 (< 30): 500 + 500 * (5/200) = 512.5
+            Assert.Equal(512.5m, person.Salary);
         }
 
         [Fact]
@@ -40,8 +40,8 @@ namespace SolutionSetupTests
             person.IncreaseSalary(50);
 
             // Assert
-            // Age 35 (>= 30): 1000 + 1000 * (50/200) = 1000 + 250 = 1250
-            Assert.Equal(1250m, person.Salary);
+            // Age 35 (>= 30): 1000 + 1000 * (50/100) = 1000 + 500 = 1500
+            Assert.Equal(1500m, person.Salary);
         }
 
         [Fact]
@@ -80,8 +80,8 @@ namespace SolutionSetupTests
             person.IncreaseSalary(20);
 
             // Assert
-            // Age 32 (>= 30): First: 1000 + 1000 * (10/200) = 1050, Then: 1050 + 1050 * (20/200) = 1155
-            Assert.Equal(1155m, person.Salary);
+            // Age 32 (>= 30): First: 1000 + 1000 * (10/100) = 1100, Then: 1100 + 1100 * (20/100) = 1320
+            Assert.Equal(1320m, person.Salary);
         }
 
         [Fact]
@@ -94,8 +94,8 @@ namespace SolutionSetupTests
             person.IncreaseSalary(33.33m);
 
             // Assert
-            // Age 29 (< 30): 1000 + 1000 * (33.33/100) = 1333.30
-            Assert.Equal(1333.30m, person.Salary);
+            // Age 29 (< 30): 1000 + 1000 * (33.33/200) = 1166.65
+            Assert.Equal(1166.65m, person.Salary);
         }
 
         [Fact]
@@ -108,8 +108,8 @@ namespace SolutionSetupTests
             person.IncreaseSalary(33.333m);
 
             // Assert
-            // Age 45 (>= 30): 1000 + 1000 * (33.333/200) = 1166.665 = 1166.66 (rounded down)
-            Assert.Equal(1166.66m, person.Salary);
+            // Age 45 (>= 30): 1000 + 1000 * (33.333/100) = 1333.33
+            Assert.Equal(1333.33m, person.Salary);
         }
 
         [Fact]
@@ -154,8 +154,8 @@ namespace SolutionSetupTests
             person.IncreaseSalary(2.5m);
 
             // Assert
-            // Age 50 (>= 30): 1000 + 1000 * (2.5/200) = 1012.50
-            Assert.Equal(1012.5m, person.Salary);
+            // Age 50 (>= 30): 1000 + 1000 * (2.5/100) = 1025
+            Assert.Equal(1025m, person.Salary);
         }
 
         [Fact]
@@ -168,8 +168,8 @@ namespace SolutionSetupTests
             person.IncreaseSalary(100);
 
             // Assert
-            // Age 27 (< 30): 1000 + 1000 * (100/100) = 2000
-            Assert.Equal(2000m, person.Salary);
+            // Age 27 (< 30): 1000 + 1000 * (100/200) = 1500
+            Assert.Equal(1500m, person.Salary);
         }
 
         [Fact]
@@ -182,8 +182,8 @@ namespace SolutionSetupTests
             person.IncreaseSalary(0.01m);
 
             // Assert
-            // Age 38 (>= 30): 1000 + 1000 * (0.01/200) = 1000.05
-            Assert.Equal(1000.05m, person.Salary);
+            // Age 38 (>= 30): 1000 + 1000 * (0.01/100) = 1000.1
+            Assert.Equal(1000.1m, person.Salary);
         }
 
         [Fact]
@@ -198,14 +198,14 @@ namespace SolutionSetupTests
             personAge30Plus.IncreaseSalary(20);
 
             // Assert
-            // Age 29 (< 30): 1000 + 1000 * (20/100) = 1200
-            Assert.Equal(1200m, personUnder30.Salary);
-            // Age 30 (>= 30): 1000 + 1000 * (20/200) = 1100
-            Assert.Equal(1100m, personAge30Plus.Salary);
+            // Age 29 (< 30): 1000 + 1000 * (20/200) = 1100
+            Assert.Equal(1100m, personUnder30.Salary);
+            // Age 30 (>= 30): 1000 + 1000 * (20/100) = 1200
+            Assert.Equal(1200m, personAge30Plus.Salary);
         }
 
         [Fact]
-        public void IncreaseSalary_ExactlyAge30_ReceivesHalfIncrease()
+        public void IncreaseSalary_ExactlyAge30_ReceivesFullIncrease()
         {
             // Arrange
             var person = new Person("Patricia", "Quinn", 30, 1000m);
@@ -214,12 +214,12 @@ namespace SolutionSetupTests
             person.IncreaseSalary(40);
 
             // Assert
-            // Age 30 (>= 30): 1000 + 1000 * (40/200) = 1200
-            Assert.Equal(1200m, person.Salary);
+            // Age 30 (>= 30): 1000 + 1000 * (40/100) = 1400
+            Assert.Equal(1400m, person.Salary);
         }
 
         [Fact]
-        public void IncreaseSalary_Age29_ReceivesFullIncrease()
+        public void IncreaseSalary_Age29_ReceivesHalfIncrease()
         {
             // Arrange
             var person = new Person("Quinn", "Rodriguez", 29, 1000m);
@@ -228,8 +228,8 @@ namespace SolutionSetupTests
             person.IncreaseSalary(40);
 
             // Assert
-            // Age 29 (< 30): 1000 + 1000 * (40/100) = 1400
-            Assert.Equal(1400m, person.Salary);
+            // Age 29 (< 30): 1000 + 1000 * (40/200) = 1200
+            Assert.Equal(1200m, person.Salary);
         }
 
         [Fact]
@@ -244,10 +244,10 @@ namespace SolutionSetupTests
             seniorWorker.IncreaseSalary(60);
 
             // Assert
-            // Age 25 (< 30): 1000 + 1000 * (60/100) = 1600
-            Assert.Equal(1600m, youngWorker.Salary);
-            // Age 50 (>= 30): 1000 + 1000 * (60/200) = 1300
-            Assert.Equal(1300m, seniorWorker.Salary);
+            // Age 25 (< 30): 1000 + 1000 * (60/200) = 1300
+            Assert.Equal(1300m, youngWorker.Salary);
+            // Age 50 (>= 30): 1000 + 1000 * (60/100) = 1600
+            Assert.Equal(1600m, seniorWorker.Salary);
         }
     }
 }
