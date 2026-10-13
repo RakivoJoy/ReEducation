@@ -1,18 +1,35 @@
-﻿namespace SolutionSetup
+﻿using System;
+using System.Collections.Generic;
+
+namespace SolutionSetup
 {
     internal class StartUp
     {
         public static void Main()
         {
-            var lines = int.Parse(Console.ReadLine()); var persons = new List<Person>();
+            var linesStr = Console.ReadLine();
+            if (!int.TryParse(linesStr, out var lines)) return;
+
+            var persons = new List<Person>();
             for (int i = 0; i < lines; i++)
             {
-                var cmdArgs = Console.ReadLine().Split(); var person = new Person(
-                cmdArgs[0], cmdArgs[1], int.Parse(cmdArgs[2]), decimal.Parse(cmdArgs[3]
-                ));
+                var input = Console.ReadLine();
+                if (input == null) continue;
+                var cmdArgs = input.Split();
+                if (cmdArgs.Length < 4) continue;
+
+                if (!int.TryParse(cmdArgs[2], out var age)) continue;
+                if (!decimal.TryParse(cmdArgs[3], out var salary)) continue;
+
+                var person = new Person(cmdArgs[0], cmdArgs[1], age, salary);
                 persons.Add(person);
             }
-            var bonus = decimal.Parse(Console.ReadLine()); persons.ForEach(p => p.IncreaseSalary(bonus)); persons.ForEach(p => Console.WriteLine(p.ToString()));
+
+            var bonusStr = Console.ReadLine();
+            if (!decimal.TryParse(bonusStr, out var bonus)) bonus = 0m;
+
+            persons.ForEach(p => p.IncreaseSalary(bonus));
+            persons.ForEach(p => Console.WriteLine(p.ToString()));
         }
     }
 }
