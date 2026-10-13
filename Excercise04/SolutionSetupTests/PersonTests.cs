@@ -1,135 +1,204 @@
-﻿namespace SolutionSetupTests
+﻿using Xunit;
+
+public class PersonTests
 {
-    public class PersonTests
+    [Fact]
+    public void ToString_WithValidPerson_ReturnsFormattedString()
     {
-        [Fact]
-        public void Constructor_WithValidParameters_InitializesPerson()
-        {
-            // Arrange & Act
-            var person = new Person("John", "Doe", 30);
+        // Arrange
+        var person = new Person("John", "Doe", 30, 1000);
 
-            // Assert
-            Assert.Equal("John", person.FirstName);
-            Assert.Equal("Doe", person.LastName);
-            Assert.Equal(30, person.Age);
-            Assert.Equal(Person.DefaultMinimumSalary, person.Salary);
-        }
+        // Act
+        var result = person.ToString();
 
-        [Fact]
-        public void ToString_WithValidPerson_ReturnsFormattedString()
-        {
-            // Arrange
-            var person = new Person("Jane", "Smith", 25);
+        // Assert
+        Assert.Equal("John Doe is 30 years old.", result);
+    }
 
-            // Act
-            var result = person.ToString();
+    [Fact]
+    public void ToString_WithDifferentNames_ReturnsCorrectFormat()
+    {
+        // Arrange
+        var person = new Person("Jane", "Smith", 25, 1500);
 
-            // Assert
-            Assert.Contains("Jane", result);
-            Assert.Contains("Smith", result);
-            Assert.Contains("25", result);
-        }
+        // Act
+        var result = person.ToString();
 
-        [Fact]
-        public void ToString_WithDifferentAges_ReturnsCorrectFormat()
-        {
-            // Arrange
-            var person = new Person("Bob", "Johnson", 45);
+        // Assert
+        Assert.Equal("Jane Smith is 25 years old.", result);
+    }
 
-            // Act
-            var result = person.ToString();
+    [Fact]
+    public void ToString_WithMinimumValidAge_ReturnsCorrectFormat()
+    {
+        // Arrange
+        var person = new Person("Bob", "Johnson", 1, 500);
 
-            // Assert
-            Assert.Contains("Bob Johnson", result);
-            Assert.Contains("45", result);
-        }
+        // Act
+        var result = person.ToString();
 
-        [Fact]
-        public void Constructor_WithDifferentNames_InitializesPerson()
-        {
-            // Arrange & Act
-            var person = new Person("Alice", "Williams", 28);
+        // Assert
+        Assert.Equal("Bob Johnson is 1 years old.", result);
+    }
 
-            // Assert
-            Assert.Equal("Alice", person.FirstName);
-            Assert.Equal("Williams", person.LastName);
-            Assert.Equal(28, person.Age);
-        }
+    [Fact]
+    public void ToString_WithLargeAge_ReturnsCorrectFormat()
+    {
+        // Arrange
+        var person = new Person("Anna", "Williams", 100, 2000);
 
-        [Fact]
-        public void Constructor_WithFirstNameTooShort_ThrowsArgumentException()
-        {
-            // Arrange & Act & Assert
-            var ex = Assert.Throws<ArgumentException>(() => new Person("Jo", "Doe", 30));
-            Assert.Equal("First name cannot contain fewer than 3 symbols!", ex.Message);
-        }
+        // Act
+        var result = person.ToString();
 
-        [Fact]
-        public void Constructor_WithFirstNameNull_ThrowsArgumentException()
-        {
-            // Arrange & Act & Assert
-            var ex = Assert.Throws<ArgumentException>(() => new Person(null!, "Doe", 30));
-            Assert.Equal("First name cannot contain fewer than 3 symbols!", ex.Message);
-        }
+        // Assert
+        Assert.Equal("Anna Williams is 100 years old.", result);
+    }
 
-        [Fact]
-        public void Constructor_WithLastNameTooShort_ThrowsArgumentException()
-        {
-            // Arrange & Act & Assert
-            var ex = Assert.Throws<ArgumentException>(() => new Person("John", "Do", 30));
-            Assert.Equal("Last name cannot contain fewer than 3 symbols!", ex.Message);
-        }
+    [Fact]
+    public void FirstName_WithValidName_SetsSuccessfully()
+    {
+        // Arrange & Act
+        var person = new Person("John", "Doe", 30);
 
-        [Fact]
-        public void Constructor_WithLastNameNull_ThrowsArgumentException()
-        {
-            // Arrange & Act & Assert
-            var ex = Assert.Throws<ArgumentException>(() => new Person("John", null!, 30));
-            Assert.Equal("Last name cannot contain fewer than 3 symbols!", ex.Message);
-        }
+        // Assert
+        Assert.Equal("John", person.FirstName);
+    }
 
-        [Fact]
-        public void Constructor_WithZeroAge_ThrowsArgumentException()
-        {
-            // Arrange & Act & Assert
-            var ex = Assert.Throws<ArgumentException>(() => new Person("John", "Doe", 0));
-            Assert.Equal("Age cannot be zero or a negative integer!", ex.Message);
-        }
+    [Fact]
+    public void FirstName_WithNameLessThan3Chars_ThrowsException()
+    {
+        // Arrange & Act & Assert
+        Assert.Throws<ArgumentException>(() => new Person("Jo", "Doe", 30));
+    }
 
-        [Fact]
-        public void Constructor_WithNegativeAge_ThrowsArgumentException()
-        {
-            // Arrange & Act & Assert
-            var ex = Assert.Throws<ArgumentException>(() => new Person("John", "Doe", -5));
-            Assert.Equal("Age cannot be zero or a negative integer!", ex.Message);
-        }
+    [Fact]
+    public void FirstName_WithNullValue_ThrowsException()
+    {
+        // Arrange & Act & Assert
+        Assert.Throws<ArgumentException>(() => new Person(null, "Doe", 30));
+    }
 
-        [Fact]
-        public void Constructor_WithSalaryLessThanMinimum_ThrowsArgumentException()
-        {
-            // Arrange & Act & Assert
-            var ex = Assert.Throws<ArgumentException>(() => new Person("John", "Doe", 30, 459.99m));
-            Assert.Equal("Salary cannot be less than 460 dollar!", ex.Message);
-        }
+    [Fact]
+    public void LastName_WithValidName_SetsSuccessfully()
+    {
+        // Arrange & Act
+        var person = new Person("John", "Doe", 30);
 
-        [Fact]
-        public void Constructor_WithSalaryEqualToMinimum_Succeeds()
-        {
-            // Arrange & Act
-            var person = new Person("John", "Doe", 30, 460);
+        // Assert
+        Assert.Equal("Doe", person.LastName);
+    }
 
-            // Assert
-            Assert.Equal(460, person.Salary);
-        }
+    [Fact]
+    public void LastName_WithNameLessThan3Chars_ThrowsException()
+    {
+        // Arrange & Act & Assert
+        Assert.Throws<ArgumentException>(() => new Person("John", "Do", 30));
+    }
 
-        [Fact]
-        public void Constructor_WithSalaryGreaterThanMinimum_Succeeds()
-        {
-            // Arrange & Act
-            var person = new Person("John", "Doe", 30, 500);
+    [Fact]
+    public void LastName_WithNullValue_ThrowsException()
+    {
+        // Arrange & Act & Assert
+        Assert.Throws<ArgumentException>(() => new Person("John", null, 30));
+    }
 
-            // Assert
-            Assert.Equal(500, person.Salary);
-        }
+    [Fact]
+    public void Age_WithPositiveValue_SetsSuccessfully()
+    {
+        // Arrange & Act
+        var person = new Person("John", "Doe", 30);
+
+        // Assert
+        Assert.Equal(30, person.Age);
+    }
+
+    [Fact]
+    public void Age_WithZero_ThrowsException()
+    {
+        // Arrange & Act & Assert
+        Assert.Throws<ArgumentException>(() => new Person("John", "Doe", 0));
+    }
+
+    [Fact]
+    public void Age_WithNegativeValue_ThrowsException()
+    {
+        // Arrange & Act & Assert
+        Assert.Throws<ArgumentException>(() => new Person("John", "Doe", -5));
+    }
+
+    [Fact]
+    public void Salary_WithValidValue_SetsSuccessfully()
+    {
+        // Arrange & Act
+        var person = new Person("John", "Doe", 30, 1000);
+
+        // Assert
+        Assert.Equal(1000m, person.Salary);
+    }
+
+    [Fact]
+    public void Salary_WithDefaultValue_SetsToMinimumSalary()
+    {
+        // Arrange & Act
+        var person = new Person("John", "Doe", 30);
+
+        // Assert
+        Assert.Equal(Person.DefaultMinimumSalary, person.Salary);
+    }
+
+    [Fact]
+    public void Salary_BelowMinimumSalary_ThrowsException()
+    {
+        // Arrange & Act & Assert
+        Assert.Throws<ArgumentException>(() => new Person("John", "Doe", 30, 400));
+    }
+
+    [Fact]
+    public void Salary_EqualToMinimumSalary_SetsSuccessfully()
+    {
+        // Arrange & Act
+        var person = new Person("John", "Doe", 30, 460);
+
+        // Assert
+        Assert.Equal(460m, person.Salary);
+    }
+
+    [Fact]
+    public void IncreaseSalary_WithPositivePercentage_IncreasesCorrectly()
+    {
+        // Arrange
+        var person = new Person("John", "Doe", 30, 1000);
+
+        // Act
+        person.IncreaseSalary(10);
+
+        // Assert
+        Assert.Equal(1100m, person.Salary);
+    }
+
+    [Fact]
+    public void IncreaseSalary_WithZeroPercentage_SalaryUnchanged()
+    {
+        // Arrange
+        var person = new Person("John", "Doe", 30, 1000);
+
+        // Act
+        person.IncreaseSalary(0);
+
+        // Assert
+        Assert.Equal(1000m, person.Salary);
+    }
+
+    [Fact]
+    public void IncreaseSalary_WithHighPercentage_IncreasesCorrectly()
+    {
+        // Arrange
+        var person = new Person("John", "Doe", 30, 1000);
+
+        // Act
+        person.IncreaseSalary(50);
+
+        // Assert
+        Assert.Equal(1500m, person.Salary);
     }
 }
