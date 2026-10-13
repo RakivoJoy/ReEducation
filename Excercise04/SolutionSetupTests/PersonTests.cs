@@ -68,7 +68,7 @@
         public void Constructor_WithFirstNameNull_ThrowsArgumentException()
         {
             // Arrange & Act & Assert
-            var ex = Assert.Throws<ArgumentException>(() => new Person(null, "Doe", 30));
+            var ex = Assert.Throws<ArgumentException>(() => new Person(null!, "Doe", 30));
             Assert.Equal("First name cannot contain fewer than 3 symbols!", ex.Message);
         }
 
@@ -84,7 +84,7 @@
         public void Constructor_WithLastNameNull_ThrowsArgumentException()
         {
             // Arrange & Act & Assert
-            var ex = Assert.Throws<ArgumentException>(() => new Person("John", null, 30));
+            var ex = Assert.Throws<ArgumentException>(() => new Person("John", null!, 30));
             Assert.Equal("Last name cannot contain fewer than 3 symbols!", ex.Message);
         }
 
