@@ -88,6 +88,7 @@ public class Person
 
     public override string ToString()
     {
-        return $"{this.FirstName} {this.LastName} is {this.Age} years old. Salary: ${this.Salary.ToString("F2", CultureInfo.InvariantCulture)}";
+        // Previous format: $"{this.FirstName} {this.LastName} is {this.Age} years old. Salary: ${this.Salary.ToString("F2", CultureInfo.InvariantCulture)}";
+        return $"{this.FirstName} {this.LastName} receives {this.Salary.ToString("F2", CultureInfo.InvariantCulture)} dollars.";
     }
 }

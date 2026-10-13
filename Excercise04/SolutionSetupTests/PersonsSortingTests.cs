@@ -78,8 +78,8 @@
 
             // Assert
             Assert.Equal(2, results.Count);
-            Assert.Equal("John Doe is 30 years old. Salary: $460.00", results[0]);
-            Assert.Equal("Jane Smith is 25 years old. Salary: $460.00", results[1]);
+            Assert.Equal("John Doe receives 460.00 dollars.", results[0]);
+            Assert.Equal("Jane Smith receives 460.00 dollars.", results[1]);
         }
 
         [Fact]
@@ -100,10 +100,10 @@
 
             // Assert
             Assert.Equal(4, results.Count);
-            Assert.Equal("Alice Clark is 22 years old. Salary: $460.00", results[0]);
-            Assert.Equal("Alice Brown is 28 years old. Salary: $460.00", results[1]);
-            Assert.Equal("Bob Davis is 30 years old. Salary: $460.00", results[2]);
-            Assert.Equal("Zoe Adams is 35 years old. Salary: $460.00", results[3]);
+            Assert.Equal("Alice Clark receives 460.00 dollars.", results[0]);
+            Assert.Equal("Alice Brown receives 460.00 dollars.", results[1]);
+            Assert.Equal("Bob Davis receives 460.00 dollars.", results[2]);
+            Assert.Equal("Zoe Adams receives 460.00 dollars.", results[3]);
         }
 
         [Fact]

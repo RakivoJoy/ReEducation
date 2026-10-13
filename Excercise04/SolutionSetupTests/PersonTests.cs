@@ -13,7 +13,7 @@ namespace SolutionSetupTests
             var result = person.ToString();
 
             // Assert
-            Assert.Equal("John Doe is 30 years old. Salary: $1000.00", result);
+            Assert.Equal("John Doe receives 1000.00 dollars.", result);
         }
 
         [Fact]
@@ -26,7 +26,7 @@ namespace SolutionSetupTests
             var result = person.ToString();
 
             // Assert
-            Assert.Equal("Jane Smith is 25 years old. Salary: $1500.00", result);
+            Assert.Equal("Jane Smith receives 1500.00 dollars.", result);
         }
 
         [Fact]
@@ -39,7 +39,7 @@ namespace SolutionSetupTests
             var result = person.ToString();
 
             // Assert
-            Assert.Equal("Bob Johnson is 1 years old. Salary: $500.00", result);
+            Assert.Equal("Bob Johnson receives 500.00 dollars.", result);
         }
 
         [Fact]
@@ -52,7 +52,7 @@ namespace SolutionSetupTests
             var result = person.ToString();
 
             // Assert
-            Assert.Equal("Anna Williams is 100 years old. Salary: $2000.00", result);
+            Assert.Equal("Anna Williams receives 2000.00 dollars.", result);
         }
 
         [Fact]
