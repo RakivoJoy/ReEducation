@@ -1,4 +1,6 @@
-﻿using Xunit;
+﻿using System;
+using Xunit;
+
 namespace SolutionSetupTests
 {
     public class PersonTests
