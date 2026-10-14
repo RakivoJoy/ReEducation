@@ -1,5 +1,10 @@
+using System;
 using System.Globalization;
 
+/// <summary>
+/// Represents a person with name, age, and salary information.
+/// Validates all inputs and enforces business rules for salary calculations.
+/// </summary>
 public class Person
 {
     private string _firstName = string.Empty;
@@ -7,61 +12,55 @@ public class Person
     private int _age;
     private decimal _salary;
 
+    public const decimal DefaultMinimumSalary = 460;
+    private const int MinimumNameLength = 3;
+
+    /// <summary>Gets or sets the first name. Must be at least 3 characters.</summary>
     public string FirstName
     {
-        get { return _firstName; }
+        get => _firstName;
         set
         {
-            if (value == null || value.Length < 3)
-            {
-                throw new ArgumentException("First name cannot contain fewer than 3 symbols!");
-            }
+            ValidateName(value, nameof(FirstName));
             _firstName = value;
         }
     }
 
+    /// <summary>Gets or sets the last name. Must be at least 3 characters.</summary>
     public string LastName
     {
-        get { return _lastName; }
+        get => _lastName;
         set
         {
-            if (value == null || value.Length < 3)
-            {
-                throw new ArgumentException("Last name cannot contain fewer than 3 symbols!");
-            }
+            ValidateName(value, nameof(LastName));
             _lastName = value;
         }
     }
 
+    /// <summary>Gets or sets the age. Must be greater than 0.</summary>
     public int Age
     {
-        get { return _age; }
+        get => _age;
         set
         {
-            if (value <= 0)
-            {
-                throw new ArgumentException("Age cannot be zero or a negative integer!");
-            }
+            ValidateAge(value);
             _age = value;
         }
     }
 
+    /// <summary>Gets or sets the salary. Must be at least 460 and is rounded to 2 decimal places.</summary>
     public decimal Salary
     {
-        get { return _salary; }
+        get => _salary;
         set
         {
-            if (value < DefaultMinimumSalary)
-            {
-                throw new ArgumentException($"Salary cannot be less than {DefaultMinimumSalary} dollar!");
-            }
+            ValidateSalary(value);
             _salary = Math.Round(value, 2);
         }
     }
 
-    public const decimal DefaultMinimumSalary = 460;
-
-    public Person(string firstName, string lastName, int age, decimal salary = Person.DefaultMinimumSalary)
+    /// <summary>Initializes a new person with name, age, and salary.</summary>
+    public Person(string firstName, string lastName, int age, decimal salary = DefaultMinimumSalary)
     {
         FirstName = firstName;
         LastName = lastName;
@@ -69,26 +68,40 @@ public class Person
         Salary = salary;
     }
 
+    /// <summary>
+    /// Increases the salary by a percentage.
+    /// Persons under 30 receive half the percentage increase; those 30+ receive the full increase.
+    /// </summary>
     public void IncreaseSalary(decimal percentage)
     {
         if (percentage < 0)
-        {
             throw new ArgumentException("Percentage must always be positive!");
-        }
 
-        if(Age < 30)
-        {
-            Salary += Salary * (percentage / 200);
-        }
-        else
-        {
-            Salary += Salary * (percentage / 100);
-        }
+        // Age-based salary increase: younger workers receive half the increase as an incentive
+        decimal increaseRate = Age < 30 ? percentage / 200 : percentage / 100;
+        Salary += Salary * increaseRate;
     }
 
+    /// <summary>Returns a formatted string with the person's name and salary.</summary>
     public override string ToString()
+        => $"{FirstName} {LastName} receives {Salary.ToString("F2", CultureInfo.InvariantCulture)} dollars.";
+
+    // Validation helper methods
+    private void ValidateName(string? value, string fieldName)
     {
-        // Previous format: $"{this.FirstName} {this.LastName} is {this.Age} years old. Salary: ${this.Salary.ToString("F2", CultureInfo.InvariantCulture)}";
-        return $"{this.FirstName} {this.LastName} receives {this.Salary.ToString("F2", CultureInfo.InvariantCulture)} dollars.";
+        if (value == null || value.Length < MinimumNameLength)
+            throw new ArgumentException($"{fieldName} cannot contain fewer than {MinimumNameLength} symbols!");
+    }
+
+    private void ValidateAge(int value)
+    {
+        if (value <= 0)
+            throw new ArgumentException("Age cannot be zero or a negative integer!");
+    }
+
+    private void ValidateSalary(decimal value)
+    {
+        if (value < DefaultMinimumSalary)
+            throw new ArgumentException($"Salary cannot be less than {DefaultMinimumSalary} dollar!");
     }
 }
