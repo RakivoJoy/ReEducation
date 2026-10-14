@@ -78,7 +78,7 @@ namespace SolutionSetupTests
         public void FirstName_WithNullValue_ThrowsException()
         {
             // Arrange & Act & Assert
-            Assert.Throws<ArgumentException>(() => new Person(null, "Doe", 30));
+            Assert.Throws<ArgumentException>(() => new Person(null!, "Doe", 30));
         }
 
         [Fact]
@@ -102,7 +102,7 @@ namespace SolutionSetupTests
         public void LastName_WithNullValue_ThrowsException()
         {
             // Arrange & Act & Assert
-            Assert.Throws<ArgumentException>(() => new Person("John", null, 30));
+            Assert.Throws<ArgumentException>(() => new Person("John", null!, 30));
         }
 
         [Fact]
