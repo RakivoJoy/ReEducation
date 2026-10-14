@@ -5,46 +5,42 @@ namespace SolutionSetupTests
 {
     public class PersonSalaryTests
     {
-        [Fact]
-        public void IncreaseSalary_WithPositivePercentage_UnderAge30_IncreasesCorrectly()
+        [Theory(DisplayName = "Salary increase under age 30 calculates correctly")]
+        [InlineData(25, 1000, 10, 1050)]
+        [InlineData(25, 500, 5, 512.5)]
+        [InlineData(29, 1000, 33.33, 1166.65)]
+        [InlineData(27, 1000, 100, 1500)]
+        [InlineData(29, 1000, 40, 1200)]
+        [InlineData(25, 1000, 60, 1300)]
+        public void IncreaseSalary_UnderAge30_CalculatesCorrectly(int age, double initialSalary, double percentage, double expected)
         {
             // Arrange
-            var person = new Person("John", "Doe", 25, 1000m);
+            var person = new Person("Test", "Person", age, (decimal)initialSalary);
 
             // Act
-            person.IncreaseSalary(10);
+            person.IncreaseSalary((decimal)percentage);
 
             // Assert
-            // Age 25 (< 30): 1000 + 1000 * (10/200) = 1050
-            Assert.Equal(1050m, person.Salary);
+            Assert.Equal((decimal)expected, person.Salary);
         }
 
-        [Fact]
-        public void IncreaseSalary_WithSmallPercentage_UnderAge30_CalculatesCorrectly()
+        [Theory(DisplayName = "Salary increase at age 30 and above calculates correctly")]
+        [InlineData(35, 1000, 50, 1500)]
+        [InlineData(45, 1000, 33.333, 1333.33)]
+        [InlineData(50, 1000, 2.5, 1025)]
+        [InlineData(38, 1000, 0.01, 1000.1)]
+        [InlineData(30, 1000, 40, 1400)]
+        [InlineData(50, 1000, 60, 1600)]
+        public void IncreaseSalary_Age30AndAbove_CalculatesCorrectly(int age, double initialSalary, double percentage, double expected)
         {
             // Arrange
-            var person = new Person("Jane", "Smith", 25, 500m);
+            var person = new Person("Test", "Person", age, (decimal)initialSalary);
 
             // Act
-            person.IncreaseSalary(5);
+            person.IncreaseSalary((decimal)percentage);
 
             // Assert
-            // Age 25 (< 30): 500 + 500 * (5/200) = 512.5
-            Assert.Equal(512.5m, person.Salary);
-        }
-
-        [Fact]
-        public void IncreaseSalary_WithLargePercentage_Age30AndAbove_CalculatesCorrectly()
-        {
-            // Arrange
-            var person = new Person("Bob", "Johnson", 35, 1000m);
-
-            // Act
-            person.IncreaseSalary(50);
-
-            // Assert
-            // Age 35 (>= 30): 1000 + 1000 * (50/100) = 1000 + 500 = 1500
-            Assert.Equal(1500m, person.Salary);
+            Assert.Equal((decimal)expected, person.Salary);
         }
 
         [Fact]
@@ -88,34 +84,6 @@ namespace SolutionSetupTests
         }
 
         [Fact]
-        public void IncreaseSalary_WithSmallDecimalIncrease_UnderAge30_RoundedTo2Decimals()
-        {
-            // Arrange
-            var person = new Person("Eve", "Frank", 29, 1000m);
-
-            // Act
-            person.IncreaseSalary(33.33m);
-
-            // Assert
-            // Age 29 (< 30): 1000 + 1000 * (33.33/200) = 1166.65
-            Assert.Equal(1166.65m, person.Salary);
-        }
-
-        [Fact]
-        public void IncreaseSalary_WithFractionalResult_Age30AndAbove_RoundsTo2Decimals()
-        {
-            // Arrange
-            var person = new Person("Frank", "Garcia", 45, 1000m);
-
-            // Act
-            person.IncreaseSalary(33.333m);
-
-            // Assert
-            // Age 45 (>= 30): 1000 + 1000 * (33.333/100) = 1333.33
-            Assert.Equal(1333.33m, person.Salary);
-        }
-
-        [Fact]
         public void Salary_WhenSet_RoundedTo2Decimals()
         {
             // Arrange & Act
@@ -148,48 +116,6 @@ namespace SolutionSetupTests
         }
 
         [Fact]
-        public void IncreaseSalary_WithDecimalPercentage_Age30AndAbove_CalculatesCorrectly()
-        {
-            // Arrange
-            var person = new Person("Jack", "King", 50, 1000m);
-
-            // Act
-            person.IncreaseSalary(2.5m);
-
-            // Assert
-            // Age 50 (>= 30): 1000 + 1000 * (2.5/100) = 1025
-            Assert.Equal(1025m, person.Salary);
-        }
-
-        [Fact]
-        public void IncreaseSalary_VeryLargePercentage_UnderAge30_CalculatesCorrectly()
-        {
-            // Arrange
-            var person = new Person("Kate", "Lee", 27, 1000m);
-
-            // Act
-            person.IncreaseSalary(100);
-
-            // Assert
-            // Age 27 (< 30): 1000 + 1000 * (100/200) = 1500
-            Assert.Equal(1500m, person.Salary);
-        }
-
-        [Fact]
-        public void IncreaseSalary_MinimalPositivePercentage_Age30AndAbove_Increases()
-        {
-            // Arrange
-            var person = new Person("Leo", "Martinez", 38, 1000m);
-
-            // Act
-            person.IncreaseSalary(0.01m);
-
-            // Assert
-            // Age 38 (>= 30): 1000 + 1000 * (0.01/100) = 1000.1
-            Assert.Equal(1000.1m, person.Salary);
-        }
-
-        [Fact]
         public void IncreaseSalary_SamePercentage_DifferentAges_UnderVsAge30AndAbove()
         {
             // Arrange
@@ -205,52 +131,6 @@ namespace SolutionSetupTests
             Assert.Equal(1100m, personUnder30.Salary);
             // Age 30 (>= 30): 1000 + 1000 * (20/100) = 1200
             Assert.Equal(1200m, personAge30Plus.Salary);
-        }
-
-        [Fact]
-        public void IncreaseSalary_ExactlyAge30_ReceivesFullIncrease()
-        {
-            // Arrange
-            var person = new Person("Patricia", "Quinn", 30, 1000m);
-
-            // Act
-            person.IncreaseSalary(40);
-
-            // Assert
-            // Age 30 (>= 30): 1000 + 1000 * (40/100) = 1400
-            Assert.Equal(1400m, person.Salary);
-        }
-
-        [Fact]
-        public void IncreaseSalary_Age29_ReceivesHalfIncrease()
-        {
-            // Arrange
-            var person = new Person("Quinn", "Rodriguez", 29, 1000m);
-
-            // Act
-            person.IncreaseSalary(40);
-
-            // Assert
-            // Age 29 (< 30): 1000 + 1000 * (40/200) = 1200
-            Assert.Equal(1200m, person.Salary);
-        }
-
-        [Fact]
-        public void IncreaseSalary_CompareYoungVsOldWorker_SameInvestment()
-        {
-            // Arrange
-            var youngWorker = new Person("Tina", "Taylor", 25, 1000m);
-            var seniorWorker = new Person("Uma", "Underwood", 50, 1000m);
-
-            // Act
-            youngWorker.IncreaseSalary(60);
-            seniorWorker.IncreaseSalary(60);
-
-            // Assert
-            // Age 25 (< 30): 1000 + 1000 * (60/200) = 1300
-            Assert.Equal(1300m, youngWorker.Salary);
-            // Age 50 (>= 30): 1000 + 1000 * (60/100) = 1600
-            Assert.Equal(1600m, seniorWorker.Salary);
         }
     }
 }

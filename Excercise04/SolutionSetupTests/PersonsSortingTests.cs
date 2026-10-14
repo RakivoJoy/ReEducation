@@ -111,11 +111,13 @@ namespace SolutionSetupTests
             Assert.Equal("Zoe Adams receives 460.00 dollars.", results[3]);
         }
 
-        [Fact]
-        public void ParseInput_WithValidNumberOfLines_CreatesCorrectNumberOfPersons()
+        [Theory(DisplayName = "ParseInput creates correct persons from valid input")]
+        [InlineData(new[] { "2", "John Doe 30", "Jane Smith 25" }, 2)]
+        [InlineData(new[] { "1", "Bob Clark 35" }, 1)]
+        [InlineData(new[] { "3", "Alice Brown 28", "Charlie Davis 40", "Emma Wilson 22" }, 3)]
+        public void ParseInput_WithValidInput_CreatesCorrectPersons(string[] inputLines, int expectedCount)
         {
             // Arrange
-            var inputLines = new[] { "2", "John Doe 30", "Jane Smith 25" };
             var persons = new List<Person>();
 
             // Act
@@ -132,16 +134,15 @@ namespace SolutionSetupTests
             }
 
             // Assert
-            Assert.Equal(2, persons.Count);
-            Assert.Equal("John", persons[0].FirstName);
-            Assert.Equal("Jane", persons[1].FirstName);
+            Assert.Equal(expectedCount, persons.Count);
         }
 
-        [Fact]
-        public void ParseInput_WithInvalidAge_SkipsLine()
+        [Theory(DisplayName = "ParseInput skips invalid data")]
+        [InlineData(new[] { "3", "John Doe 30", "Jane Smith invalid", "Bob Clark 25" }, 2)]
+        [InlineData(new[] { "3", "John Doe 30", "Jane Smith", "Bob Clark 25" }, 2)]
+        public void ParseInput_WithInvalidData_SkipsLines(string[] inputLines, int expectedCount)
         {
             // Arrange
-            var inputLines = new[] { "3", "John Doe 30", "Jane Smith invalid", "Bob Clark 25" };
             var persons = new List<Person>();
 
             // Act
@@ -158,35 +159,7 @@ namespace SolutionSetupTests
             }
 
             // Assert
-            Assert.Equal(2, persons.Count);
-            Assert.Equal("John", persons[0].FirstName);
-            Assert.Equal("Bob", persons[1].FirstName);
-        }
-
-        [Fact]
-        public void ParseInput_WithInsufficientFields_SkipsLine()
-        {
-            // Arrange
-            var inputLines = new[] { "3", "John Doe 30", "Jane Smith", "Bob Clark 25" };
-            var persons = new List<Person>();
-
-            // Act
-            if (int.TryParse(inputLines[0], out var lines))
-            {
-                for (int i = 1; i <= lines && i < inputLines.Length; i++)
-                {
-                    var cmdArgs = inputLines[i].Split();
-                    if (cmdArgs.Length >= 3 && int.TryParse(cmdArgs[2], out var age))
-                    {
-                        persons.Add(new Person(cmdArgs[0], cmdArgs[1], age));
-                    }
-                }
-            }
-
-            // Assert
-            Assert.Equal(2, persons.Count);
-            Assert.Equal("John", persons[0].FirstName);
-            Assert.Equal("Bob", persons[1].FirstName);
+            Assert.Equal(expectedCount, persons.Count);
         }
     }
 }

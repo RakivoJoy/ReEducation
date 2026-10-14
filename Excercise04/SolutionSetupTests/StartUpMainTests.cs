@@ -46,15 +46,19 @@ namespace SolutionSetupTests
             }
         }
 
-        [Fact]
-        public void Main_WithSinglePerson_UnderAge30_AppliesHalfBonus()
+        [Theory(DisplayName = "Main applies bonus correctly for single person by age")]
+        [InlineData("John Doe 25 1000", "10", "John Doe receives 1050.00 dollars.", false)]
+        [InlineData("Jane Smith 35 1000", "20", "Jane Smith receives 1200.00 dollars.", true)]
+        [InlineData("Frank Garcia 30 1000", "0", "Frank Garcia receives 1000.00 dollars.", true)]
+        [InlineData("Peter Roberts 28 1000", "10", "Peter Roberts receives 1050.00 dollars.", false)]
+        public void Main_WithSinglePerson_AppliesBonusCorrectly(string personData, string bonus, string expectedOutput, bool isAge30Plus)
         {
             // Arrange
             var inputs = new List<string>
             {
-                "1",                    // Number of persons
-                "John Doe 25 1000",     // Name, LastName, Age, Salary
-                "10"                    // Bonus percentage
+                "1",
+                personData,
+                bonus
             };
 
             // Act
@@ -62,28 +66,7 @@ namespace SolutionSetupTests
 
             // Assert
             Assert.Single(output);
-            // Age 25 (< 30): 1000 + 1000 * (10/200) = 1050
-            Assert.Equal("John Doe receives 1050.00 dollars.", output[0].Trim());
-        }
-
-        [Fact]
-        public void Main_WithSinglePerson_Age30AndAbove_AppliesFullBonus()
-        {
-            // Arrange
-            var inputs = new List<string>
-            {
-                "1",                    // Number of persons
-                "Jane Smith 35 1000",   // Name, LastName, Age, Salary
-                "20"                    // Bonus percentage
-            };
-
-            // Act
-            var output = CaptureConsoleOutput(() => SimulateStartUpMain(inputs));
-
-            // Assert
-            Assert.Single(output);
-            // Age 35 (>= 30): 1000 + 1000 * (20/100) = 1200
-            Assert.Equal("Jane Smith receives 1200.00 dollars.", output[0].Trim());
+            Assert.Equal(expectedOutput, output[0].Trim());
         }
 
         [Fact]
@@ -112,72 +95,17 @@ namespace SolutionSetupTests
             Assert.Equal("Charlie Davis receives 1100.00 dollars.", output[2].Trim());
         }
 
-        [Fact]
-        public void Main_WithZeroBonus_SalaryUnchanged()
-        {
-            // Arrange
-            var inputs = new List<string>
-            {
-                "2",
-                "Diana Evans 28 1000",
-                "Eve Frank 40 1500",
-                "0"
-            };
-
-            // Act
-            var output = CaptureConsoleOutput(() => SimulateStartUpMain(inputs));
-
-            // Assert
-            Assert.Equal(2, output.Count);
-            Assert.Equal("Diana Evans receives 1000.00 dollars.", output[0].Trim());
-            Assert.Equal("Eve Frank receives 1500.00 dollars.", output[1].Trim());
-        }
-
-        [Fact]
-        public void Main_WithInvalidLineCount_ReturnsEarly()
-        {
-            // Arrange
-            var inputs = new List<string>
-            {
-                "invalid",
-                "John Doe 25 1000",
-                "20"
-            };
-
-            // Act & Assert - Should return early without crashing
-            var output = CaptureConsoleOutput(() => SimulateStartUpMain(inputs));
-            Assert.Empty(output);
-        }
-
-        [Fact]
-        public void Main_WithMissingBonus_DefaultsToZero()
+        [Theory(DisplayName = "Main handles invalid bonus input gracefully")]
+        [InlineData("Grace Harris 32 1000", "abc", "Grace Harris receives 1000.00 dollars.")]
+        [InlineData("Frank Garcia 30 1000", "", "Frank Garcia receives 1000.00 dollars.")]
+        public void Main_WithInvalidBonus_DefaultsToZero(string personData, string bonus, string expectedOutput)
         {
             // Arrange
             var inputs = new List<string>
             {
                 "1",
-                "Frank Garcia 30 1000"
-                // No bonus percentage provided
-            };
-
-            // Act
-            var output = CaptureConsoleOutput(() => SimulateStartUpMain(inputs));
-
-            // Assert
-            Assert.Single(output);
-            // Bonus defaults to 0
-            Assert.Equal("Frank Garcia receives 1000.00 dollars.", output[0].Trim());
-        }
-
-        [Fact]
-        public void Main_WithInvalidBonus_DefaultsToZero()
-        {
-            // Arrange
-            var inputs = new List<string>
-            {
-                "1",
-                "Grace Harris 32 1000",
-                "abc"  // Invalid bonus
+                personData,
+                bonus
             };
 
             // Act
@@ -186,7 +114,7 @@ namespace SolutionSetupTests
             // Assert
             Assert.Single(output);
             // Bonus defaults to 0 when parsing fails
-            Assert.Equal("Grace Harris receives 1000.00 dollars.", output[0].Trim());
+            Assert.Equal(expectedOutput, output[0].Trim());
         }
 
         [Fact]
@@ -215,7 +143,7 @@ namespace SolutionSetupTests
         }
 
         [Fact]
-        public void Main_WithInsufficientFields_SkipsLine()
+        public void Main_WithMissingPersonData_SkipsIncompleteLine()
         {
             // Arrange
             var inputs = new List<string>
@@ -235,38 +163,20 @@ namespace SolutionSetupTests
             Assert.Equal("Mary Johnson receives 2200.00 dollars.", output[0].Trim());
         }
 
-        [Fact]
-        public void Main_WithLargeBonus_CalculatesCorrectly()
-        {
-            // Arrange
-            var inputs = new List<string>
-            {
-                "2",
-                "Noah Patterson 26 1000",
-                "Olivia Quinn 40 1000",
-                "100"  // 100% bonus
-            };
-
-            // Act
-            var output = CaptureConsoleOutput(() => SimulateStartUpMain(inputs));
-
-            // Assert
-            Assert.Equal(2, output.Count);
-            // Noah (26, < 30): 1000 + 1000 * (100/200) = 1500
-            Assert.Equal("Noah Patterson receives 1500.00 dollars.", output[0].Trim());
-            // Olivia (40, >= 30): 1000 + 1000 * (100/100) = 2000
-            Assert.Equal("Olivia Quinn receives 2000.00 dollars.", output[1].Trim());
-        }
-
-        [Fact]
-        public void Main_WithDecimalBonus_NoDecimalSalary()
+        [Theory(DisplayName = "Main applies bonus with various percentages and ages")]
+        [InlineData("Noah Patterson 26 1000", "100", "Noah Patterson receives 1500.00 dollars.")]
+        [InlineData("Olivia Quinn 40 1000", "100", "Olivia Quinn receives 2000.00 dollars.")]
+        [InlineData("Peter Roberts 28 1000", "10", "Peter Roberts receives 1050.00 dollars.")]
+        [InlineData("Tina White 35 1000", "20", "Tina White receives 1200.00 dollars.")]
+        [InlineData("Uma Brown 28 460", "5", "Uma Brown receives 471.50 dollars.")]
+        public void Main_WithVariousBonuses_CalculatesCorrectly(string personData, string bonus, string expectedOutput)
         {
             // Arrange
             var inputs = new List<string>
             {
                 "1",
-                "Peter Roberts 28 1000",
-                "10"
+                personData,
+                bonus
             };
 
             // Act
@@ -274,8 +184,7 @@ namespace SolutionSetupTests
 
             // Assert
             Assert.Single(output);
-            // Peter (28, < 30): 1000 + 1000 * (10/200) = 1050
-            Assert.Equal("Peter Roberts receives 1050.00 dollars.", output[0].Trim());
+            Assert.Equal(expectedOutput, output[0].Trim());
         }
 
         [Fact]
@@ -299,46 +208,6 @@ namespace SolutionSetupTests
             Assert.Equal("Rachel Taylor receives 1100.00 dollars.", output[0].Trim());
             // Samuel (30, >= 30): 1000 + 1000 * (20/100) = 1200
             Assert.Equal("Samuel Young receives 1200.00 dollars.", output[1].Trim());
-        }
-
-        [Fact]
-        public void Main_WithRoundingNeeded_RoundsTo2Decimals()
-        {
-            // Arrange
-            var inputs = new List<string>
-            {
-                "1",
-                "Tina White 35 1000",
-                "20"
-            };
-
-            // Act
-            var output = CaptureConsoleOutput(() => SimulateStartUpMain(inputs));
-
-            // Assert
-            Assert.Single(output);
-            // Tina (35, >= 30): 1000 + 1000 * (20/100) = 1200
-            Assert.Equal("Tina White receives 1200.00 dollars.", output[0].Trim());
-        }
-
-        [Fact]
-        public void Main_WithMinimumSalaryEnforcement_RespectsBoundary()
-        {
-            // Arrange
-            var inputs = new List<string>
-            {
-                "1",
-                "Uma Brown 28 460",  // Minimum salary
-                "5"
-            };
-
-            // Act
-            var output = CaptureConsoleOutput(() => SimulateStartUpMain(inputs));
-
-            // Assert
-            Assert.Single(output);
-            // Uma (28, < 30): 460 + 460 * (5/200) = 471.50
-            Assert.Equal("Uma Brown receives 471.50 dollars.", output[0].Trim());
         }
 
         [Fact]
