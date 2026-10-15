@@ -13,7 +13,8 @@ namespace SolutionSetup.Benchmarks
     public class CollectionsBenchmarks
     {
         /// <summary>Number of elements in each collection.</summary>
-        [Params(100, 10_000, 100_000)]
+        [Params(100, 10_000)]
+        //[Params(100_000)]
         public int N;
 
         private List<Person> _source = [];
