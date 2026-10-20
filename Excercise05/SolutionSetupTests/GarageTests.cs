@@ -177,5 +177,53 @@ namespace SolutionSetupTests
 
             Assert.Equal(2, results.Count);
         }
+
+        [Fact]
+        public void ListVehicleCountByType_CountsMixedTypes()
+        {
+            var garage = new Garage(3);
+            garage.AddVehicle(CreateCar("ABC123"));
+            garage.AddVehicle(new Truck("DEF456", "Blue", 6, 12000));
+            garage.AddVehicle(new Bus("GHI789", "Yellow", 6, 50));
+
+            var counts = garage.ListVehicleCountByType();
+
+            Assert.Equal(1, counts[VehicleType.Car]);
+            Assert.Equal(1, counts[VehicleType.Truck]);
+            Assert.Equal(1, counts[VehicleType.Bus]);
+        }
+
+        [Fact]
+        public void SearchByProperties_FiltersByType()
+        {
+            var garage = new Garage(3);
+            garage.AddVehicle(CreateCar("ABC123"));
+            garage.AddVehicle(new Truck("DEF456", "Blue", 6, 12000));
+            garage.AddVehicle(new Truck("GHI789", "Red", 6, 8000));
+
+            var results = garage.SearchByProperties(new SearchCriteria { Type = VehicleType.Truck });
+
+            Assert.Equal(2, results.Count);
+            Assert.All(results, vehicle => Assert.Equal(VehicleType.Truck, vehicle.Type));
+        }
+
+        [Fact]
+        public void SearchByProperties_CombinesColorTypeAndWheels()
+        {
+            var garage = new Garage(3);
+            garage.AddVehicle(new Motorcycle("ABC123", "Pink", 3, 600));
+            garage.AddVehicle(new Motorcycle("DEF456", "Pink", 2, 600));
+            garage.AddVehicle(CreateCar("GHI789", "Pink"));
+
+            var results = garage.SearchByProperties(new SearchCriteria
+            {
+                Color = "Pink",
+                Type = VehicleType.Motorcycle,
+                NumberOfWheels = 3
+            });
+
+            Assert.Single(results);
+            Assert.Equal("ABC123", results[0].RegistrationNumber);
+        }
     }
 }

@@ -6,6 +6,7 @@ namespace SolutionSetup.Vehicles
         Airplane,
         Car,
         Bus,
-        Boat
+        Boat,
+        Truck
     }
 }
