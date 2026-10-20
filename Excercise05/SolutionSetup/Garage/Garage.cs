@@ -49,6 +49,24 @@ namespace SolutionSetup
             return OperationResult.Ok($"Vehicle {registrationNumber} removed.");
         }
 
+        public OperationResult Populate(IEnumerable<Vehicle> vehicles)
+        {
+            ArgumentNullException.ThrowIfNull(vehicles);
+
+            var vehicleList = vehicles.ToList();
+            int parked = 0;
+            foreach (Vehicle vehicle in vehicleList)
+            {
+                if (AddVehicle(vehicle).Success)
+                {
+                    parked++;
+                }
+            }
+
+            string message = $"Parked {parked} of {vehicleList.Count} vehicles.";
+            return parked == vehicleList.Count ? OperationResult.Ok(message) : OperationResult.Fail(message);
+        }
+
         public List<Vehicle> ListAllVehicles() => _vehicles.OfType<Vehicle>().ToList();
 
         public Dictionary<VehicleType, int> ListVehicleCountByType() =>
