@@ -2,7 +2,7 @@ using SolutionSetup.Vehicles;
 
 namespace SolutionSetup.UI
 {
-    public class ConsoleUI
+    public partial class ConsoleUI
     {
         private readonly TextReader _input;
         private readonly TextWriter _output;
@@ -297,66 +297,5 @@ namespace SolutionSetup.UI
             _output.WriteLine(vehicle.ToString());
         }
 
-        internal void SearchVehicles()
-        {
-            if (!TryGetGarage(out Garage garage))
-            {
-                return;
-            }
-
-            _output.WriteLine("Enter registration number (leave blank to skip):");
-            string registrationNumber = ReadLineOrEmpty();
-
-            _output.WriteLine("Enter color (leave blank to skip):");
-            string color = ReadLineOrEmpty();
-
-            _output.WriteLine("Enter number of wheels (leave blank to skip):");
-            string wheelsLine = ReadLineOrEmpty();
-            int? numberOfWheels = null;
-            if (!string.IsNullOrWhiteSpace(wheelsLine))
-            {
-                if (!int.TryParse(wheelsLine, out int parsedWheels))
-                {
-                    _output.WriteLine($"Invalid number of wheels '{wheelsLine}'. Please enter a whole number.");
-                    return;
-                }
-
-                numberOfWheels = parsedWheels;
-            }
-
-            _output.WriteLine("Enter vehicle type (leave blank to skip): Motorcycle, Airplane, Car, Bus, Boat, Truck");
-            string typeLine = ReadLineOrEmpty();
-            VehicleType? type = null;
-            if (!string.IsNullOrWhiteSpace(typeLine))
-            {
-                if (!Enum.TryParse(typeLine, ignoreCase: true, out VehicleType parsedType))
-                {
-                    _output.WriteLine($"Invalid vehicle type '{typeLine}'.");
-                    return;
-                }
-
-                type = parsedType;
-            }
-
-            var criteria = new SearchCriteria
-            {
-                RegistrationNumber = string.IsNullOrWhiteSpace(registrationNumber) ? null : registrationNumber,
-                Color = string.IsNullOrWhiteSpace(color) ? null : color,
-                NumberOfWheels = numberOfWheels,
-                Type = type
-            };
-
-            List<Vehicle> results = garage.SearchByProperties(criteria);
-            if (results.Count == 0)
-            {
-                _output.WriteLine("No vehicles matched the given criteria.");
-                return;
-            }
-
-            foreach (Vehicle vehicle in results)
-            {
-                _output.WriteLine(vehicle.ToString());
             }
         }
-    }
-}
