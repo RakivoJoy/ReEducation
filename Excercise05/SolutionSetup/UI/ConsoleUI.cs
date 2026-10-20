@@ -1,35 +1,248 @@
+using SolutionSetup.Vehicles;
+
 namespace SolutionSetup.UI
 {
     public class ConsoleUI
     {
-        public void Run()
+        private readonly TextReader _input;
+        private readonly TextWriter _output;
+        private Garage? _garage;
+
+        public ConsoleUI()
+            : this(Console.In, Console.Out)
         {
-            Console.WriteLine("Garage 1.0");
-            Console.WriteLine("1. Create garage");
-            Console.WriteLine("2. Populate garage with sample vehicles");
-            Console.WriteLine("3. Park vehicle");
-            Console.WriteLine("4. Remove vehicle");
-            Console.WriteLine("5. List all vehicles");
-            Console.WriteLine("6. List vehicle count by type");
-            Console.WriteLine("7. Find vehicle by registration number");
-            Console.WriteLine("8. Search vehicles by properties");
-            Console.WriteLine("0. Exit");
         }
 
-        private void CreateGarage() => throw new NotImplementedException();
+        internal ConsoleUI(TextReader input, TextWriter output)
+        {
+            _input = input;
+            _output = output;
+        }
 
-        private void PopulateGarage() => throw new NotImplementedException();
+        public void Run()
+        {
+            bool exit = false;
+            while (!exit)
+            {
+                PrintMenu();
+                string choice = ReadLineOrEmpty();
 
-        private void ParkVehicle() => throw new NotImplementedException();
+                try
+                {
+                    switch (choice)
+                    {
+                        case "1":
+                            CreateGarage();
+                            break;
+                        case "2":
+                            PopulateGarage();
+                            break;
+                        case "3":
+                            ParkVehicle();
+                            break;
+                        case "4":
+                            RemoveVehicle();
+                            break;
+                        case "5":
+                            ListVehicles();
+                            break;
+                        case "6":
+                            ListVehicleCounts();
+                            break;
+                        case "7":
+                            FindVehicle();
+                            break;
+                        case "8":
+                            SearchVehicles();
+                            break;
+                        case "0":
+                            exit = true;
+                            break;
+                        default:
+                            _output.WriteLine("Invalid choice. Please select a valid menu option.");
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _output.WriteLine($"An unexpected error occurred: {ex.Message}");
+                }
+            }
+        }
 
-        private void RemoveVehicle() => throw new NotImplementedException();
+        private void PrintMenu()
+        {
+            _output.WriteLine("Garage 1.0");
+            _output.WriteLine("1. Create garage");
+            _output.WriteLine("2. Populate garage with sample vehicles");
+            _output.WriteLine("3. Park vehicle");
+            _output.WriteLine("4. Remove vehicle");
+            _output.WriteLine("5. List all vehicles");
+            _output.WriteLine("6. List vehicle count by type");
+            _output.WriteLine("7. Find vehicle by registration number");
+            _output.WriteLine("8. Search vehicles by properties");
+            _output.WriteLine("0. Exit");
+        }
 
-        private void ListVehicles() => throw new NotImplementedException();
+        private string ReadLineOrEmpty() => _input.ReadLine() ?? string.Empty;
 
-        private void ListVehicleCounts() => throw new NotImplementedException();
+        private bool TryGetGarage(out Garage garage)
+        {
+            if (_garage is null)
+            {
+                _output.WriteLine("No garage has been created yet. Please create a garage first.");
+                garage = null!;
+                return false;
+            }
 
-        private void FindVehicle() => throw new NotImplementedException();
+            garage = _garage;
+            return true;
+        }
 
-        private void SearchVehicles() => throw new NotImplementedException();
+        internal void CreateGarage()
+        {
+            _output.WriteLine("Enter garage capacity (positive whole number):");
+            string line = ReadLineOrEmpty();
+
+            if (!int.TryParse(line, out int capacity))
+            {
+                _output.WriteLine($"Invalid capacity '{line}'. Please enter a positive whole number.");
+                return;
+            }
+
+            try
+            {
+                _garage = new Garage(capacity);
+                _output.WriteLine($"Garage created with capacity {capacity}.");
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                _output.WriteLine($"Could not create garage: {ex.Message}");
+            }
+        }
+
+        internal void PopulateGarage()
+        {
+            if (!TryGetGarage(out Garage garage))
+            {
+                return;
+            }
+
+            OperationResult result = garage.Populate(SampleData.CreateSampleVehicles());
+            _output.WriteLine(result.Message);
+        }
+
+        internal void ParkVehicle()
+        {
+            if (!TryGetGarage(out Garage garage))
+            {
+                return;
+            }
+
+            _output.WriteLine("Select vehicle type:");
+            _output.WriteLine("1. Motorcycle");
+            _output.WriteLine("2. Airplane");
+            _output.WriteLine("3. Car");
+            _output.WriteLine("4. Bus");
+            _output.WriteLine("5. Boat");
+            _output.WriteLine("6. Truck");
+            string typeChoice = ReadLineOrEmpty();
+
+            _output.WriteLine("Enter registration number:");
+            string registrationNumber = ReadLineOrEmpty();
+
+            _output.WriteLine("Enter color:");
+            string color = ReadLineOrEmpty();
+
+            _output.WriteLine("Enter number of wheels:");
+            if (!int.TryParse(ReadLineOrEmpty(), out int numberOfWheels))
+            {
+                _output.WriteLine("Invalid number of wheels. Please enter a whole number.");
+                return;
+            }
+
+            try
+            {
+                Vehicle vehicle = typeChoice switch
+                {
+                    "1" => new Motorcycle(registrationNumber, color, numberOfWheels, ReadIntPrompt("Enter cylinder volume (cc):")),
+                    "2" => new Airplane(registrationNumber, color, numberOfWheels, ReadIntPrompt("Enter number of engines:")),
+                    "3" => new Car(registrationNumber, color, numberOfWheels, ReadFuelTypePrompt()),
+                    "4" => new Bus(registrationNumber, color, numberOfWheels, ReadIntPrompt("Enter number of seats:")),
+                    "5" => new Boat(registrationNumber, color, numberOfWheels, ReadDoublePrompt("Enter length (m):")),
+                    "6" => new Truck(registrationNumber, color, numberOfWheels, ReadIntPrompt("Enter load capacity (kg):")),
+                    _ => throw new FormatException($"'{typeChoice}' is not a valid vehicle type option.")
+                };
+
+                OperationResult result = garage.AddVehicle(vehicle);
+                _output.WriteLine(result.Message);
+            }
+            catch (FormatException ex)
+            {
+                _output.WriteLine($"Invalid input: {ex.Message}");
+            }
+            catch (ArgumentException ex)
+            {
+                _output.WriteLine($"Could not park vehicle: {ex.Message}");
+            }
+        }
+
+        private int ReadIntPrompt(string prompt)
+        {
+            _output.WriteLine(prompt);
+            string line = ReadLineOrEmpty();
+            if (!int.TryParse(line, out int value))
+            {
+                throw new FormatException($"'{line}' is not a valid whole number.");
+            }
+
+            return value;
+        }
+
+        private double ReadDoublePrompt(string prompt)
+        {
+            _output.WriteLine(prompt);
+            string line = ReadLineOrEmpty();
+            if (!double.TryParse(line, out double value))
+            {
+                throw new FormatException($"'{line}' is not a valid number.");
+            }
+
+            return value;
+        }
+
+        private FuelType ReadFuelTypePrompt()
+        {
+            _output.WriteLine("Enter fuel type (Gasoline/Diesel):");
+            string line = ReadLineOrEmpty();
+            if (!Enum.TryParse(line, ignoreCase: true, out FuelType fuelType))
+            {
+                throw new FormatException($"'{line}' is not a valid fuel type.");
+            }
+
+            return fuelType;
+        }
+
+        internal void RemoveVehicle()
+        {
+            if (!TryGetGarage(out Garage garage))
+            {
+                return;
+            }
+
+            _output.WriteLine("Enter registration number to remove:");
+            string registrationNumber = ReadLineOrEmpty();
+
+            OperationResult result = garage.RemoveVehicleByRegistration(registrationNumber);
+            _output.WriteLine(result.Message);
+        }
+
+        internal void ListVehicles() => throw new NotImplementedException();
+
+        internal void ListVehicleCounts() => throw new NotImplementedException();
+
+        internal void FindVehicle() => throw new NotImplementedException();
+
+        internal void SearchVehicles() => throw new NotImplementedException();
     }
 }
