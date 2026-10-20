@@ -1,4 +1,6 @@
 using SolutionSetup.Vehicles;
+using System;
+using System.IO;
 
 namespace SolutionSetup.UI
 {
@@ -297,8 +299,8 @@ namespace SolutionSetup.UI
                 return;
             }
 
-            List<Vehicle> vehicles = garage.ListAllVehicles();
-            if (vehicles.Count == 0)
+            Vehicle[] vehicles = garage.ListAllVehicles();
+            if (vehicles.Length == 0)
             {
                 _output.WriteLine("No vehicles are parked in the garage.");
                 return;
@@ -320,16 +322,25 @@ namespace SolutionSetup.UI
                 return;
             }
 
-            Dictionary<VehicleType, int> counts = garage.ListVehicleCountByType();
-            if (counts.Count == 0)
+            int[] counts = garage.ListVehicleCountByType();
+            int total = 0;
+            for (int i = 0; i < counts.Length; i++)
+            {
+                total += counts[i];
+            }
+
+            if (total == 0)
             {
                 _output.WriteLine("No vehicles are parked in the garage.");
                 return;
             }
 
-            foreach (KeyValuePair<VehicleType, int> count in counts)
+            for (int i = 0; i < counts.Length; i++)
             {
-                _output.WriteLine($"{count.Key}: {count.Value}");
+                if (counts[i] > 0)
+                {
+                    _output.WriteLine($"{(VehicleType)i}: {counts[i]}");
+                }
             }
         }
 

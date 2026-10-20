@@ -48,8 +48,8 @@ namespace SolutionSetupTests
 
             var counts = garage.ListVehicleCountByType();
 
-            Assert.Equal(2, counts[VehicleType.Car]);
-            Assert.False(counts.ContainsKey(VehicleType.Bus));
+            Assert.Equal(2, counts[(int)VehicleType.Car]);
+            Assert.Equal(0, counts[(int)VehicleType.Bus]);
         }
 
         [Fact]
@@ -62,9 +62,9 @@ namespace SolutionSetupTests
 
             var counts = garage.ListVehicleCountByType();
 
-            Assert.Equal(1, counts[VehicleType.Car]);
-            Assert.Equal(1, counts[VehicleType.Truck]);
-            Assert.Equal(1, counts[VehicleType.Bus]);
+            Assert.Equal(1, counts[(int)VehicleType.Car]);
+            Assert.Equal(1, counts[(int)VehicleType.Truck]);
+            Assert.Equal(1, counts[(int)VehicleType.Bus]);
         }
     }
 }

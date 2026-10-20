@@ -1,4 +1,5 @@
 using SolutionSetup.Vehicles;
+using System;
 
 namespace SolutionSetup
 {
@@ -49,30 +50,52 @@ namespace SolutionSetup
             return OperationResult.Ok($"Vehicle {registrationNumber} removed.");
         }
 
-        public OperationResult Populate(IEnumerable<Vehicle> vehicles)
+        public OperationResult Populate(Vehicle[] vehicles)
         {
             ArgumentNullException.ThrowIfNull(vehicles);
 
-            var vehicleList = vehicles.ToList();
             int parked = 0;
-            foreach (Vehicle vehicle in vehicleList)
+            for (int i = 0; i < vehicles.Length; i++)
             {
-                if (AddVehicle(vehicle).Success)
+                if (AddVehicle(vehicles[i]).Success)
                 {
                     parked++;
                 }
             }
 
-            string message = $"Parked {parked} of {vehicleList.Count} vehicles.";
-            return parked == vehicleList.Count ? OperationResult.Ok(message) : OperationResult.Fail(message);
+            string message = $"Parked {parked} of {vehicles.Length} vehicles.";
+            return parked == vehicles.Length ? OperationResult.Ok(message) : OperationResult.Fail(message);
         }
 
-        public List<Vehicle> ListAllVehicles() => _vehicles.OfType<Vehicle>().ToList();
+        public Vehicle[] ListAllVehicles()
+        {
+            Vehicle[] result = new Vehicle[CountParked()];
+            int next = 0;
+            for (int i = 0; i < _vehicles.Length; i++)
+            {
+                if (_vehicles[i] is { } vehicle)
+                {
+                    result[next++] = vehicle;
+                }
+            }
 
-        public Dictionary<VehicleType, int> ListVehicleCountByType() =>
-            ListAllVehicles()
-                .GroupBy(vehicle => vehicle.Type)
-                .ToDictionary(group => group.Key, group => group.Count());
+            return result;
+        }
+
+        // The returned array is indexed by (int)VehicleType.
+        public int[] ListVehicleCountByType()
+        {
+            int[] counts = new int[Enum.GetNames(typeof(VehicleType)).Length];
+            for (int i = 0; i < _vehicles.Length; i++)
+            {
+                if (_vehicles[i] is { } vehicle)
+                {
+                    counts[(int)vehicle.Type]++;
+                }
+            }
+
+            return counts;
+        }
 
         public Vehicle? FindByRegistration(string registrationNumber)
         {
@@ -80,17 +103,42 @@ namespace SolutionSetup
             return index < 0 ? null : _vehicles[index];
         }
 
-        public List<Vehicle> SearchByProperties(SearchCriteria criteria)
+        public Vehicle[] SearchByProperties(SearchCriteria criteria)
         {
             ArgumentNullException.ThrowIfNull(criteria);
 
-            return ListAllVehicles()
-                .Where(vehicle =>
-                    (criteria.RegistrationNumber is null || string.Equals(vehicle.RegistrationNumber, criteria.RegistrationNumber, StringComparison.OrdinalIgnoreCase)) &&
+            Vehicle[] all = ListAllVehicles();
+            Vehicle[] matches = new Vehicle[all.Length];
+            int count = 0;
+            for (int i = 0; i < all.Length; i++)
+            {
+                Vehicle vehicle = all[i];
+                if ((criteria.RegistrationNumber is null || string.Equals(vehicle.RegistrationNumber, criteria.RegistrationNumber, StringComparison.OrdinalIgnoreCase)) &&
                     (criteria.Color is null || string.Equals(vehicle.Color, criteria.Color, StringComparison.OrdinalIgnoreCase)) &&
                     (criteria.NumberOfWheels is null || vehicle.NumberOfWheels == criteria.NumberOfWheels) &&
                     (criteria.Type is null || vehicle.Type == criteria.Type))
-                .ToList();
+                {
+                    matches[count++] = vehicle;
+                }
+            }
+
+            Vehicle[] result = new Vehicle[count];
+            Array.Copy(matches, result, count);
+            return result;
+        }
+
+        private int CountParked()
+        {
+            int count = 0;
+            for (int i = 0; i < _vehicles.Length; i++)
+            {
+                if (_vehicles[i] is not null)
+                {
+                    count++;
+                }
+            }
+
+            return count;
         }
 
         private int FindIndex(string registrationNumber)

@@ -1,3 +1,5 @@
+using System;
+
 namespace SolutionSetup.Vehicles
 {
     public abstract class Vehicle
