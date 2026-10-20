@@ -84,8 +84,21 @@ namespace SolutionSetup.UI
                             break;
                     }
                 }
+                catch (IOException)
+                {
+                    // The input or output stream failed (for example a closed console or redirected pipe).
+                    // Writing an error message would likely fail too, so stop the menu loop instead.
+                    exit = true;
+                }
+                catch (ObjectDisposedException)
+                {
+                    // The input or output stream was disposed while the menu was running.
+                    // It can no longer be used, so stop the menu loop.
+                    exit = true;
+                }
                 catch (Exception ex)
                 {
+                    // Last-resort safety net so an unanticipated error does not crash the application.
                     _output.WriteLine($"An unexpected error occurred: {ex.Message}");
                 }
             }
@@ -265,7 +278,8 @@ namespace SolutionSetup.UI
         {
             _output.WriteLine("Enter fuel type (Gasoline/Diesel):");
             string line = ReadLineOrEmpty();
-            if (!Enum.TryParse(line, ignoreCase: true, out FuelType fuelType))
+            if (!Enum.TryParse(line, ignoreCase: true, out FuelType fuelType) ||
+                !Enum.IsDefined(typeof(FuelType), fuelType))
             {
                 throw new FormatException($"'{line}' is not a valid fuel type.");
             }
