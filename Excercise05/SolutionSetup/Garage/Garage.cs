@@ -18,16 +18,75 @@ namespace SolutionSetup
             _vehicles = new Vehicle?[capacity];
         }
 
-        public bool AddVehicle(Vehicle vehicle) => throw new NotImplementedException();
+        public bool AddVehicle(Vehicle vehicle)
+        {
+            ArgumentNullException.ThrowIfNull(vehicle);
 
-        public bool RemoveVehicleByRegistration(string registrationNumber) => throw new NotImplementedException();
+            if (FindByRegistration(vehicle.RegistrationNumber) is not null)
+            {
+                return false;
+            }
 
-        public IEnumerable<Vehicle> ListAllVehicles() => throw new NotImplementedException();
+            int index = Array.IndexOf(_vehicles, null);
+            if (index < 0)
+            {
+                return false;
+            }
 
-        public Dictionary<VehicleType, int> ListVehicleCountByType() => throw new NotImplementedException();
+            _vehicles[index] = vehicle;
+            return true;
+        }
 
-        public Vehicle? FindByRegistration(string registrationNumber) => throw new NotImplementedException();
+        public bool RemoveVehicleByRegistration(string registrationNumber)
+        {
+            int index = FindIndex(registrationNumber);
+            if (index < 0)
+            {
+                return false;
+            }
 
-        public IEnumerable<Vehicle> SearchByProperties(SearchCriteria criteria) => throw new NotImplementedException();
+            _vehicles[index] = null;
+            return true;
+        }
+
+        public List<Vehicle> ListAllVehicles() => _vehicles.OfType<Vehicle>().ToList();
+
+        public Dictionary<VehicleType, int> ListVehicleCountByType() =>
+            ListAllVehicles()
+                .GroupBy(vehicle => vehicle.Type)
+                .ToDictionary(group => group.Key, group => group.Count());
+
+        public Vehicle? FindByRegistration(string registrationNumber)
+        {
+            int index = FindIndex(registrationNumber);
+            return index < 0 ? null : _vehicles[index];
+        }
+
+        public List<Vehicle> SearchByProperties(SearchCriteria criteria)
+        {
+            ArgumentNullException.ThrowIfNull(criteria);
+
+            return ListAllVehicles()
+                .Where(vehicle =>
+                    (criteria.RegistrationNumber is null || string.Equals(vehicle.RegistrationNumber, criteria.RegistrationNumber, StringComparison.OrdinalIgnoreCase)) &&
+                    (criteria.Color is null || string.Equals(vehicle.Color, criteria.Color, StringComparison.OrdinalIgnoreCase)) &&
+                    (criteria.NumberOfWheels is null || vehicle.NumberOfWheels == criteria.NumberOfWheels) &&
+                    (criteria.Type is null || vehicle.Type == criteria.Type))
+                .ToList();
+        }
+
+        private int FindIndex(string registrationNumber)
+        {
+            for (int i = 0; i < _vehicles.Length; i++)
+            {
+                if (_vehicles[i] is { } vehicle &&
+                    string.Equals(vehicle.RegistrationNumber, registrationNumber, StringComparison.OrdinalIgnoreCase))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
     }
 }
