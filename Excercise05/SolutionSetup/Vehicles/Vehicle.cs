@@ -18,6 +18,12 @@ namespace SolutionSetup.Vehicles
             NumberOfWheels = numberOfWheels;
         }
 
-        public override string ToString() => GetType().Name;
+        protected virtual string Details => string.Empty;
+
+        public override string ToString()
+        {
+            string summary = $"{Type} {RegistrationNumber}, {Color}, {NumberOfWheels} wheels";
+            return string.IsNullOrEmpty(Details) ? summary : $"{summary}, {Details}";
+        }
     }
 }

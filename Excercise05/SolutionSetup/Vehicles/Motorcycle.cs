@@ -6,6 +6,8 @@ namespace SolutionSetup.Vehicles
 
         public override VehicleType Type => VehicleType.Motorcycle;
 
+        protected override string Details => $"Cylinder volume: {CylinderVolume} cc";
+
         public Motorcycle(string registrationNumber, string color, int numberOfWheels, int cylinderVolume)
             : base(registrationNumber, color, numberOfWheels)
         {

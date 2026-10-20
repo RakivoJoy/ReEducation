@@ -6,6 +6,8 @@ namespace SolutionSetup.Vehicles
 
         public override VehicleType Type => VehicleType.Car;
 
+        protected override string Details => $"Fuel: {FuelType}";
+
         public Car(string registrationNumber, string color, int numberOfWheels, FuelType fuelType)
             : base(registrationNumber, color, numberOfWheels)
         {

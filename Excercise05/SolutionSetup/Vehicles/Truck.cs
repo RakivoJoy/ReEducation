@@ -6,6 +6,8 @@ namespace SolutionSetup.Vehicles
 
         public override VehicleType Type => VehicleType.Truck;
 
+        protected override string Details => $"Load: {LoadCapacity} kg";
+
         public Truck(string registrationNumber, string color, int numberOfWheels, int loadCapacity)
             : base(registrationNumber, color, numberOfWheels)
         {

@@ -6,6 +6,8 @@ namespace SolutionSetup.Vehicles
 
         public override VehicleType Type => VehicleType.Airplane;
 
+        protected override string Details => $"Engines: {NumberOfEngines}";
+
         public Airplane(string registrationNumber, string color, int numberOfWheels, int numberOfEngines)
             : base(registrationNumber, color, numberOfWheels)
         {
