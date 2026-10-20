@@ -9,6 +9,10 @@ namespace SolutionSetup.Vehicles
 
         protected Vehicle(string registrationNumber, string color, int numberOfWheels)
         {
+            ArgumentException.ThrowIfNullOrWhiteSpace(registrationNumber);
+            ArgumentException.ThrowIfNullOrWhiteSpace(color);
+            ArgumentOutOfRangeException.ThrowIfNegative(numberOfWheels);
+
             RegistrationNumber = registrationNumber;
             Color = color;
             NumberOfWheels = numberOfWheels;
