@@ -88,7 +88,8 @@ namespace SolutionSetup.UI
                 return true;
             }
 
-            if (!Enum.TryParse(typeLine, ignoreCase: true, out VehicleType parsedType))
+            if (!Enum.TryParse(typeLine, ignoreCase: true, out VehicleType parsedType) ||
+                !Enum.IsDefined(typeof(VehicleType), parsedType))
             {
                 _output.WriteLine($"Invalid vehicle type '{typeLine}'.");
                 return false;
