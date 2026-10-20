@@ -1,10 +1,12 @@
-﻿namespace SolutionSetup
+﻿using SolutionSetup.UI;
+
+namespace SolutionSetup
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            new ConsoleUI().Run();
         }
     }
 }
