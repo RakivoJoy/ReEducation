@@ -18,35 +18,35 @@ namespace SolutionSetup
             _vehicles = new Vehicle?[capacity];
         }
 
-        public bool AddVehicle(Vehicle vehicle)
+        public OperationResult AddVehicle(Vehicle vehicle)
         {
             ArgumentNullException.ThrowIfNull(vehicle);
 
             if (FindByRegistration(vehicle.RegistrationNumber) is not null)
             {
-                return false;
+                return OperationResult.Fail($"A vehicle with registration number {vehicle.RegistrationNumber} is already parked.");
             }
 
             int index = Array.IndexOf(_vehicles, null);
             if (index < 0)
             {
-                return false;
+                return OperationResult.Fail("The garage is full.");
             }
 
             _vehicles[index] = vehicle;
-            return true;
+            return OperationResult.Ok($"Vehicle {vehicle.RegistrationNumber} parked.");
         }
 
-        public bool RemoveVehicleByRegistration(string registrationNumber)
+        public OperationResult RemoveVehicleByRegistration(string registrationNumber)
         {
             int index = FindIndex(registrationNumber);
             if (index < 0)
             {
-                return false;
+                return OperationResult.Fail($"No vehicle with registration number {registrationNumber} was found.");
             }
 
             _vehicles[index] = null;
-            return true;
+            return OperationResult.Ok($"Vehicle {registrationNumber} removed.");
         }
 
         public List<Vehicle> ListAllVehicles() => _vehicles.OfType<Vehicle>().ToList();
