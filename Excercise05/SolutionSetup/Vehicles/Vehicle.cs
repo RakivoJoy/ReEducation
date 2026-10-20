@@ -4,7 +4,7 @@ namespace SolutionSetup.Vehicles
 {
     public abstract class Vehicle
     {
-        public string RegistrationNumber { get; set; } = string.Empty;
+        public string RegistrationNumber { get; }
         public string Color { get; set; } = string.Empty;
         public int NumberOfWheels { get; set; }
         public abstract VehicleType Type { get; }
@@ -15,7 +15,7 @@ namespace SolutionSetup.Vehicles
             ArgumentException.ThrowIfNullOrWhiteSpace(color);
             ArgumentOutOfRangeException.ThrowIfNegative(numberOfWheels);
 
-            RegistrationNumber = registrationNumber;
+            RegistrationNumber = registrationNumber.Trim();
             Color = color;
             NumberOfWheels = numberOfWheels;
         }

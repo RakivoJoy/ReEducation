@@ -143,10 +143,11 @@ namespace SolutionSetup
 
         private int FindIndex(string registrationNumber)
         {
+            string? trimmed = registrationNumber?.Trim();
             for (int i = 0; i < _vehicles.Length; i++)
             {
                 if (_vehicles[i] is { } vehicle &&
-                    string.Equals(vehicle.RegistrationNumber, registrationNumber, StringComparison.OrdinalIgnoreCase))
+                    string.Equals(vehicle.RegistrationNumber, trimmed, StringComparison.OrdinalIgnoreCase))
                 {
                     return i;
                 }

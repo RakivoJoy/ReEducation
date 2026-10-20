@@ -46,7 +46,7 @@ namespace SolutionSetup.UI
 
             criteria = new SearchCriteria
             {
-                RegistrationNumber = string.IsNullOrWhiteSpace(registrationNumber) ? null : registrationNumber,
+                RegistrationNumber = string.IsNullOrWhiteSpace(registrationNumber) ? null : registrationNumber.Trim(),
                 Color = string.IsNullOrWhiteSpace(color) ? null : color,
                 NumberOfWheels = numberOfWheels,
                 Type = type

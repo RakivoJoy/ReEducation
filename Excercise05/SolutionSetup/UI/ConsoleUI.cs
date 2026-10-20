@@ -1,5 +1,6 @@
 using SolutionSetup.Vehicles;
 using System;
+using System.Globalization;
 using System.IO;
 
 namespace SolutionSetup.UI
@@ -249,7 +250,7 @@ namespace SolutionSetup.UI
         {
             _output.WriteLine(prompt);
             string line = ReadLineOrEmpty();
-            if (!double.TryParse(line, out double value))
+            if (!double.TryParse(line, NumberStyles.Float, CultureInfo.InvariantCulture, out double value))
             {
                 throw new FormatException($"'{line}' is not a valid number.");
             }
