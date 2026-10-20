@@ -4,6 +4,9 @@ namespace SolutionSetup.UI
 {
     public partial class ConsoleUI
     {
+        /// <summary>
+        /// Menu option 8. Reads optional search filters and prints the vehicles that match all of them.
+        /// </summary>
         internal void SearchVehicles()
         {
             if (!TryGetGarage(out Garage garage))
