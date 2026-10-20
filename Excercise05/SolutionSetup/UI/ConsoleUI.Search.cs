@@ -1,6 +1,5 @@
 using SolutionSetup.Vehicles;
 using System;
-using System.Collections.Generic;
 
 namespace SolutionSetup.UI
 {
