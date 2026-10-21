@@ -109,7 +109,7 @@ namespace SolutionSetup.UI
         /// </summary>
         private void PrintMenu()
         {
-            _output.WriteLine("Garage 1.0");
+            _output.WriteLine("Welcome to your Garage 1.0");
             _output.WriteLine("1. Create garage");
             _output.WriteLine("2. Populate garage with sample vehicles");
             _output.WriteLine("3. Park vehicle");
