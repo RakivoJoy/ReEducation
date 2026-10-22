@@ -1,21 +1,21 @@
 using SolutionSetup.Vehicles;
 using System;
+using System.Collections.Generic;
 
 namespace SolutionSetup
 {
     /// <summary>
-    /// A garage that parks vehicles in a fixed number of spaces. Vehicles are stored in a private array
-    /// where a null element is a free space. Registration numbers are unique and compared ignoring case.
+    /// A garage that parks vehicles in a fixed number of spaces. Parked vehicles are stored in a list
+    /// whose size never exceeds the capacity. Registration numbers are unique and compared ignoring case.
     /// </summary>
     public class Garage
     {
-        // One element per parking space; null means the space is free.
-        private readonly Vehicle?[] _vehicles;
+        private readonly List<Vehicle> _vehicles = new List<Vehicle>();
 
         /// <summary>
         /// The total number of parking spaces, free or occupied.
         /// </summary>
-        public int Capacity => _vehicles.Length;
+        public int Capacity { get; }
 
         /// <summary>
         /// Creates an empty garage with the given number of parking spaces.
@@ -29,11 +29,11 @@ namespace SolutionSetup
                 throw new ArgumentOutOfRangeException(nameof(capacity), "Capacity must be greater than zero.");
             }
 
-            _vehicles = new Vehicle?[capacity];
+            Capacity = capacity;
         }
 
         /// <summary>
-        /// Parks a vehicle in the first free space.
+        /// Parks a vehicle in the garage.
         /// </summary>
         /// <returns>A failed result if the registration number is already parked or the garage is full; otherwise a success result.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="vehicle"/> is null.</exception>
@@ -46,13 +46,12 @@ namespace SolutionSetup
                 return OperationResult.Fail($"A vehicle with registration number {vehicle.RegistrationNumber} is already parked.");
             }
 
-            int index = Array.IndexOf(_vehicles, null);
-            if (index < 0)
+            if (_vehicles.Count >= Capacity)
             {
                 return OperationResult.Fail("The garage is full.");
             }
 
-            _vehicles[index] = vehicle;
+            _vehicles.Add(vehicle);
             return OperationResult.Ok($"Vehicle {vehicle.RegistrationNumber} parked.");
         }
 
@@ -68,21 +67,21 @@ namespace SolutionSetup
                 return OperationResult.Fail($"No vehicle with registration number {registrationNumber} was found.");
             }
 
-            _vehicles[index] = null;
+            _vehicles.RemoveAt(index);
             return OperationResult.Ok($"Vehicle {registrationNumber} removed.");
         }
 
         /// <summary>
-        /// Tries to park every vehicle in the array. Vehicles that cannot be parked (duplicate or no space) are skipped.
+        /// Tries to park every vehicle in the list. Vehicles that cannot be parked (duplicate or no space) are skipped.
         /// </summary>
         /// <returns>A success result if all vehicles were parked; otherwise a failed result. The message states how many were parked.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="vehicles"/> is null.</exception>
-        public OperationResult Populate(Vehicle[] vehicles)
+        public OperationResult Populate(List<Vehicle> vehicles)
         {
             ArgumentNullException.ThrowIfNull(vehicles);
 
             int parked = 0;
-            for (int i = 0; i < vehicles.Length; i++)
+            for (int i = 0; i < vehicles.Count; i++)
             {
                 if (AddVehicle(vehicles[i]).Success)
                 {
@@ -90,26 +89,16 @@ namespace SolutionSetup
                 }
             }
 
-            string message = $"Parked {parked} of {vehicles.Length} vehicles.";
-            return parked == vehicles.Length ? OperationResult.Ok(message) : OperationResult.Fail(message);
+            string message = $"Parked {parked} of {vehicles.Count} vehicles.";
+            return parked == vehicles.Count ? OperationResult.Ok(message) : OperationResult.Fail(message);
         }
 
         /// <summary>
-        /// Returns the parked vehicles as a new array. Free spaces are not included.
+        /// Returns a new list of the parked vehicles.
         /// </summary>
-        public Vehicle[] ListAllVehicles()
+        public List<Vehicle> ListAllVehicles()
         {
-            Vehicle[] result = new Vehicle[CountParked()];
-            int next = 0;
-            for (int i = 0; i < _vehicles.Length; i++)
-            {
-                if (_vehicles[i] is { } vehicle)
-                {
-                    result[next++] = vehicle;
-                }
-            }
-
-            return result;
+            return new List<Vehicle>(_vehicles);
         }
 
         /// <summary>
@@ -118,12 +107,9 @@ namespace SolutionSetup
         public int[] ListVehicleCountByType()
         {
             int[] counts = new int[Enum.GetNames(typeof(VehicleType)).Length];
-            for (int i = 0; i < _vehicles.Length; i++)
+            for (int i = 0; i < _vehicles.Count; i++)
             {
-                if (_vehicles[i] is { } vehicle)
-                {
-                    counts[(int)vehicle.Type]++;
-                }
+                counts[(int)_vehicles[i].Type]++;
             }
 
             return counts;
@@ -144,17 +130,14 @@ namespace SolutionSetup
         /// Text filters are compared ignoring case.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="criteria"/> is null.</exception>
-        public Vehicle[] SearchByProperties(SearchCriteria criteria)
+        public List<Vehicle> SearchByProperties(SearchCriteria criteria)
         {
             ArgumentNullException.ThrowIfNull(criteria);
 
-            Vehicle[] all = ListAllVehicles();
-            // Oversized buffer; trimmed to the real match count below.
-            Vehicle[] matches = new Vehicle[all.Length];
-            int count = 0;
-            for (int i = 0; i < all.Length; i++)
+            List<Vehicle> matches = new List<Vehicle>();
+            for (int i = 0; i < _vehicles.Count; i++)
             {
-                Vehicle vehicle = all[i];
+                Vehicle vehicle = _vehicles[i];
 
                 bool matchesRegistration = criteria.RegistrationNumber is null
                     || string.Equals(vehicle.RegistrationNumber, criteria.RegistrationNumber, StringComparison.OrdinalIgnoreCase);
@@ -167,38 +150,20 @@ namespace SolutionSetup
 
                 if (matchesRegistration && matchesColor && matchesWheels && matchesType)
                 {
-                    matches[count++] = vehicle;
+                    matches.Add(vehicle);
                 }
             }
 
-            Vehicle[] result = new Vehicle[count];
-            Array.Copy(matches, result, count);
-            return result;
-        }
-
-        // Number of occupied spaces; used to size the result array of ListAllVehicles.
-        private int CountParked()
-        {
-            int count = 0;
-            for (int i = 0; i < _vehicles.Length; i++)
-            {
-                if (_vehicles[i] is not null)
-                {
-                    count++;
-                }
-            }
-
-            return count;
+            return matches;
         }
 
         // Returns the index of the vehicle with the given registration number (case-insensitive, trimmed), or -1.
         private int FindIndex(string registrationNumber)
         {
             string? trimmed = registrationNumber?.Trim();
-            for (int i = 0; i < _vehicles.Length; i++)
+            for (int i = 0; i < _vehicles.Count; i++)
             {
-                if (_vehicles[i] is { } vehicle &&
-                    string.Equals(vehicle.RegistrationNumber, trimmed, StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(_vehicles[i].RegistrationNumber, trimmed, StringComparison.OrdinalIgnoreCase))
                 {
                     return i;
                 }

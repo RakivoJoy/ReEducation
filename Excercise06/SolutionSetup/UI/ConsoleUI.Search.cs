@@ -1,5 +1,6 @@
 using SolutionSetup.Vehicles;
 using System;
+using System.Collections.Generic;
 
 namespace SolutionSetup.UI
 {
@@ -100,9 +101,9 @@ namespace SolutionSetup.UI
         }
 
         // Prints each matching vehicle, or a message when nothing matched.
-        private void PrintSearchResults(Vehicle[] results)
+        private void PrintSearchResults(List<Vehicle> results)
         {
-            if (results.Length == 0)
+            if (results.Count == 0)
             {
                 _output.WriteLine("No vehicles matched the given criteria.");
                 return;

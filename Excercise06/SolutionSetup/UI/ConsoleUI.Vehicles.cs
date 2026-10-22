@@ -1,5 +1,6 @@
 using SolutionSetup.Vehicles;
 using System;
+using System.Collections.Generic;
 
 namespace SolutionSetup.UI
 {
@@ -94,8 +95,8 @@ namespace SolutionSetup.UI
                 return;
             }
 
-            Vehicle[] vehicles = garage.ListAllVehicles();
-            if (vehicles.Length == 0)
+            List<Vehicle> vehicles = garage.ListAllVehicles();
+            if (vehicles.Count == 0)
             {
                 _output.WriteLine("No vehicles are parked in the garage.");
                 return;

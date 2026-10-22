@@ -1,4 +1,5 @@
 using SolutionSetup.Vehicles;
+using System.Collections.Generic;
 
 namespace SolutionSetup
 {
@@ -10,7 +11,7 @@ namespace SolutionSetup
         /// <summary>
         /// Creates three cars with unique registration numbers.
         /// </summary>
-        public static Vehicle[] CreateSampleVehicles() =>
+        public static List<Vehicle> CreateSampleVehicles() =>
         [
             new Car("ABC123", "Black", 4, FuelType.Gasoline),
             new Car("DEF456", "Red", 4, FuelType.Diesel),
