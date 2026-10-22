@@ -1,8 +1,7 @@
-namespace SolutionSetup.Vehicles
+namespace SolutionSetup.Vehicles;
+
+public enum FuelType
 {
-    public enum FuelType
-    {
-        Gasoline,
-        Diesel
-    }
+    Gasoline,
+    Diesel
 }

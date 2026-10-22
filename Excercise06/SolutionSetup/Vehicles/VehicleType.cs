@@ -1,12 +1,11 @@
-namespace SolutionSetup.Vehicles
+namespace SolutionSetup.Vehicles;
+
+public enum VehicleType
 {
-    public enum VehicleType
-    {
-        Motorcycle,
-        Airplane,
-        Car,
-        Bus,
-        Boat,
-        Truck
-    }
+    Motorcycle,
+    Airplane,
+    Car,
+    Bus,
+    Boat,
+    Truck
 }

@@ -1,15 +1,15 @@
 using SolutionSetup;
 using SolutionSetup.Vehicles;
 
-namespace SolutionSetupTests
-{
+namespace SolutionSetupTests;
+
     public class SampleDataTests
     {
         [Fact]
         public void CreateSampleVehicles_ReturnsOnlyCars()
         {
             var vehicles = SampleData.CreateSampleVehicles();
-
+    
             Assert.NotEmpty(vehicles);
             Assert.All(vehicles, vehicle => Assert.IsType<Car>(vehicle));
         }
@@ -22,4 +22,4 @@ namespace SolutionSetupTests
             Assert.Equal(vehicles.Count, vehicles.Select(v => v.RegistrationNumber.ToUpperInvariant()).Distinct().Count());
         }
     }
-}
+
