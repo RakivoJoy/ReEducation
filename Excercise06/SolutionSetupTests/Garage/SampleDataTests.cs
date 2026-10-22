@@ -19,7 +19,7 @@ namespace SolutionSetupTests
         {
             var vehicles = SampleData.CreateSampleVehicles();
 
-            Assert.Equal(vehicles.Length, vehicles.Select(v => v.RegistrationNumber.ToUpperInvariant()).Distinct().Count());
+            Assert.Equal(vehicles.Count, vehicles.Select(v => v.RegistrationNumber.ToUpperInvariant()).Distinct().Count());
         }
     }
 }

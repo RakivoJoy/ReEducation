@@ -1,5 +1,6 @@
 using SolutionSetup;
 using SolutionSetup.Vehicles;
+using System.Collections.Generic;
 using static SolutionSetupTests.TestVehicles;
 
 namespace SolutionSetupTests
@@ -14,7 +15,7 @@ namespace SolutionSetupTests
             var result = garage.Populate(SampleData.CreateSampleVehicles());
 
             Assert.True(result.Success);
-            Assert.Equal(3, garage.ListAllVehicles().Length);
+            Assert.Equal(3, garage.ListAllVehicles().Count);
         }
 
         [Fact]
@@ -26,14 +27,14 @@ namespace SolutionSetupTests
 
             Assert.False(result.Success);
             Assert.Contains("Parked 2 of 3", result.Message);
-            Assert.Equal(2, garage.ListAllVehicles().Length);
+            Assert.Equal(2, garage.ListAllVehicles().Count);
         }
 
         [Fact]
         public void Populate_ReturnsFailure_WhenRegistrationNumberDuplicated()
         {
             var garage = new Garage(3);
-            var vehicles = new Vehicle[]
+            var vehicles = new List<Vehicle>
             {
                 CreateCar("ABC123"),
                 CreateCar("abc123")

@@ -16,7 +16,7 @@ namespace SolutionSetupTests
 
             var results = garage.SearchByProperties(new SearchCriteria { Color = "Black" });
 
-            Assert.Equal(2, results.Length);
+            Assert.Equal(2, results.Count);
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace SolutionSetupTests
                 NumberOfWheels = 4
             });
 
-            Assert.Equal(2, results.Length);
+            Assert.Equal(2, results.Count);
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace SolutionSetupTests
 
             var results = garage.SearchByProperties(new SearchCriteria());
 
-            Assert.Equal(2, results.Length);
+            Assert.Equal(2, results.Count);
         }
 
         [Fact]
@@ -59,7 +59,7 @@ namespace SolutionSetupTests
 
             var results = garage.SearchByProperties(new SearchCriteria { Type = VehicleType.Truck });
 
-            Assert.Equal(2, results.Length);
+            Assert.Equal(2, results.Count);
             Assert.All(results, vehicle => Assert.Equal(VehicleType.Truck, vehicle.Type));
         }
 
