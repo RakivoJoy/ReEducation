@@ -32,6 +32,7 @@ public partial class ConsoleUI
         _output.WriteLine("Enter registration number:");
         string registrationNumber = ReadLineOrEmpty();
 
+        _output.WriteLine($"Most common colors: {string.Join(", ", VehicleColors.MostCommon)}");
         _output.WriteLine("Enter color:");
         string color = ReadLineOrEmpty();
 

@@ -14,7 +14,7 @@ Build a console application that lets a user:
 The implementation should follow these rules:
 
 - Each vehicle has a unique registration number in the format **ABC123** (three letters followed by three digits). Input is trimmed and converted to uppercase, so `abc123` is stored as `ABC123`.
-- Vehicles have a color and a number of wheels. The number of wheels cannot be negative, and the color cannot be empty.
+- Vehicles have a color and a number of wheels. The number of wheels cannot be negative. The color must be one of 20 predefined colors (Black, White, Silver, Gray, Red, Blue, Green, Yellow, Orange, Brown, Beige, Gold, Pink, Purple, Turquoise, Teal, Navy, Maroon, Bronze, Burgundy). Matching ignores case, and the color is stored in the list's casing.
 - Each vehicle type has its own additional property (cylinder volume, number of engines, fuel type, number of seats, length, or load capacity).
 - A garage cannot hold more vehicles than its capacity, and it cannot park two vehicles with the same registration number.
 
@@ -24,9 +24,6 @@ The implementation should follow these rules:
 | --- | --- |
 | `SolutionSetup\Program.cs` | Entry point. Starts the console UI. |
 | `SolutionSetup\Garage\Garage.cs` | Stores parked vehicles and implements parking, removal, lookup, counting, and search. |
-| `SolutionSetup\Garage\OperationResult.cs` | Result of a garage operation: success flag and message. |
-| `SolutionSetup\Garage\SearchCriteria.cs` | Optional search filters (registration number, color, type, wheels). |
-| `SolutionSetup\Garage\SampleData.cs` | Three sample cars used to populate a garage. |
 | `SolutionSetup\Vehicles\` | `Vehicle` base class, derived vehicle types, `VehicleType`, and `FuelType`. |
 | `SolutionSetup\UI\` | Console user interface, split into partial class files per feature. |
 | `SolutionSetupTests\` | xUnit tests for vehicles, the garage, and the console UI. |

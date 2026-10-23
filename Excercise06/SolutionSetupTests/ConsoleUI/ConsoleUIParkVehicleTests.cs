@@ -31,6 +31,33 @@ namespace SolutionSetupTests
         }
 
         [Fact]
+        public void ParkVehicle_OffersFiveMostCommonColors()
+        {
+            using var output = new StringWriter();
+            using var input = new StringReader("5\n3\nABC123\nBlack\n4\nGasoline\n");
+            var ui = new ConsoleUI(input, output);
+            ui.CreateGarage();
+
+            ui.ParkVehicle();
+
+            Assert.Contains("Most common colors: Black, White, Silver, Gray, Red", output.ToString());
+        }
+
+        [Fact]
+        public void ParkVehicle_ShowsError_ForColorNotInAllowedList()
+        {
+            using var output = new StringWriter();
+            using var input = new StringReader("5\n3\nABC123\nInvisible\n4\nGasoline\n");
+            var ui = new ConsoleUI(input, output);
+            ui.CreateGarage();
+
+            ui.ParkVehicle();
+
+            Assert.Contains("Could not park vehicle:", output.ToString());
+            Assert.Contains("Invisible", output.ToString());
+        }
+
+        [Fact]
         public void ParkVehicle_ShowsError_WhenNoGarageCreated()
         {
             using var output = new StringWriter();
