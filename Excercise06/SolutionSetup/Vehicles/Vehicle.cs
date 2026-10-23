@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 
 namespace SolutionSetup.Vehicles;
 
@@ -7,7 +8,9 @@ namespace SolutionSetup.Vehicles;
 /// </summary>
 public abstract class Vehicle
 {
-    /// <summary>Unique registration number. Set once and stored trimmed.</summary>
+    private static readonly Regex RegistrationNumberPattern = new("^[A-Z]{3}[0-9]{3}$");
+
+    /// <summary>Unique registration number in the format ABC123. Set once and stored trimmed and uppercase.</summary>
     public string RegistrationNumber { get; }
 
     /// <summary>Color of the vehicle.</summary>
@@ -22,10 +25,10 @@ public abstract class Vehicle
     /// <summary>
     /// Creates a vehicle with the shared properties.
     /// </summary>
-    /// <param name="registrationNumber">Registration number. Must not be null, empty or whitespace.</param>
+    /// <param name="registrationNumber">Registration number in the format ABC123 (three letters followed by three digits). Must not be null, empty or whitespace.</param>
     /// <param name="color">Color. Must not be null, empty or whitespace.</param>
     /// <param name="numberOfWheels">Number of wheels. Must not be negative.</param>
-    /// <exception cref="ArgumentException">Thrown when the registration number or color is null, empty or whitespace.</exception>
+    /// <exception cref="ArgumentException">Thrown when the registration number or color is null, empty or whitespace, or the registration number is not in the format ABC123.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="numberOfWheels"/> is negative.</exception>
     protected Vehicle(string registrationNumber, string color, int numberOfWheels)
     {
@@ -33,7 +36,13 @@ public abstract class Vehicle
         ArgumentException.ThrowIfNullOrWhiteSpace(color);
         ArgumentOutOfRangeException.ThrowIfNegative(numberOfWheels);
 
-        RegistrationNumber = registrationNumber.Trim();
+        string normalizedRegistrationNumber = registrationNumber.Trim().ToUpperInvariant();
+        if (!RegistrationNumberPattern.IsMatch(normalizedRegistrationNumber))
+        {
+            throw new ArgumentException($"Registration number '{registrationNumber}' must be in the format ABC123.", nameof(registrationNumber));
+        }
+
+        RegistrationNumber = normalizedRegistrationNumber;
         Color = color;
         NumberOfWheels = numberOfWheels;
     }
