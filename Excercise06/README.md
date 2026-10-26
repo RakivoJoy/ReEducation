@@ -13,7 +13,7 @@ Build a console application that lets a user:
 
 The implementation should follow these rules:
 
-- Each vehicle has a unique registration number in the format **ABC123** (three letters followed by three digits). Input is trimmed and converted to uppercase, so `abc123` is stored as `ABC123`.
+- Each vehicle has a unique registration number in the format **ABC123** or **ABC12D**. Input is trimmed and converted to uppercase, so `abc123` is stored as `ABC123`.
 - Vehicles have a color and a number of wheels. The number of wheels cannot be negative. The color must be one of 20 predefined colors (Black, White, Silver, Gray, Red, Blue, Green, Yellow, Orange, Brown, Beige, Gold, Pink, Purple, Turquoise, Teal, Navy, Maroon, Bronze, Burgundy). Matching ignores case, and the color is stored in the list's casing.
 - Each vehicle type has its own additional property (cylinder volume, number of engines, fuel type, number of seats, length, or load capacity).
 - A garage cannot hold more vehicles than its capacity, and it cannot park two vehicles with the same registration number.
