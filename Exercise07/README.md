@@ -14,12 +14,6 @@ A console app (`SolutionSetup`) that practices LINQ queries on a list of student
 - **GroupBy**: group students per class.
 - **Sum / Average / Min / Max**: compute score statistics.
 
-## Running the exercise
-
-1. Open `Exercise07\SolutionSetup.slnx` in Visual Studio.
-2. Set `SolutionSetup` as the startup project.
-3. Press **F5** or **Ctrl+F5** to run.
-
 ## Requirements
 
 - .NET 10 SDK
