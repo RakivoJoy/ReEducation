@@ -1,6 +1,7 @@
 using SolutionSetup.Vehicles;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SolutionSetup;
 
@@ -104,12 +105,12 @@ public class Garage
     /// <summary>
     /// Counts the parked vehicles per type. The returned array is indexed by (int)VehicleType.
     /// </summary>
-    public int[] ListVehicleCountByType()
+    public List<int> ListVehicleCountByType()
     {
-        int[] counts = new int[Enum.GetNames(typeof(VehicleType)).Length];
-        for (int i = 0; i < _vehicles.Count; i++)
+        List<int> counts = Enumerable.Repeat(0, Enum.GetNames(typeof(VehicleType)).Length).ToList();
+        foreach (Vehicle vehicle in _vehicles)
         {
-            counts[(int)_vehicles[i].Type]++;
+            counts[(int)vehicle.Type]++;
         }
 
         return counts;
