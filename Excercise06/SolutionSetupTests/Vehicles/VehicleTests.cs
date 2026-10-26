@@ -12,6 +12,16 @@ namespace SolutionSetupTests
         }
 
         [Theory]
+        [InlineData("ABC123")]
+        [InlineData("ABC12D")]
+        public void Constructor_AcceptsRegistrationNumberInAllowedFormat(string registrationNumber)
+        {
+            var vehicle = new Car(registrationNumber, "Black", 4, FuelType.Gasoline);
+
+            Assert.Equal(registrationNumber, vehicle.RegistrationNumber);
+        }
+
+        [Theory]
         [InlineData("AB123")]
         [InlineData("ABCD123")]
         [InlineData("ABC12")]
@@ -19,7 +29,8 @@ namespace SolutionSetupTests
         [InlineData("123ABC")]
         [InlineData("ABC-123")]
         [InlineData("AB1C23")]
-        public void Constructor_ThrowsForRegistrationNumberNotInFormatABC123(string registrationNumber)
+        [InlineData("ABC1-2")]
+        public void Constructor_ThrowsForRegistrationNumberNotInAllowedFormat(string registrationNumber)
         {
             Assert.Throws<ArgumentException>(() => new Car(registrationNumber, "Black", 4, FuelType.Gasoline));
         }
