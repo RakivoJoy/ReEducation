@@ -1,4 +1,4 @@
-# Exercise 06 - Garage 1.0
+# Exercise 06 - Garage 2.0
 
 A console application that manages a parking garage for vehicles. The solution is built with .NET 10 and includes a unit test project.
 
