@@ -14,7 +14,7 @@ namespace SolutionSetupTests
             ui.Run();
 
             string result = output.ToString();
-            Assert.Contains("Garage 1.0", result);
+            Assert.Contains("Garage 2.0", result);
             Assert.Contains("0. Exit", result);
         }
 
@@ -41,7 +41,7 @@ namespace SolutionSetupTests
             ui.Run();
 
             string result = output.ToString();
-            int occurrences = result.Split("Garage 1.0").Length - 1;
+            int occurrences = result.Split("Garage 2.0").Length - 1;
             Assert.Equal(2, occurrences);
         }
     }
