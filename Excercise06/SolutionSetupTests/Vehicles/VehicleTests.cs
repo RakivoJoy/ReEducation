@@ -30,6 +30,12 @@ namespace SolutionSetupTests
         [InlineData("ABC-123")]
         [InlineData("AB1C23")]
         [InlineData("ABC1-2")]
+        [InlineData("ABI123")]
+        [InlineData("ABQ123")]
+        [InlineData("ABV123")]
+        [InlineData("ABC12I")]
+        [InlineData("ABC12Q")]
+        [InlineData("ABC12V")]
         public void Constructor_ThrowsForRegistrationNumberNotInAllowedFormat(string registrationNumber)
         {
             Assert.Throws<ArgumentException>(() => new Car(registrationNumber, "Black", 4, FuelType.Gasoline));

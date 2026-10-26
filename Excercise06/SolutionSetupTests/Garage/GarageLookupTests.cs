@@ -58,7 +58,7 @@ namespace SolutionSetupTests
             var garage = new Garage(3);
             garage.AddVehicle(CreateCar("ABC123"));
             garage.AddVehicle(new Truck("DEF456", "Blue", 6, 12000));
-            garage.AddVehicle(new Bus("GHI789", "Yellow", 6, 50));
+            garage.AddVehicle(new Bus("GHL789", "Yellow", 6, 50));
 
             var counts = garage.ListVehicleCountByType();
 

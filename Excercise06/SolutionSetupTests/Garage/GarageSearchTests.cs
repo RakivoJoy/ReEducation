@@ -12,7 +12,7 @@ namespace SolutionSetupTests
             var garage = new Garage(3);
             garage.AddVehicle(CreateCar("ABC123", "Black"));
             garage.AddVehicle(CreateCar("DEF456", "Red"));
-            garage.AddVehicle(CreateCar("GHI789", "black"));
+            garage.AddVehicle(CreateCar("GHL789", "black"));
 
             var results = garage.SearchByProperties(new SearchCriteria { Color = "Black" });
 
@@ -25,7 +25,7 @@ namespace SolutionSetupTests
             var garage = new Garage(3);
             garage.AddVehicle(CreateCar("ABC123", "Black", FuelType.Gasoline));
             garage.AddVehicle(CreateCar("DEF456", "Black", FuelType.Diesel));
-            garage.AddVehicle(CreateCar("GHI789", "Red", FuelType.Diesel));
+            garage.AddVehicle(CreateCar("GHL789", "Red", FuelType.Diesel));
 
             var results = garage.SearchByProperties(new SearchCriteria
             {
@@ -55,7 +55,7 @@ namespace SolutionSetupTests
             var garage = new Garage(3);
             garage.AddVehicle(CreateCar("ABC123"));
             garage.AddVehicle(new Truck("DEF456", "Blue", 6, 12000));
-            garage.AddVehicle(new Truck("GHI789", "Red", 6, 8000));
+            garage.AddVehicle(new Truck("GHL789", "Red", 6, 8000));
 
             var results = garage.SearchByProperties(new SearchCriteria { Type = VehicleType.Truck });
 
@@ -69,7 +69,7 @@ namespace SolutionSetupTests
             var garage = new Garage(3);
             garage.AddVehicle(new Motorcycle("ABC123", "Pink", 3, 600));
             garage.AddVehicle(new Motorcycle("DEF456", "Pink", 2, 600));
-            garage.AddVehicle(CreateCar("GHI789", "Pink"));
+            garage.AddVehicle(CreateCar("GHL789", "Pink"));
 
             var results = garage.SearchByProperties(new SearchCriteria
             {

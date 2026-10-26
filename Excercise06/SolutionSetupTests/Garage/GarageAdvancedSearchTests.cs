@@ -52,7 +52,7 @@ namespace SolutionSetupTests
             var garage = new Garage(3);
             garage.AddVehicle(new Motorcycle("ABC123", "Blue", 2, 600));
             garage.AddVehicle(CreateCar("DEF456"));
-            garage.AddVehicle(new Truck("GHI789", "Blue", 6, 8000));
+            garage.AddVehicle(new Truck("GHL789", "Blue", 6, 8000));
 
             var results = garage.SearchByProperties(new SearchCriteria { NumberOfWheels = 2 });
 

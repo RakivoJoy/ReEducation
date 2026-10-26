@@ -8,7 +8,7 @@ namespace SolutionSetup.Vehicles;
 /// </summary>
 public abstract class Vehicle
 {
-    private static readonly Regex RegistrationNumberPattern = new("^[A-Z]{3}[0-9]{2}[0-9A-Z]{1}$");
+    private static readonly Regex RegistrationNumberPattern = new("^[A-HJ-PR-UW-Z]{3}[0-9]{2}[0-9A-HJ-PR-UW-Z]{1}$");
 
     /// <summary>Unique registration number in the format ABC123. Set once and stored trimmed and uppercase.</summary>
     public string RegistrationNumber { get; }

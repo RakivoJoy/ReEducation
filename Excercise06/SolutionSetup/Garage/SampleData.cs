@@ -15,6 +15,6 @@ public static class SampleData
     [
         new Car("ABC123", "Black", 4, FuelType.Gasoline),
         new Car("DEF456", "Red", 4, FuelType.Diesel),
-        new Car("GHI789", "White", 4, FuelType.Gasoline)
+        new Car("GHL789", "White", 4, FuelType.Gasoline)
     ];
 }
