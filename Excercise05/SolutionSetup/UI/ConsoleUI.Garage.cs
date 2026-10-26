@@ -16,12 +16,14 @@ namespace SolutionSetup.UI
             _output.WriteLine("Enter garage capacity (positive whole number):");
             string line = ReadLineOrEmpty();
 
+            // Reject input that is not a whole number.
             if (!int.TryParse(line, out int capacity))
             {
                 _output.WriteLine($"Invalid capacity '{line}'. Please enter a positive whole number.");
                 return;
             }
 
+            // The Garage constructor rejects non-positive capacities.
             try
             {
                 _garage = new Garage(capacity);
@@ -43,6 +45,7 @@ namespace SolutionSetup.UI
                 return;
             }
 
+            // Adds the built-in sample vehicles; the result reports how many were parked.
             OperationResult result = garage.Populate(SampleData.CreateSampleVehicles());
             _output.WriteLine(result.Message);
         }
@@ -57,6 +60,7 @@ namespace SolutionSetup.UI
                 return;
             }
 
+            // Count per vehicle type, indexed by VehicleType.
             int[] counts = garage.ListVehicleCountByType();
             int total = 0;
             for (int i = 0; i < counts.Length; i++)
@@ -64,12 +68,14 @@ namespace SolutionSetup.UI
                 total += counts[i];
             }
 
+            // Nothing to list when the garage is empty.
             if (total == 0)
             {
                 _output.WriteLine("No vehicles are parked in the garage.");
                 return;
             }
 
+            // Print only the types that have at least one parked vehicle.
             for (int i = 0; i < counts.Length; i++)
             {
                 if (counts[i] > 0)
