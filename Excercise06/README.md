@@ -49,3 +49,68 @@ dotnet run --project Excercise06\SolutionSetup\SolutionSetup.csproj
 ```powershell
 dotnet test Excercise06\SolutionSetupTests\SolutionSetupTests.csproj
 ```
+
+
+
+
+```mermaid
+classDiagram
+    class Vehicle {
+        <<abstract>>
+        +string RegistrationNumber
+        +string Color
+        +int NumberOfWheels
+        +VehicleType Type
+    }
+    class Car {
+        +FuelType FuelType
+    }
+    class Motorcycle {
+        +int CylinderVolume
+    }
+    class Airplane {
+        +int NumberOfEngines
+    }
+    class Bus {
+        +int NumberOfSeats
+    }
+    class Boat {
+        +double Length
+    }
+    class Truck {
+        +int LoadCapacity
+    }
+    class Garage {
+        +AddVehicle(Vehicle) OperationResult
+        +ListAllVehicles()
+        +ListVehicleCountByType() List~int~
+        +SearchByProperties(criteria)
+        +Populate(vehicles)
+    }
+    class OperationResult
+    class VehicleColors {
+        <<static>>
+        +All
+        +MostCommon
+        +Normalize(string) string
+    }
+    class SampleData {
+        <<static>>
+        +CreateSampleVehicles() List~Vehicle~
+    }
+    class ConsoleUI
+
+    Vehicle <|-- Car
+    Vehicle <|-- Motorcycle
+    Vehicle <|-- Airplane
+    Vehicle <|-- Bus
+    Vehicle <|-- Boat
+    Vehicle <|-- Truck
+    Garage "1" o-- "0..*" Vehicle : stores
+    Garage ..> OperationResult : returns
+    Vehicle ..> VehicleColors : validates color
+    SampleData ..> Vehicle : creates
+    ConsoleUI --> Garage : uses
+    ConsoleUI ..> SampleData : uses
+    ConsoleUI ..> VehicleColors : offers common colors
+```
