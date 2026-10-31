@@ -56,18 +56,12 @@ WEAKNESSES AND INCONSISTENCIES
 	(such as color) are not normalized through VehicleColors. Pick one place for normalizing
 	input and one comparison rule.
 
-[2] Capacity upper bound
-	The prompt shows "1-2147483647". Garage accepts any positive int. A realistic maximum
-	(and a constant shared by prompt, validation and tests) would be clearer.
+
 
 [1] Mixed code style
 	Source uses file-scoped namespaces, tests use block-scoped ones. Folder Garage uses
 	namespace SolutionSetup rather than SolutionSetup.Garage. Pick one convention and enforce
 	it with an .editorconfig.
-
-[1] Planning files live in the project folder
-	feedback-plan.txt and raw-feedback.txt are under SolutionSetup\. Move them to a docs
-	folder (or remove them once done) so the project folder only holds code.
 
 =====================================================================
 IMPROVEMENTS
@@ -103,12 +97,3 @@ IMPROVEMENTS
 	The garage is lost on exit. Saving to JSON behind an interface would be a realistic
 	next feature and a good exercise in separating storage from the handler.
 
-[1] Show the UML in the README
-	MERMAID-UML.md exists but is not linked from README.md. One line would make it
-	discoverable.
-
-=====================================================================
-ANSWERED QUESTIONS
-=====================================================================
-- Populate: partial success is intended (kept).
-- Garage<T>: a requirement (kept).
