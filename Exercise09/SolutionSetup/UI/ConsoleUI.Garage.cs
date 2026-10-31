@@ -7,8 +7,6 @@ namespace SolutionSetup.UI;
 /// <summary>
 /// Menu handlers that create, populate and report on the garage as a whole.
 /// </summary>
-// TODO: Phase 0 - fix ListVehicleCounts: counts is a List<int>, so replace counts.Length with counts.Count.
-// TODO: Phase 0 - add "using System.Collections.Generic;" for List<int>.
 // TODO: Phase 3 - rewrite the total and print loops with counts.Sum() and LINQ over the dictionary once ListVehicleCountByType returns one.
 // TODO: Phase 2 - use Garage<IVehicle> in ConsoleUI once the generic garage exists.
 public partial class ConsoleUI

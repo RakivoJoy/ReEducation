@@ -6,14 +6,11 @@ namespace SolutionSetup.Vehicles;
 /// <summary>
 /// Base class for all vehicles that can be parked in a garage.
 /// </summary>
-// TODO: Phase 1 - create IVehicle (RegistrationNumber, Color, NumberOfWheels, Type) and implement it here.
-// TODO: Phase 1 - keep Details and shared validation on Vehicle; do not put them on IVehicle.
-// TODO: Phase 1 - update the ABC123 wording in the summary and exception text to "three letters (excluding I, Q, V) followed by three alphanumerics".
-public abstract class Vehicle
+public abstract class Vehicle : IVehicle
 {
     private static readonly Regex RegistrationNumberPattern = new("^[A-HJ-PR-UW-Z]{3}[0-9]{2}[0-9A-HJ-PR-UW-Z]{1}$");
 
-    /// <summary>Unique registration number in the format ABC123. Set once and stored trimmed and uppercase.</summary>
+    /// <summary>Unique registration number in ABC123 or ABC12D. Excluding I, Q, V. Set once and stored trimmed and uppercase.</summary>
     public string RegistrationNumber { get; }
 
     private string _color = string.Empty;
@@ -47,7 +44,7 @@ public abstract class Vehicle
         string normalizedRegistrationNumber = registrationNumber.Trim().ToUpperInvariant();
         if (!RegistrationNumberPattern.IsMatch(normalizedRegistrationNumber))
         {
-            throw new ArgumentException($"Registration number '{registrationNumber}' must be in the format ABC123.", nameof(registrationNumber));
+            throw new ArgumentException($"Registration number '{registrationNumber}' must be three letters (excluding I, Q, V) followed by three alphanumerics.", nameof(registrationNumber));
         }
 
         RegistrationNumber = normalizedRegistrationNumber;

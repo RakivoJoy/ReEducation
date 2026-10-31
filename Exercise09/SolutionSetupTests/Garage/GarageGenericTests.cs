@@ -9,16 +9,31 @@ namespace SolutionSetupTests
 
     public class GarageGenericTests
     {
-        // TODO: Phase 1 - Car, Motorcycle, Airplane, Bus, Boat and Truck are all assignable to IVehicle.
-        [Fact(Skip = "Not implemented: IVehicle does not exist yet.")]
+        [Fact]
         public void ConcreteVehicles_AreAssignableToIVehicle()
         {
+            IVehicle[] vehicles =
+            {
+                new Car("ABC123", "Black", 4, FuelType.Gasoline),
+                new Motorcycle("ABC124", "Pink", 3, 600),
+                new Airplane("ABC125", "White", 3, 2),
+                new Bus("ABC126", "Yellow", 6, 50),
+                new Boat("ABC127", "White", 0, 12.5),
+                new Truck("ABC128", "Blue", 6, 12000),
+            };
+
+            Assert.All(vehicles, vehicle => Assert.NotNull(vehicle));
         }
 
-        // TODO: Phase 1 - IVehicle exposes RegistrationNumber, Color, NumberOfWheels and Type.
-        [Fact(Skip = "Not implemented: IVehicle does not exist yet.")]
+        [Fact]
         public void IVehicle_ExposesSharedProperties()
         {
+            IVehicle vehicle = new Car("abc123", "Black", 4, FuelType.Gasoline);
+
+            Assert.Equal("ABC123", vehicle.RegistrationNumber);
+            Assert.Equal("Black", vehicle.Color);
+            Assert.Equal(4, vehicle.NumberOfWheels);
+            Assert.Equal(VehicleType.Car, vehicle.Type);
         }
 
         // TODO: Phase 2 - Garage<Car> accepts only cars.
@@ -111,10 +126,10 @@ namespace SolutionSetupTests
         {
         }
 
-        // TODO: Registration validation - lowercase input containing a forbidden letter is rejected (e.g. "abv123").
-        [Fact(Skip = "Not implemented: add lowercase forbidden-letter case.")]
+        [Fact]
         public void Constructor_RejectsLowercaseForbiddenLetter()
         {
+            Assert.Throws<ArgumentException>(() => new Car("abv123", "Black", 4, FuelType.Gasoline));
         }
     }
 }

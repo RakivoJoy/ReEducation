@@ -11,7 +11,6 @@ namespace SolutionSetup;
 /// </summary>
 // TODO: Phase 2 - make Garage generic: public class Garage<T> where T : IVehicle, and implement IEnumerable<T>.
 // TODO: Phase 2 - keep a non-generic Garage or use Garage<IVehicle> in ConsoleUI, and update SampleData and the tests.
-// TODO: Phase 1 - change the stored type from Vehicle to IVehicle.
 // TODO: Phase 3 - replace FindIndex with FirstOrDefault(v => string.Equals(v.RegistrationNumber, reg, OrdinalIgnoreCase)).
 // TODO: Phase 3 - change RemoveVehicleByRegistration to use Remove(vehicle) once the vehicle is found.
 // TODO: Phase 3 - rewrite SearchByProperties as chained Where() calls for each non-null criterion.
@@ -21,7 +20,7 @@ namespace SolutionSetup;
 // TODO: Phase 2 - return IReadOnlyList<T> from ListAllVehicles and SearchByProperties.
 public class Garage
 {
-    private readonly List<Vehicle> _vehicles = new List<Vehicle>();
+    private readonly List<IVehicle> _vehicles = new List<IVehicle>();
 
     /// <summary>
     /// The total number of parking spaces, free or occupied.
@@ -48,7 +47,7 @@ public class Garage
     /// </summary>
     /// <returns>A failed result if the registration number is already parked or the garage is full; otherwise a success result.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="vehicle"/> is null.</exception>
-    public OperationResult AddVehicle(Vehicle vehicle)
+    public OperationResult AddVehicle(IVehicle vehicle)
     {
         ArgumentNullException.ThrowIfNull(vehicle);
 
@@ -107,9 +106,9 @@ public class Garage
     /// <summary>
     /// Returns a new list of the parked vehicles.
     /// </summary>
-    public List<Vehicle> ListAllVehicles()
+    public List<IVehicle> ListAllVehicles()
     {
-        return new List<Vehicle>(_vehicles);
+        return new List<IVehicle>(_vehicles);
     }
 
     /// <summary>
@@ -118,7 +117,7 @@ public class Garage
     public List<int> ListVehicleCountByType()
     {
         List<int> counts = Enumerable.Repeat(0, Enum.GetNames(typeof(VehicleType)).Length).ToList();
-        foreach (Vehicle vehicle in _vehicles)
+        foreach (IVehicle vehicle in _vehicles)
         {
             counts[(int)vehicle.Type]++;
         }
@@ -130,7 +129,7 @@ public class Garage
     /// Finds a parked vehicle by registration number, ignoring case and surrounding spaces.
     /// </summary>
     /// <returns>The vehicle, or null if none matches.</returns>
-    public Vehicle? FindByRegistration(string registrationNumber)
+    public IVehicle? FindByRegistration(string registrationNumber)
     {
         int index = FindIndex(registrationNumber);
         return index < 0 ? null : _vehicles[index];
@@ -141,14 +140,14 @@ public class Garage
     /// Text filters are compared ignoring case.
     /// </summary>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="criteria"/> is null.</exception>
-    public List<Vehicle> SearchByProperties(SearchCriteria criteria)
+    public List<IVehicle> SearchByProperties(SearchCriteria criteria)
     {
         ArgumentNullException.ThrowIfNull(criteria);
 
-        List<Vehicle> matches = new List<Vehicle>();
+        List<IVehicle> matches = new List<IVehicle>();
         for (int i = 0; i < _vehicles.Count; i++)
         {
-            Vehicle vehicle = _vehicles[i];
+            IVehicle vehicle = _vehicles[i];
 
             bool matchesRegistration = criteria.RegistrationNumber is null
                 || string.Equals(vehicle.RegistrationNumber, criteria.RegistrationNumber, StringComparison.OrdinalIgnoreCase);

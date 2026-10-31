@@ -101,7 +101,7 @@ public partial class ConsoleUI
     }
 
     // Prints each matching vehicle, or a message when nothing matched.
-    private void PrintSearchResults(List<Vehicle> results)
+    private void PrintSearchResults(List<IVehicle> results)
     {
         if (results.Count == 0)
         {
@@ -109,7 +109,7 @@ public partial class ConsoleUI
             return;
         }
 
-        foreach (Vehicle vehicle in results)
+        foreach (IVehicle vehicle in results)
         {
             _output.WriteLine(vehicle.ToString());
         }

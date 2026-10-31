@@ -96,14 +96,14 @@ public partial class ConsoleUI
             return;
         }
 
-        List<Vehicle> vehicles = garage.ListAllVehicles();
+        List<IVehicle> vehicles = garage.ListAllVehicles();
         if (vehicles.Count == 0)
         {
             _output.WriteLine("No vehicles are parked in the garage.");
             return;
         }
 
-        foreach (Vehicle vehicle in vehicles)
+        foreach (IVehicle vehicle in vehicles)
         {
             _output.WriteLine(vehicle.ToString());
         }
@@ -122,7 +122,7 @@ public partial class ConsoleUI
         _output.WriteLine("Enter registration number to find:");
         string registrationNumber = ReadLineOrEmpty();
 
-        Vehicle? vehicle = garage.FindByRegistration(registrationNumber);
+        IVehicle? vehicle = garage.FindByRegistration(registrationNumber);
         if (vehicle is null)
         {
             _output.WriteLine($"No vehicle with registration number {registrationNumber} was found.");
