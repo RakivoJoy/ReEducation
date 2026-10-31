@@ -20,15 +20,14 @@ public partial class ConsoleUI
             return;
         }
 
-        // TODO: Phase 3 - Build this menu
         // TODO: Phase 4 - Validate the type choice (and every other answer) right away and re-prompt on invalid input.
+        VehicleType[] types = Enum.GetValues<VehicleType>();
         _output.WriteLine("Select vehicle type:");
-        _output.WriteLine("1. Motorcycle");
-        _output.WriteLine("2. Airplane");
-        _output.WriteLine("3. Car");
-        _output.WriteLine("4. Bus");
-        _output.WriteLine("5. Boat");
-        _output.WriteLine("6. Truck");
+        for (int i = 0; i < types.Length; i++)
+        {
+            _output.WriteLine($"{i + 1}. {types[i]}");
+        }
+
         string typeChoice = ReadLineOrEmpty();
 
         _output.WriteLine("Enter registration number:");
@@ -47,17 +46,12 @@ public partial class ConsoleUI
 
         try
         {
-            // TODO: Phase 3 - Replace this switch with a single vehicle factory so a new type needs minimal changes.
-            Vehicle vehicle = typeChoice switch
+            if (!int.TryParse(typeChoice, out int typeNumber) || typeNumber < 1 || typeNumber > types.Length)
             {
-                "1" => new Motorcycle(registrationNumber, color, numberOfWheels, ReadIntPrompt("Enter cylinder volume (cc):")),
-                "2" => new Airplane(registrationNumber, color, numberOfWheels, ReadIntPrompt("Enter number of engines:")),
-                "3" => new Car(registrationNumber, color, numberOfWheels, ReadFuelTypePrompt()),
-                "4" => new Bus(registrationNumber, color, numberOfWheels, ReadIntPrompt("Enter number of seats:")),
-                "5" => new Boat(registrationNumber, color, numberOfWheels, ReadDoublePrompt("Enter length (m):")),
-                "6" => new Truck(registrationNumber, color, numberOfWheels, ReadIntPrompt("Enter load capacity (kg):")),
-                _ => throw new FormatException($"'{typeChoice}' is not a valid vehicle type option.")
-            };
+                throw new FormatException($"'{typeChoice}' is not a valid vehicle type option.");
+            }
+
+            Vehicle vehicle = CreateVehicle(types[typeNumber - 1], registrationNumber, color, numberOfWheels);
 
             OperationResult result = _handler.ParkVehicle(vehicle);
             _output.WriteLine(result.Message);
@@ -71,6 +65,17 @@ public partial class ConsoleUI
             _output.WriteLine($"Could not park vehicle: {ex.Message}");
         }
     }
+
+    private Vehicle CreateVehicle(VehicleType type, string registrationNumber, string color, int numberOfWheels) => type switch
+    {
+        VehicleType.Motorcycle => new Motorcycle(registrationNumber, color, numberOfWheels, ReadIntPrompt("Enter cylinder volume (cc):")),
+        VehicleType.Airplane => new Airplane(registrationNumber, color, numberOfWheels, ReadIntPrompt("Enter number of engines:")),
+        VehicleType.Car => new Car(registrationNumber, color, numberOfWheels, ReadFuelTypePrompt()),
+        VehicleType.Bus => new Bus(registrationNumber, color, numberOfWheels, ReadIntPrompt("Enter number of seats:")),
+        VehicleType.Boat => new Boat(registrationNumber, color, numberOfWheels, ReadDoublePrompt("Enter length (m):")),
+        VehicleType.Truck => new Truck(registrationNumber, color, numberOfWheels, ReadIntPrompt("Enter load capacity (kg):")),
+        _ => throw new FormatException($"'{type}' is not a valid vehicle type option.")
+    };
 
     /// <summary>
     /// Menu option 4. Asks for a registration number and removes the matching vehicle.

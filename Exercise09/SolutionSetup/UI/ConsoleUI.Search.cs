@@ -84,8 +84,7 @@ public partial class ConsoleUI
     {
         type = null;
 
-        // TODO: Phase 3 - Build the list of vehicle types from VehicleType with Enum.GetValues().
-        _output.WriteLine("Enter vehicle type (leave blank to skip): Motorcycle, Airplane, Car, Bus, Boat, Truck");
+        _output.WriteLine($"Enter vehicle type (leave blank to skip): {string.Join(", ", Enum.GetValues<VehicleType>())}");
         string typeLine = ReadLineOrEmpty();
         if (string.IsNullOrWhiteSpace(typeLine))
         {

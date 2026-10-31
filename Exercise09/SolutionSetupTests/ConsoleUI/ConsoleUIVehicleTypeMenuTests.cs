@@ -3,10 +3,9 @@ using SolutionSetup.Vehicles;
 
 namespace SolutionSetupTests
 {
-    // TODO: Phase 3 - Remove the Skip arguments once the menus are built from the VehicleType enum.
     public class ConsoleUIVehicleTypeMenuTests
     {
-        [Fact(Skip = "Phase 3: the park menu is still hard-coded.")]
+        [Fact]
         public void ParkVehicleMenu_ListsEveryVehicleType()
         {
             // Arrange
@@ -25,7 +24,7 @@ namespace SolutionSetupTests
             }
         }
 
-        [Fact(Skip = "Phase 3: the search prompt is still hard-coded.")]
+        [Fact]
         public void SearchPrompt_ListsEveryVehicleType()
         {
             // Arrange
@@ -44,7 +43,7 @@ namespace SolutionSetupTests
             }
         }
 
-        [Theory(Skip = "Phase 3: the park switch is still hard-coded.")]
+        [Theory]
         [InlineData("1", "Motorcycle")]
         [InlineData("2", "Airplane")]
         [InlineData("3", "Car")]
