@@ -4,6 +4,13 @@ namespace SolutionSetup.Vehicles;
 
 public class Boat : Vehicle
 {
+    /// <summary>Shortest allowed length in meters.</summary>
+    public const double MinLength = 1;
+
+    /// <summary>Longest allowed length in meters.</summary>
+    public const double MaxLength = 400;
+
+    /// <summary>Length in meters. Set once at construction.</summary>
     public double Length { get; }
 
     public override VehicleType Type => VehicleType.Boat;
@@ -13,7 +20,8 @@ public class Boat : Vehicle
     public Boat(string registrationNumber, string color, int numberOfWheels, double length)
         : base(registrationNumber, color, numberOfWheels)
     {
-        // TODO: Phase 2 - Validate length (m) with a lower and a sensible upper limit; it can currently be negative.
+        ThrowIfOutOfRange(length, MinLength, MaxLength, "Length", "m", nameof(length));
+
         Length = length;
     }
 }

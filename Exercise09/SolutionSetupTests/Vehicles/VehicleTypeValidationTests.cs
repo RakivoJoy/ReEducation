@@ -2,13 +2,9 @@ using SolutionSetup.Vehicles;
 
 namespace SolutionSetupTests
 {
-    // TODO: Phase 2 - Remove the Skip arguments once each vehicle type validates its own values.
-    // The limits used here are proposals; adjust them to the ranges chosen in Phase 2.
     public class VehicleTypeValidationTests
     {
-        private const string SkipReason = "Phase 2: vehicle-specific validation is not implemented yet.";
-
-        [Theory(Skip = SkipReason)]
+        [Theory]
         [InlineData(1)]
         [InlineData(9000)]
         public void Truck_AcceptsValidLoadCapacity(int loadCapacity)
@@ -20,7 +16,7 @@ namespace SolutionSetupTests
             Assert.Equal(loadCapacity, truck.LoadCapacity);
         }
 
-        [Theory(Skip = SkipReason)]
+        [Theory]
         [InlineData(-1)]
         [InlineData(0)]
         [InlineData(int.MaxValue)]
@@ -31,7 +27,7 @@ namespace SolutionSetupTests
             Assert.Contains("kg", ex.Message);
         }
 
-        [Theory(Skip = SkipReason)]
+        [Theory]
         [InlineData(1.5)]
         [InlineData(30)]
         public void Boat_AcceptsValidLength(double length)
@@ -43,7 +39,7 @@ namespace SolutionSetupTests
             Assert.Equal(length, boat.Length);
         }
 
-        [Theory(Skip = SkipReason)]
+        [Theory]
         [InlineData(-1)]
         [InlineData(0)]
         [InlineData(100000)]
@@ -55,7 +51,7 @@ namespace SolutionSetupTests
             Assert.Contains("m", ex.Message);
         }
 
-        [Theory(Skip = SkipReason)]
+        [Theory]
         [InlineData(50)]
         [InlineData(1800)]
         public void Motorcycle_AcceptsValidCylinderVolume(int cylinderVolume)
@@ -67,7 +63,7 @@ namespace SolutionSetupTests
             Assert.Equal(cylinderVolume, motorcycle.CylinderVolume);
         }
 
-        [Theory(Skip = SkipReason)]
+        [Theory]
         [InlineData(-1)]
         [InlineData(0)]
         [InlineData(int.MaxValue)]
@@ -78,29 +74,29 @@ namespace SolutionSetupTests
             Assert.Contains("cc", ex.Message);
         }
 
-        [Theory(Skip = SkipReason)]
+        [Theory]
         [InlineData(1)]
         [InlineData(4)]
         public void Airplane_AcceptsValidNumberOfEngines(int engines)
         {
             // Arrange & Act
-            var airplane = new Airplane("AIR001", "White", 3, engines);
+            var airplane = new Airplane("APL001", "White", 3, engines);
 
             // Assert
             Assert.Equal(engines, airplane.NumberOfEngines);
         }
 
-        [Theory(Skip = SkipReason)]
+        [Theory]
         [InlineData(-3)]
         [InlineData(0)]
         [InlineData(1000)]
         public void Airplane_Throws_ForNumberOfEnginesOutsideRange(int engines)
         {
             // Arrange, Act & Assert
-            Assert.Throws<ArgumentOutOfRangeException>(() => new Airplane("AIR001", "White", 3, engines));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new Airplane("APL001", "White", 3, engines));
         }
 
-        [Theory(Skip = SkipReason)]
+        [Theory]
         [InlineData(1)]
         [InlineData(80)]
         public void Bus_AcceptsValidNumberOfSeats(int seats)
@@ -112,7 +108,7 @@ namespace SolutionSetupTests
             Assert.Equal(seats, bus.NumberOfSeats);
         }
 
-        [Theory(Skip = SkipReason)]
+        [Theory]
         [InlineData(-1)]
         [InlineData(0)]
         [InlineData(1000)]
@@ -123,3 +119,5 @@ namespace SolutionSetupTests
         }
     }
 }
+
+

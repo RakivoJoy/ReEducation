@@ -4,6 +4,13 @@ namespace SolutionSetup.Vehicles;
 
 public class Truck : Vehicle
 {
+    /// <summary>Smallest allowed load capacity in kg.</summary>
+    public const int MinLoadCapacity = 1;
+
+    /// <summary>Largest allowed load capacity in kg.</summary>
+    public const int MaxLoadCapacity = 50000;
+
+    /// <summary>Load capacity in kg. Set once at construction.</summary>
     public int LoadCapacity { get; }
 
     public override VehicleType Type => VehicleType.Truck;
@@ -13,8 +20,7 @@ public class Truck : Vehicle
     public Truck(string registrationNumber, string color, int numberOfWheels, int loadCapacity)
         : base(registrationNumber, color, numberOfWheels)
     {
-        // TODO: Phase 2 - Validate a range for load capacity (kg), not only "not negative", with a clear message including the range and unit.
-        ArgumentOutOfRangeException.ThrowIfNegative(loadCapacity);
+        ThrowIfOutOfRange(loadCapacity, MinLoadCapacity, MaxLoadCapacity, "Load capacity", "kg", nameof(loadCapacity));
 
         LoadCapacity = loadCapacity;
     }

@@ -2,6 +2,13 @@ namespace SolutionSetup.Vehicles;
 
 public class Airplane : Vehicle
 {
+    /// <summary>Smallest allowed number of engines.</summary>
+    public const int MinEngines = 1;
+
+    /// <summary>Largest allowed number of engines.</summary>
+    public const int MaxEngines = 8;
+
+    /// <summary>Number of engines. Set once at construction.</summary>
     public int NumberOfEngines { get; }
 
     public override VehicleType Type => VehicleType.Airplane;
@@ -11,7 +18,8 @@ public class Airplane : Vehicle
     public Airplane(string registrationNumber, string color, int numberOfWheels, int numberOfEngines)
         : base(registrationNumber, color, numberOfWheels)
     {
-        // TODO: Phase 2 - Validate the number of engines (e.g. no negative values) with a clear error message.
+        ThrowIfOutOfRange(numberOfEngines, MinEngines, MaxEngines, "Number of engines", string.Empty, nameof(numberOfEngines));
+
         NumberOfEngines = numberOfEngines;
     }
 }

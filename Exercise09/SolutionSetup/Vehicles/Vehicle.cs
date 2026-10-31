@@ -14,7 +14,8 @@ public abstract class Vehicle : IVehicle
     public string RegistrationNumber { get; }
 
     /// <summary>Color of the vehicle. Must be one of the colors in <see cref="VehicleColors.All"/>. Set once at construction.</summary>
-    // TODO: Phase 2 - Decide whether colors stay limited to a fixed list or any valid color is allowed, and document the decision.
+    // Design decision: colors are limited to the fixed list in VehicleColors. This keeps the data consistent
+    // ("grey" and "gray" cannot both exist) and makes searching by color reliable. To allow more colors, add them to VehicleColors.All.
     public string Color { get; }
 
     /// <summary>Number of wheels on the vehicle. Cannot be negative. Set once at construction.</summary>
@@ -51,6 +52,19 @@ public abstract class Vehicle : IVehicle
     /// Extra details shown by <see cref="ToString"/>. Subclasses override this to add their own information.
     /// </summary>
     protected virtual string Details => string.Empty;
+
+    /// <summary>
+    /// Throws if the value is outside the inclusive range (NaN is also rejected). The message names the valid range and unit.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="value"/> is outside the range.</exception>
+    protected static void ThrowIfOutOfRange(double value, double min, double max, string description, string unit, string paramName)
+    {
+        if (!(value >= min && value <= max))
+        {
+            string suffix = string.IsNullOrEmpty(unit) ? string.Empty : $" {unit}";
+            throw new ArgumentOutOfRangeException(paramName, value, $"{description} must be between {min}{suffix} and {max}{suffix}.");
+        }
+    }
 
     /// <summary>
     /// Returns a one-line description of the vehicle, including optional subclass details.
