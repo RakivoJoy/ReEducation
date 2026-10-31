@@ -7,15 +7,23 @@ namespace SolutionSetupTests
         [Fact]
         public void All_ContainsTwentyUniqueColors()
         {
-            Assert.Equal(20, VehicleColors.All.Count);
-            Assert.Equal(20, VehicleColors.All.Distinct(StringComparer.OrdinalIgnoreCase).Count());
+            // Arrange & Act
+            var all = VehicleColors.All;
+
+            // Assert
+            Assert.Equal(20, all.Count);
+            Assert.Equal(20, all.Distinct(StringComparer.OrdinalIgnoreCase).Count());
         }
 
         [Fact]
         public void MostCommon_ContainsFirstFiveAllowedColors()
         {
-            Assert.Equal(5, VehicleColors.MostCommon.Count);
-            Assert.Equal(VehicleColors.All.Take(5), VehicleColors.MostCommon);
+            // Arrange & Act
+            var mostCommon = VehicleColors.MostCommon;
+
+            // Assert
+            Assert.Equal(5, mostCommon.Count);
+            Assert.Equal(VehicleColors.All.Take(5), mostCommon);
         }
 
         [Theory]
@@ -24,7 +32,11 @@ namespace SolutionSetupTests
         [InlineData("  BURGUNDY ", "Burgundy")]
         public void Normalize_ReturnsAllowedColorWithCanonicalCasing(string input, string expected)
         {
-            Assert.Equal(expected, VehicleColors.Normalize(input));
+            // Arrange & Act
+            var result = VehicleColors.Normalize(input);
+
+            // Assert
+            Assert.Equal(expected, result);
         }
 
         [Theory]
@@ -33,6 +45,7 @@ namespace SolutionSetupTests
         [InlineData("Invisible")]
         public void Normalize_ThrowsForColorNotInList(string color)
         {
+            // Arrange & Act & Assert
             Assert.Throws<ArgumentException>(() => VehicleColors.Normalize(color));
         }
 
@@ -41,12 +54,14 @@ namespace SolutionSetupTests
         [InlineData("   ")]
         public void Normalize_ThrowsForEmptyOrWhiteSpace(string color)
         {
+            // Arrange & Act & Assert
             Assert.Throws<ArgumentException>(() => VehicleColors.Normalize(color));
         }
 
         [Fact]
         public void Normalize_ThrowsForNull()
         {
+            // Arrange & Act & Assert
             Assert.Throws<ArgumentNullException>(() => VehicleColors.Normalize(null!));
         }
     }
