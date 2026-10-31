@@ -20,6 +20,8 @@ public partial class ConsoleUI
             return;
         }
 
+        // TODO: Phase 3 - Build this menu from VehicleType with Enum.GetValues() instead of hard-coded text.
+        // TODO: Phase 4 - Validate the type choice (and every other answer) right away and re-prompt on invalid input.
         _output.WriteLine("Select vehicle type:");
         _output.WriteLine("1. Motorcycle");
         _output.WriteLine("2. Airplane");
@@ -45,6 +47,7 @@ public partial class ConsoleUI
 
         try
         {
+            // TODO: Phase 3 - Replace this switch with a single vehicle factory so a new type needs minimal changes.
             Vehicle vehicle = typeChoice switch
             {
                 "1" => new Motorcycle(registrationNumber, color, numberOfWheels, ReadIntPrompt("Enter cylinder volume (cc):")),

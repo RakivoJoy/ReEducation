@@ -36,6 +36,7 @@ public partial class ConsoleUI
     /// </summary>
     private int ReadIntPrompt(string prompt)
     {
+        // TODO: Phase 4 - Re-prompt on invalid input and show the valid range instead of throwing.
         _output.WriteLine(prompt);
         string line = ReadLineOrEmpty();
         if (!int.TryParse(line, out int value))

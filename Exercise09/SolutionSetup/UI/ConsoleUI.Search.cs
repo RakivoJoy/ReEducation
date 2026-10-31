@@ -11,6 +11,8 @@ public partial class ConsoleUI
     /// </summary>
     internal void SearchVehicles()
     {
+        // TODO: Phase 5 - Let the user choose which properties to filter on (or enter criteria in one line)
+        // instead of stepping through every property one at a time.
         if (!TryGetGarage(out Garage<IVehicle> garage))
         {
             return;
@@ -82,6 +84,7 @@ public partial class ConsoleUI
     {
         type = null;
 
+        // TODO: Phase 3 - Build the list of vehicle types from VehicleType with Enum.GetValues().
         _output.WriteLine("Enter vehicle type (leave blank to skip): Motorcycle, Airplane, Car, Bus, Boat, Truck");
         string typeLine = ReadLineOrEmpty();
         if (string.IsNullOrWhiteSpace(typeLine))

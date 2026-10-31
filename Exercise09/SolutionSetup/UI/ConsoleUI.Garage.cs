@@ -15,6 +15,7 @@ public partial class ConsoleUI
     /// </summary>
     internal void CreateGarage()
     {
+        // TODO: Phase 4 - Show the valid capacity range (e.g. 1-1000), handle numbers too big for an int, and re-prompt on invalid input.
         _output.WriteLine("Enter garage capacity (positive whole number):");
         string line = ReadLineOrEmpty();
 
@@ -45,6 +46,7 @@ public partial class ConsoleUI
             return;
         }
 
+        // TODO: Phase 4 - Show "Sample vehicles are already added" when populate is used a second time.
         OperationResult result = garage.Populate(SampleData.CreateSampleVehicles());
         _output.WriteLine(result.Message);
     }

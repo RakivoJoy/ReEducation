@@ -89,7 +89,9 @@ public class Garage<T> : IEnumerable<T> where T : IVehicle
             return AddVehicle(v).Success;
         });
 
-        string message = $"Parked {parked} of {total} vehicles.";        return parked == total ? OperationResult.Ok(message) : OperationResult.Fail(message);
+        // TODO: Phase 1 - Use the message returned by AddVehicle() and report why each vehicle was not parked.
+        string message = $"Parked {parked} of {total} vehicles.";
+        return parked == total ? OperationResult.Ok(message) : OperationResult.Fail(message);
     }
 
     /// <summary>

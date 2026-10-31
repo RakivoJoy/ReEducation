@@ -12,6 +12,8 @@ public partial class ConsoleUI
 {
     private readonly TextReader _input;
     private readonly TextWriter _output;
+    // TODO: Phase 1 - Move garage ownership and the menu actions into a GarageHandler that implements IHandler,
+    // so the UI talks to the handler instead of owning the garage and can be tested without Console input/output.
     // The garage is null until the user creates one (menu option 1).
     private Garage<IVehicle>? _garage;
 
@@ -43,6 +45,7 @@ public partial class ConsoleUI
         bool exit = false;
         while (!exit)
         {
+            // TODO: Phase 4 - Add an empty line or "Press Enter to continue" so the result is not missed when the menu is shown.
             PrintMenu();
             string choice = ReadLineOrEmpty();
 
@@ -110,6 +113,7 @@ public partial class ConsoleUI
     {
         _output.WriteLine("Welcome to your Garage 2.0");
         _output.WriteLine("1. Create garage");
+        // TODO: Phase 4 - Disable or remove option 2 after it has been used, or tell the user the samples are already added.
         _output.WriteLine("2. Populate garage with sample vehicles");
         _output.WriteLine("3. Park vehicle");
         _output.WriteLine("4. Remove vehicle");

@@ -2,6 +2,7 @@ namespace SolutionSetup.Vehicles;
 
 public class Airplane : Vehicle
 {
+    // TODO: Phase 1 - Make NumberOfEngines immutable after construction (private/init set).
     public int NumberOfEngines { get; set; }
 
     public override VehicleType Type => VehicleType.Airplane;
@@ -11,6 +12,7 @@ public class Airplane : Vehicle
     public Airplane(string registrationNumber, string color, int numberOfWheels, int numberOfEngines)
         : base(registrationNumber, color, numberOfWheels)
     {
+        // TODO: Phase 2 - Validate the number of engines (e.g. no negative values) with a clear error message.
         NumberOfEngines = numberOfEngines;
     }
 }
