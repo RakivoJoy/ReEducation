@@ -18,7 +18,7 @@ public partial class ConsoleUI
         }
 
         _output.WriteLine("Enter criteria as property=value pairs separated by spaces, e.g. color=Black type=Car (leave blank for all vehicles).");
-        _output.WriteLine($"Properties: {string.Join(", ", SearchProperties.All.Select(property => property.Name))} ({string.Join(", ", VehicleTypes.Select(info => info.Type))})");
+        _output.WriteLine($"Properties: {string.Join(", ", SearchCriteria.PropertyNames)} ({string.Join(", ", VehicleTypes.Select(info => info.Type))})");
         string line = ReadLineOrEmpty();
 
         if (!TryParseSearchCriteria(line, out SearchCriteria criteria))
@@ -43,33 +43,13 @@ public partial class ConsoleUI
                 return false;
             }
 
-            if (!TryApplySearchCriterion(criteria, pair[..separatorIndex], pair[(separatorIndex + 1)..]))
+            if (!criteria.TrySetFilter(pair[..separatorIndex], pair[(separatorIndex + 1)..], out string error))
             {
+                _output.WriteLine(error);
                 return false;
             }
         }
 
-        return true;
-    }
-
-    // Applies a single property=value pair to the criteria using the shared registry; returns false (after printing an error) if it is invalid.
-    private bool TryApplySearchCriterion(SearchCriteria criteria, string property, string value)
-    {
-        SearchProperty? searchProperty = SearchProperties.Find(property);
-        if (searchProperty is null)
-        {
-            _output.WriteLine($"Unknown search property '{property}'. Valid properties: {string.Join(", ", SearchProperties.All.Select(p => p.Name))}.");
-            return false;
-        }
-
-        object? parsed = searchProperty.Parse.Invoke(value);
-        if (parsed is null)
-        {
-            _output.WriteLine(searchProperty.InvalidValueMessage.Invoke(value));
-            return false;
-        }
-
-        criteria.SetFilter(searchProperty.Name, parsed);
         return true;
     }
 

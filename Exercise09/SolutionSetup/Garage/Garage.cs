@@ -149,16 +149,7 @@ public class Garage<T> : IEnumerable<T> where T : IVehicle
     {
         ArgumentNullException.ThrowIfNull(criteria);
 
-        IEnumerable<T> matches = _vehicles;
-
-        foreach (KeyValuePair<string, object> filter in criteria.Filters)
-        {
-            SearchProperty property = SearchProperties.Find(filter.Key)
-                ?? throw new InvalidOperationException($"Unknown search property '{filter.Key}'.");
-            matches = matches.Where(v => property.Matches.Invoke(v, filter.Value));
-        }
-
-        return matches.ToList();
+        return _vehicles.Where(v => criteria.Matches(v)).ToList();
     }
 
     public IEnumerator<T> GetEnumerator()
