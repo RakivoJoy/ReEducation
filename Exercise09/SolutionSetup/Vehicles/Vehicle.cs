@@ -13,20 +13,12 @@ public abstract class Vehicle : IVehicle
     /// <summary>Unique registration number in ABC123 or ABC12D. Excluding I, Q, V. Set once and stored trimmed and uppercase.</summary>
     public string RegistrationNumber { get; }
 
+    /// <summary>Color of the vehicle. Must be one of the colors in <see cref="VehicleColors.All"/>. Set once at construction.</summary>
     // TODO: Phase 2 - Decide whether colors stay limited to a fixed list or any valid color is allowed, and document the decision.
-    private string _color = string.Empty;
+    public string Color { get; }
 
-    /// <summary>Color of the vehicle. Must be one of the colors in <see cref="VehicleColors.All"/>.</summary>
-    // TODO: Phase 1 - Make Color immutable after construction (private/init set).
-    public string Color
-    {
-        get => _color;
-        set => _color = VehicleColors.Normalize(value);
-    }
-
-    /// <summary>Number of wheels on the vehicle. Cannot be negative.</summary>
-    // TODO: Phase 1 - Make NumberOfWheels immutable after construction (private/init set).
-    public int NumberOfWheels { get; set; }
+    /// <summary>Number of wheels on the vehicle. Cannot be negative. Set once at construction.</summary>
+    public int NumberOfWheels { get; }
 
     /// <summary>The vehicle type, implemented by each subclass.</summary>
     public abstract VehicleType Type { get; }
@@ -51,7 +43,7 @@ public abstract class Vehicle : IVehicle
         }
 
         RegistrationNumber = normalizedRegistrationNumber;
-        Color = color;
+        Color = VehicleColors.Normalize(color);
         NumberOfWheels = numberOfWheels;
     }
 

@@ -4,8 +4,7 @@ namespace SolutionSetup.Vehicles;
 
 public class Truck : Vehicle
 {
-    // TODO: Phase 1 - Make LoadCapacity immutable after construction (private/init set).
-    public int LoadCapacity { get; set; }
+    public int LoadCapacity { get; }
 
     public override VehicleType Type => VehicleType.Truck;
 

@@ -15,12 +15,12 @@ public partial class ConsoleUI
     /// </summary>
     internal void ParkVehicle()
     {
-        if (!TryGetGarage(out Garage<IVehicle> garage))
+        if (!EnsureGarage())
         {
             return;
         }
 
-        // TODO: Phase 3 - Build this menu from VehicleType with Enum.GetValues() instead of hard-coded text.
+        // TODO: Phase 3 - Build this menu
         // TODO: Phase 4 - Validate the type choice (and every other answer) right away and re-prompt on invalid input.
         _output.WriteLine("Select vehicle type:");
         _output.WriteLine("1. Motorcycle");
@@ -59,7 +59,7 @@ public partial class ConsoleUI
                 _ => throw new FormatException($"'{typeChoice}' is not a valid vehicle type option.")
             };
 
-            OperationResult result = garage.AddVehicle(vehicle);
+            OperationResult result = _handler.ParkVehicle(vehicle);
             _output.WriteLine(result.Message);
         }
         catch (FormatException ex)
@@ -77,7 +77,7 @@ public partial class ConsoleUI
     /// </summary>
     internal void RemoveVehicle()
     {
-        if (!TryGetGarage(out Garage<IVehicle> garage))
+        if (!EnsureGarage())
         {
             return;
         }
@@ -85,7 +85,7 @@ public partial class ConsoleUI
         _output.WriteLine("Enter registration number to remove:");
         string registrationNumber = ReadLineOrEmpty();
 
-        OperationResult result = garage.RemoveVehicleByRegistration(registrationNumber);
+        OperationResult result = _handler.RemoveVehicle(registrationNumber);
         _output.WriteLine(result.Message);
     }
 
@@ -94,12 +94,12 @@ public partial class ConsoleUI
     /// </summary>
     internal void ListVehicles()
     {
-        if (!TryGetGarage(out Garage<IVehicle> garage))
+        if (!EnsureGarage())
         {
             return;
         }
 
-        IReadOnlyList<IVehicle> vehicles = garage.ListAllVehicles();
+        IReadOnlyList<IVehicle> vehicles = _handler.ListVehicles();
         if (vehicles.Count == 0)
         {
             _output.WriteLine("No vehicles are parked in the garage.");
@@ -117,7 +117,7 @@ public partial class ConsoleUI
     /// </summary>
     internal void FindVehicle()
     {
-        if (!TryGetGarage(out Garage<IVehicle> garage))
+        if (!EnsureGarage())
         {
             return;
         }
@@ -125,7 +125,7 @@ public partial class ConsoleUI
         _output.WriteLine("Enter registration number to find:");
         string registrationNumber = ReadLineOrEmpty();
 
-        IVehicle? vehicle = garage.FindByRegistration(registrationNumber);
+        IVehicle? vehicle = _handler.FindVehicle(registrationNumber);
         if (vehicle is null)
         {
             _output.WriteLine($"No vehicle with registration number {registrationNumber} was found.");

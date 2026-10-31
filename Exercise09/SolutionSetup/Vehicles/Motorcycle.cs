@@ -2,8 +2,7 @@ namespace SolutionSetup.Vehicles;
 
 public class Motorcycle : Vehicle
 {
-    // TODO: Phase 1 - Make CylinderVolume immutable after construction (private/init set).
-    public int CylinderVolume { get; set; }
+    public int CylinderVolume { get; }
 
     public override VehicleType Type => VehicleType.Motorcycle;
 

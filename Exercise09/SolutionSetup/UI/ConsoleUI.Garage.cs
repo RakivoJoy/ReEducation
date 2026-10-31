@@ -25,15 +25,8 @@ public partial class ConsoleUI
             return;
         }
 
-        try
-        {
-            _garage = new Garage<IVehicle>(capacity);
-            _output.WriteLine($"Garage created with capacity {capacity}.");
-        }
-        catch (ArgumentOutOfRangeException ex)
-        {
-            _output.WriteLine($"Could not create garage: {ex.Message}");
-        }
+        OperationResult result = _handler.CreateGarage(capacity);
+        _output.WriteLine(result.Message);
     }
 
     /// <summary>
@@ -41,13 +34,13 @@ public partial class ConsoleUI
     /// </summary>
     internal void PopulateGarage()
     {
-        if (!TryGetGarage(out Garage<IVehicle> garage))
+        if (!EnsureGarage())
         {
             return;
         }
 
         // TODO: Phase 4 - Show "Sample vehicles are already added" when populate is used a second time.
-        OperationResult result = garage.Populate(SampleData.CreateSampleVehicles());
+        OperationResult result = _handler.PopulateGarage();
         _output.WriteLine(result.Message);
     }
 
@@ -56,12 +49,12 @@ public partial class ConsoleUI
     /// </summary>
     internal void ListVehicleCounts()
     {
-        if (!TryGetGarage(out Garage<IVehicle> garage))
+        if (!EnsureGarage())
         {
             return;
         }
 
-        Dictionary<VehicleType, int> counts = garage.ListVehicleCountByType();
+        Dictionary<VehicleType, int> counts = _handler.ListVehicleCounts();
 
         if (counts.Values.Sum() == 0)
         {

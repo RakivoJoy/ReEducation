@@ -2,8 +2,7 @@ namespace SolutionSetup.Vehicles;
 
 public class Car : Vehicle
 {
-    // TODO: Phase 1 - Make FuelType immutable after construction (private/init set).
-    public FuelType FuelType { get; set; }
+    public FuelType FuelType { get; }
 
     public override VehicleType Type => VehicleType.Car;
 

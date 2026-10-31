@@ -13,7 +13,7 @@ public partial class ConsoleUI
     {
         // TODO: Phase 5 - Let the user choose which properties to filter on (or enter criteria in one line)
         // instead of stepping through every property one at a time.
-        if (!TryGetGarage(out Garage<IVehicle> garage))
+        if (!EnsureGarage())
         {
             return;
         }
@@ -23,7 +23,7 @@ public partial class ConsoleUI
             return;
         }
 
-        PrintSearchResults(garage.SearchByProperties(criteria));
+        PrintSearchResults(_handler.SearchVehicles(criteria));
     }
 
     // Reads all search inputs; returns false (after printing an error) if any input is invalid.

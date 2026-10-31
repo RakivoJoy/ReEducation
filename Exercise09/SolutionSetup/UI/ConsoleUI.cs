@@ -12,28 +12,38 @@ public partial class ConsoleUI
 {
     private readonly TextReader _input;
     private readonly TextWriter _output;
-    // TODO: Phase 1 - Move garage ownership and the menu actions into a GarageHandler that implements IHandler,
-    // so the UI talks to the handler instead of owning the garage and can be tested without Console input/output.
-    // The garage is null until the user creates one (menu option 1).
-    private Garage<IVehicle>? _garage;
+    // The handler owns the garage; the UI only reads input, calls the handler and prints results.
+    private readonly IHandler _handler;
 
     /// <summary>
     /// Creates a console UI that reads from <see cref="Console.In"/> and writes to <see cref="Console.Out"/>.
     /// </summary>
     public ConsoleUI()
-        : this(Console.In, Console.Out)
+        : this(Console.In, Console.Out, new GarageHandler())
     {
     }
 
     /// <summary>
-    /// Creates a console UI that uses the given input and output streams.
+    /// Creates a console UI that uses the given input and output streams and a new <see cref="GarageHandler"/>.
     /// </summary>
     /// <param name="input">Source of user input.</param>
     /// <param name="output">Destination for menu text and messages.</param>
     internal ConsoleUI(TextReader input, TextWriter output)
+        : this(input, output, new GarageHandler())
+    {
+    }
+
+    /// <summary>
+    /// Creates a console UI that uses the given input, output and handler.
+    /// </summary>
+    /// <param name="input">Source of user input.</param>
+    /// <param name="output">Destination for menu text and messages.</param>
+    /// <param name="handler">Handler that owns the garage and performs the menu actions.</param>
+    internal ConsoleUI(TextReader input, TextWriter output, IHandler handler)
     {
         _input = input;
         _output = output;
+        _handler = handler;
     }
 
     /// <summary>

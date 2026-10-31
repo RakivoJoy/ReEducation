@@ -2,8 +2,7 @@ namespace SolutionSetup.Vehicles;
 
 public class Bus : Vehicle
 {
-    // TODO: Phase 1 - Make NumberOfSeats immutable after construction (private/init set).
-    public int NumberOfSeats { get; set; }
+    public int NumberOfSeats { get; }
 
     public override VehicleType Type => VehicleType.Bus;
 

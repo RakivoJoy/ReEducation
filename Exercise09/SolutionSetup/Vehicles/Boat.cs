@@ -4,8 +4,7 @@ namespace SolutionSetup.Vehicles;
 
 public class Boat : Vehicle
 {
-    // TODO: Phase 1 - Make Length immutable after construction (private/init set).
-    public double Length { get; set; }
+    public double Length { get; }
 
     public override VehicleType Type => VehicleType.Boat;
 

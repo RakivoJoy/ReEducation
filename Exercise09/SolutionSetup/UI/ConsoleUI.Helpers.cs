@@ -15,19 +15,17 @@ public partial class ConsoleUI
     private string ReadLineOrEmpty() => _input.ReadLine() ?? string.Empty;
 
     /// <summary>
-    /// Returns true and the current garage if one exists. Otherwise prints a message and returns false.
+    /// Returns true if a garage exists. Otherwise prints a message and returns false.
     /// Menu handlers use this to stop early when no garage has been created.
     /// </summary>
-    private bool TryGetGarage(out Garage<IVehicle> garage)
+    private bool EnsureGarage()
     {
-        if (_garage is null)
+        if (!_handler.HasGarage)
         {
             _output.WriteLine("No garage has been created yet. Please create a garage first.");
-            garage = null!;
             return false;
         }
 
-        garage = _garage;
         return true;
     }
 

@@ -2,8 +2,7 @@ namespace SolutionSetup.Vehicles;
 
 public class Airplane : Vehicle
 {
-    // TODO: Phase 1 - Make NumberOfEngines immutable after construction (private/init set).
-    public int NumberOfEngines { get; set; }
+    public int NumberOfEngines { get; }
 
     public override VehicleType Type => VehicleType.Airplane;
 

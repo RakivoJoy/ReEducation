@@ -76,22 +76,37 @@ public class Garage<T> : IEnumerable<T> where T : IVehicle
     /// <summary>
     /// Tries to park every vehicle in the list. Vehicles that cannot be parked (duplicate or no space) are skipped.
     /// </summary>
-    /// <returns>A success result if all vehicles were parked; otherwise a failed result. The message states how many were parked.</returns>
+    /// <returns>A success result if all vehicles were parked; otherwise a failed result. The message states how many were parked and why each remaining vehicle was not.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="vehicles"/> is null.</exception>
     public OperationResult Populate(IEnumerable<T> vehicles)
     {
         ArgumentNullException.ThrowIfNull(vehicles);
 
         int total = 0;
-        int parked = vehicles.Count(v =>
+        int parked = 0;
+        List<string> failures = [];
+
+        foreach (T vehicle in vehicles)
         {
             total++;
-            return AddVehicle(v).Success;
-        });
+            OperationResult result = AddVehicle(vehicle);
+            if (result.Success)
+            {
+                parked++;
+            }
+            else
+            {
+                failures.Add($"{vehicle.RegistrationNumber}: {result.Message}");
+            }
+        }
 
-        // TODO: Phase 1 - Use the message returned by AddVehicle() and report why each vehicle was not parked.
         string message = $"Parked {parked} of {total} vehicles.";
-        return parked == total ? OperationResult.Ok(message) : OperationResult.Fail(message);
+        if (failures.Count == 0)
+        {
+            return OperationResult.Ok(message);
+        }
+
+        return OperationResult.Fail(message + Environment.NewLine + string.Join(Environment.NewLine, failures));
     }
 
     /// <summary>
