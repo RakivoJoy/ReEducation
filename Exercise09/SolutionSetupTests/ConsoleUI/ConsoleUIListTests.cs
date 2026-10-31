@@ -1,4 +1,6 @@
+using SolutionSetup;
 using SolutionSetup.UI;
+using SolutionSetup.Vehicles;
 
 namespace SolutionSetupTests
 {
@@ -9,15 +11,16 @@ namespace SolutionSetupTests
         {
             // Arrange
             using var output = new StringWriter();
-            using var input = new StringReader("5\n3\nABC123\nBlack\n4\nGasoline\n");
-            var ui = new ConsoleUI(input, output);
-            ui.CreateGarage();
-            ui.ParkVehicle();
+            var handler = new GarageHandler();
+            handler.CreateGarage(5);
+            handler.ParkVehicle(new Car("ABC123", "Black", 4, FuelType.Gasoline));
+            var ui = new ConsoleUI(new StringReader(""), output, handler);
 
             // Act
             ui.ListVehicles();
 
             // Assert
+            Assert.Single(handler.ListVehicles());
             Assert.Contains("ABC123", output.ToString());
         }
 
@@ -53,20 +56,20 @@ namespace SolutionSetupTests
         }
 
         [Fact]
-        public void ListVehicleCounts_PrintsCounts_WhenGarageHasVehicles()
+        public void ListVehicleCounts_CountsParkedVehiclesByType()
         {
             // Arrange
             using var output = new StringWriter();
-            using var input = new StringReader("5\n3\nABC123\nBlack\n4\nGasoline\n");
-            var ui = new ConsoleUI(input, output);
-            ui.CreateGarage();
-            ui.ParkVehicle();
+            var handler = new GarageHandler();
+            handler.CreateGarage(5);
+            handler.ParkVehicle(new Car("ABC123", "Black", 4, FuelType.Gasoline));
+            var ui = new ConsoleUI(new StringReader(""), output, handler);
 
             // Act
             ui.ListVehicleCounts();
 
             // Assert
-            Assert.Contains("Car: 1", output.ToString());
+            Assert.Equal(1, handler.ListVehicleCounts()[VehicleType.Car]);
         }
 
         [Fact]

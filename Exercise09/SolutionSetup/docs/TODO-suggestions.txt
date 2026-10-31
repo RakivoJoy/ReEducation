@@ -66,10 +66,6 @@ IMPROVEMENTS
 	Most tests call one UI method directly. One or two full sessions (create, populate, park,
 	search, remove, exit) would catch menu wiring and pause-handling regressions.
 
-[4] Stop asserting on exact UI strings where it is not the point
-	Many tests assert message fragments, so a wording change breaks them. Assert on handler
-	results and garage state where possible, and keep a few focused tests for the wording.
-
 [3] Enable analyzers and stricter build settings
 	Add Directory.Build.props with AnalysisLevel, EnforceCodeStyleInBuild and
 	TreatWarningsAsErrors (at least for nullable warnings), plus an .editorconfig.

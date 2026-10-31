@@ -1,3 +1,4 @@
+using SolutionSetup;
 using SolutionSetup.UI;
 
 namespace SolutionSetupTests
@@ -8,15 +9,16 @@ namespace SolutionSetupTests
         public void CreateGarage_CreatesGarage_WithValidCapacity()
         {
             // Arrange
+            var handler = new GarageHandler();
             using var input = new StringReader("5\n");
             using var output = new StringWriter();
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, handler);
 
             // Act
             ui.CreateGarage();
 
             // Assert
-            Assert.Contains("Garage created with capacity 5.", output.ToString());
+            Assert.True(handler.HasGarage);
         }
 
         [Fact]
@@ -35,66 +37,68 @@ namespace SolutionSetupTests
         }
 
         [Fact]
-        public void CreateGarage_ShowsMessage_ForNonPositiveCapacity()
+        public void CreateGarage_DoesNotCreateGarage_ForNonPositiveCapacity()
         {
             // Arrange
+            var handler = new GarageHandler();
             using var input = new StringReader("0\n");
             using var output = new StringWriter();
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, handler);
 
             // Act
             ui.CreateGarage();
 
             // Assert
-            Assert.Contains("Could not create garage:", output.ToString());
+            Assert.False(handler.HasGarage);
         }
 
         [Fact]
         public void CreateGarage_AcceptsMaximumCapacity()
         {
             // Arrange
+            var handler = new GarageHandler();
             using var input = new StringReader("2000\n");
             using var output = new StringWriter();
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, handler);
 
             // Act
             ui.CreateGarage();
 
             // Assert
-            Assert.Contains("Garage created with capacity 2000.", output.ToString());
+            Assert.True(handler.HasGarage);
         }
 
         [Fact]
         public void CreateGarage_RePromptsForCapacityAboveMaximum()
         {
             // Arrange
+            var handler = new GarageHandler();
             using var input = new StringReader("2001\n");
             using var output = new StringWriter();
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, handler);
 
             // Act
             ui.CreateGarage();
 
             // Assert
-            Assert.Contains("Invalid capacity '2001'", output.ToString());
+            Assert.False(handler.HasGarage);
         }
 
         [Fact]
         public void CreateGarage_AllowsRecreatingGarage()
         {
             // Arrange
+            var handler = new GarageHandler();
             using var input = new StringReader("3\n7\n");
             using var output = new StringWriter();
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, handler);
 
             // Act
             ui.CreateGarage();
             ui.CreateGarage();
 
             // Assert
-            string result = output.ToString();
-            Assert.Contains("Garage created with capacity 3.", result);
-            Assert.Contains("Garage created with capacity 7.", result);
+            Assert.Contains("Garage created with capacity 7.", output.ToString());
         }
     }
 }

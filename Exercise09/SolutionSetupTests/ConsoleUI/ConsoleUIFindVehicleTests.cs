@@ -1,3 +1,4 @@
+using SolutionSetup;
 using SolutionSetup.UI;
 
 namespace SolutionSetupTests
@@ -8,9 +9,10 @@ namespace SolutionSetupTests
         public void FindVehicle_PrintsVehicle_WhenFound()
         {
             // Arrange
+            var handler = new GarageHandler();
             using var output = new StringWriter();
             using var input = new StringReader("5\n3\nABC123\nBlack\n4\nGasoline\nABC123\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, handler);
             ui.CreateGarage();
             ui.ParkVehicle();
 
@@ -22,19 +24,19 @@ namespace SolutionSetupTests
         }
 
         [Fact]
-        public void FindVehicle_ShowsMessage_WhenNotFound()
+        public void FindVehicle_ReturnsNull_WhenNotFound()
         {
             // Arrange
+            var handler = new GarageHandler();
+            handler.CreateGarage(5);
             using var output = new StringWriter();
-            using var input = new StringReader("5\nZZZ999\n");
-            var ui = new ConsoleUI(input, output);
-            ui.CreateGarage();
+            var ui = new ConsoleUI(new StringReader("ZZZ999\n"), output, handler);
 
             // Act
             ui.FindVehicle();
 
             // Assert
-            Assert.Contains("No vehicle with registration number ZZZ999 was found.", output.ToString());
+            Assert.Null(handler.FindVehicle("ZZZ999"));
         }
 
         [Fact]

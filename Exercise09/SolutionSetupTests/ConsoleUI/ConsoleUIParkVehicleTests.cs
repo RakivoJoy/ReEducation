@@ -1,4 +1,6 @@
+using SolutionSetup;
 using SolutionSetup.UI;
+using SolutionSetup.Vehicles;
 
 namespace SolutionSetupTests
 {
@@ -8,32 +10,34 @@ namespace SolutionSetupTests
         public void ParkVehicle_ParksCar_WhenInputValid()
         {
             // Arrange
+            var handler = new GarageHandler();
             using var output = new StringWriter();
             using var input = new StringReader("5\n3\nABC123\nBlack\n4\nGasoline\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, handler);
             ui.CreateGarage();
 
             // Act
             ui.ParkVehicle();
 
             // Assert
-            Assert.Contains("Vehicle ABC123 parked.", output.ToString());
+            Assert.NotNull(handler.FindVehicle("ABC123"));
         }
 
         [Fact]
         public void ParkVehicle_ParksTruck_WhenInputValid()
         {
             // Arrange
+            var handler = new GarageHandler();
             using var output = new StringWriter();
             using var input = new StringReader("5\n6\nTRK001\nBlue\n6\n9000\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, handler);
             ui.CreateGarage();
 
             // Act
             ui.ParkVehicle();
 
             // Assert
-            Assert.Contains("Vehicle TRK001 parked.", output.ToString());
+            Assert.IsType<Truck>(handler.FindVehicle("TRK001"));
         }
 
         [Fact]
@@ -53,20 +57,20 @@ namespace SolutionSetupTests
         }
 
         [Fact]
-        public void ParkVehicle_ShowsError_ForColorNotInAllowedList()
+        public void ParkVehicle_DoesNotPark_ForColorNotInAllowedList()
         {
             // Arrange
+            var handler = new GarageHandler();
             using var output = new StringWriter();
             using var input = new StringReader("5\n3\nABC123\nInvisible\n4\nGasoline\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, handler);
             ui.CreateGarage();
 
             // Act
             ui.ParkVehicle();
 
             // Assert
-            Assert.Contains("Could not park vehicle:", output.ToString());
-            Assert.Contains("Invisible", output.ToString());
+            Assert.Null(handler.FindVehicle("ABC123"));
         }
 
         [Fact]
@@ -85,51 +89,54 @@ namespace SolutionSetupTests
         }
 
         [Fact]
-        public void ParkVehicle_ShowsError_ForInvalidWheelsInput()
+        public void ParkVehicle_DoesNotPark_ForInvalidWheelsInput()
         {
             // Arrange
+            var handler = new GarageHandler();
             using var output = new StringWriter();
             using var input = new StringReader("5\n3\nABC123\nBlack\nnotanumber\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, handler);
             ui.CreateGarage();
 
             // Act
             ui.ParkVehicle();
 
             // Assert
-            Assert.Contains("Invalid number of wheels.", output.ToString());
+            Assert.Empty(handler.ListVehicles());
         }
 
         [Fact]
-        public void ParkVehicle_ShowsError_ForInvalidTypeSelection()
+        public void ParkVehicle_DoesNotPark_ForInvalidTypeSelection()
         {
             // Arrange
+            var handler = new GarageHandler();
             using var output = new StringWriter();
             using var input = new StringReader("5\n99\nABC123\nBlack\n4\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, handler);
             ui.CreateGarage();
 
             // Act
             ui.ParkVehicle();
 
             // Assert
-            Assert.Contains("Invalid input:", output.ToString());
+            Assert.Empty(handler.ListVehicles());
         }
 
         [Fact]
-        public void ParkVehicle_ShowsError_ForInvalidFuelType()
+        public void ParkVehicle_DoesNotPark_ForInvalidFuelType()
         {
             // Arrange
+            var handler = new GarageHandler();
             using var output = new StringWriter();
             using var input = new StringReader("5\n3\nABC123\nBlack\n4\nElectric\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, handler);
             ui.CreateGarage();
 
             // Act
             ui.ParkVehicle();
 
             // Assert
-            Assert.Contains("Invalid input:", output.ToString());
+            Assert.Empty(handler.ListVehicles());
         }
 
         [Fact]
