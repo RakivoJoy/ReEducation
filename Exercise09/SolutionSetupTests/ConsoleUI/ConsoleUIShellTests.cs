@@ -7,12 +7,15 @@ namespace SolutionSetupTests
         [Fact]
         public void Run_PrintsMenu_AndExitsOnZero()
         {
+            // Arrange
             using var input = new StringReader("0\n");
             using var output = new StringWriter();
             var ui = new ConsoleUI(input, output);
 
+            // Act
             ui.Run();
 
+            // Assert
             string result = output.ToString();
             Assert.Contains("Garage 2.0", result);
             Assert.Contains("0. Exit", result);
@@ -21,12 +24,15 @@ namespace SolutionSetupTests
         [Fact]
         public void Run_ShowsMessage_AndContinues_ForInvalidChoice()
         {
+            // Arrange
             using var input = new StringReader("99\n0\n");
             using var output = new StringWriter();
             var ui = new ConsoleUI(input, output);
 
+            // Act
             ui.Run();
 
+            // Assert
             string result = output.ToString();
             Assert.Contains("Invalid choice. Please select a valid menu option.", result);
         }
@@ -34,12 +40,15 @@ namespace SolutionSetupTests
         [Fact]
         public void Run_PrintsMenuTwice_WhenInvalidChoiceThenExit()
         {
+            // Arrange
             using var input = new StringReader("abc\n0\n");
             using var output = new StringWriter();
             var ui = new ConsoleUI(input, output);
 
+            // Act
             ui.Run();
 
+            // Assert
             string result = output.ToString();
             int occurrences = result.Split("Garage 2.0").Length - 1;
             Assert.Equal(2, occurrences);
