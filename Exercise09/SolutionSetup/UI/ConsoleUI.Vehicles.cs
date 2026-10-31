@@ -40,12 +40,16 @@ public partial class ConsoleUI
                     return valid;
                 });
 
-            _output.WriteLine("Enter registration number:");
-            string registrationNumber = ReadLineOrEmpty();
+            string registrationNumber = ReadValidated<string>(
+                "Enter registration number:",
+                line => $"Invalid registration number '{line}'. Use three letters (excluding I, Q, V) followed by three alphanumerics.",
+                (string text, out string value) => Vehicle.TryNormalizeRegistrationNumber(text, out value));
 
             _output.WriteLine($"Most common colors: {string.Join(", ", VehicleColors.MostCommon)}");
-            _output.WriteLine("Enter color:");
-            string color = ReadLineOrEmpty();
+            string color = ReadValidated<string>(
+                "Enter color:",
+                line => $"Invalid color '{line}'. Choose one of the allowed colors.",
+                (string text, out string value) => VehicleColors.TryNormalize(text, out value));
 
             int numberOfWheels = ReadIntPrompt("Enter number of wheels:", "Invalid number of wheels. Please enter a whole number.");
 
@@ -53,14 +57,6 @@ public partial class ConsoleUI
 
             OperationResult result = _handler.ParkVehicle(vehicle);
             _output.WriteLine(result.Message);
-        }
-        catch (FormatException ex)
-        {
-            _output.WriteLine($"Invalid input: {ex.Message}");
-        }
-        catch (ArgumentException ex)
-        {
-            _output.WriteLine($"Could not park vehicle: {ex.Message}");
         }
         catch (EndOfStreamException)
         {

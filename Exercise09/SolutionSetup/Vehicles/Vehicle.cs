@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 namespace SolutionSetup.Vehicles;
@@ -37,8 +38,7 @@ public abstract class Vehicle : IVehicle
         ArgumentException.ThrowIfNullOrWhiteSpace(registrationNumber);
         ArgumentOutOfRangeException.ThrowIfNegative(numberOfWheels);
 
-        string normalizedRegistrationNumber = registrationNumber.Trim().ToUpperInvariant();
-        if (!RegistrationNumberPattern.IsMatch(normalizedRegistrationNumber))
+        if (!TryNormalizeRegistrationNumber(registrationNumber, out string? normalizedRegistrationNumber))
         {
             throw new ArgumentException($"Registration number '{registrationNumber}' must be three letters (excluding I, Q, V) followed by three alphanumerics.", nameof(registrationNumber));
         }
@@ -46,6 +46,22 @@ public abstract class Vehicle : IVehicle
         RegistrationNumber = normalizedRegistrationNumber;
         Color = VehicleColors.Normalize(color);
         NumberOfWheels = numberOfWheels;
+    }
+
+    /// <summary>
+    /// Tries to normalize a registration number (trimmed and uppercase) that matches the ABC123 or ABC12D format.
+    /// </summary>
+    public static bool TryNormalizeRegistrationNumber(string? registrationNumber, [NotNullWhen(true)] out string? normalized)
+    {
+        string candidate = registrationNumber?.Trim().ToUpperInvariant() ?? string.Empty;
+        if (RegistrationNumberPattern.IsMatch(candidate))
+        {
+            normalized = candidate;
+            return true;
+        }
+
+        normalized = null;
+        return false;
     }
 
     /// <summary>

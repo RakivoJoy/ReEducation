@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace SolutionSetup.Vehicles;
@@ -29,7 +30,15 @@ public static class VehicleColors
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(color);
 
-        string? match = All.FirstOrDefault(allowed => string.Equals(allowed, color.Trim(), StringComparison.OrdinalIgnoreCase));
-        return match ?? throw new ArgumentException($"Color '{color}' is not allowed. Choose one of: {string.Join(", ", All)}.", nameof(color));
+        return TryNormalize(color, out string? match) ? match : throw new ArgumentException($"Color '{color}' is not allowed. Choose one of: {string.Join(", ", All)}.", nameof(color));
+    }
+
+    /// <summary>
+    /// Tries to find the allowed color matching the given value, ignoring case and surrounding whitespace.
+    /// </summary>
+    public static bool TryNormalize(string? color, [NotNullWhen(true)] out string? normalized)
+    {
+        normalized = All.FirstOrDefault(allowed => string.Equals(allowed, color?.Trim(), StringComparison.OrdinalIgnoreCase));
+        return normalized is not null;
     }
 }

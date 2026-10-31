@@ -7,12 +7,6 @@ Scope: Exercise09 only.
 WEAKNESSES AND INCONSISTENCIES
 =====================================================================
 
-[4] Exceptions used for normal input flow
-	Invalid user input is reported through FormatException / ArgumentException caught in
-	ParkVehicle. Validation of user text should return a result (TryParse style), and
-	exceptions should be kept for programmer errors. Also lets the UI re-prompt only the field
-	that failed (registration, color) instead of restarting the whole park flow.
-
 [3] Vehicle type is stored twice
 	VehicleType (enum) and the concrete class (Car, Bus, ...) both describe the type, and
 	each class has to return the matching enum. Adding a vehicle means touching the enum,
