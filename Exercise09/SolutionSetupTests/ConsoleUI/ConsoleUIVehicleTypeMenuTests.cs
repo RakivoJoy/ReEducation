@@ -29,7 +29,7 @@ namespace SolutionSetupTests
         {
             // Arrange
             using var output = new StringWriter();
-            using var input = new StringReader("5\n\n\n\n\n");
+            using var input = new StringReader("5\n\n");
             var ui = new ConsoleUI(input, output);
             ui.CreateGarage();
 

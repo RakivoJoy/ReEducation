@@ -13,7 +13,7 @@ namespace SolutionSetupTests
                 "5\n" +
                 "3\nABC123\nBlack\n4\nGasoline\n" +
                 "3\nDEF456\nRed\n4\nDiesel\n" +
-                "\nBlack\n\n\n");
+                "color=Black\n\n");
             var ui = new ConsoleUI(input, output);
             ui.CreateGarage();
             ui.ParkVehicle();
@@ -38,7 +38,7 @@ namespace SolutionSetupTests
                 "5\n" +
                 "3\nABC123\nBlack\n4\nGasoline\n" +
                 "3\nDEF456\nBlack\n4\nDiesel\n" +
-                "\nBlack\n4\nCar\n");
+                "color=Black wheels=4 type=Car\n");
             var ui = new ConsoleUI(input, output);
             ui.CreateGarage();
             ui.ParkVehicle();
@@ -58,7 +58,7 @@ namespace SolutionSetupTests
         {
             // Arrange
             using var output = new StringWriter();
-            using var input = new StringReader("5\n\nGreen\n\n\n");
+            using var input = new StringReader("5\ncolor=Green\n\n");
             var ui = new ConsoleUI(input, output);
             ui.CreateGarage();
 
@@ -74,7 +74,7 @@ namespace SolutionSetupTests
         {
             // Arrange
             using var output = new StringWriter();
-            using var input = new StringReader("5\n\n\nnotanumber\n\n");
+            using var input = new StringReader("5\nwheels=notanumber\n\n");
             var ui = new ConsoleUI(input, output);
             ui.CreateGarage();
 
@@ -90,7 +90,7 @@ namespace SolutionSetupTests
         {
             // Arrange
             using var output = new StringWriter();
-            using var input = new StringReader("5\n\n\n\nSpaceship\n");
+            using var input = new StringReader("5\ntype=Spaceship\n");
             var ui = new ConsoleUI(input, output);
             ui.CreateGarage();
 
