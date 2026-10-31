@@ -1,0 +1,114 @@
+TODO-suggestions.txt - Exercise09 (Garage 2.0)
+
+Grade = value for a mid-level engineer to work on: 4 = most valuable, 1 = least valuable.
+Scope: Exercise09 only.
+
+=====================================================================
+WEAKNESSES AND INCONSISTENCIES
+=====================================================================
+
+[4] Fuel type input behaves differently from every other prompt
+	ReadFuelTypePrompt throws FormatException and ParkVehicle aborts, while capacity, wheels
+	and other numbers re-prompt (ReadValidated). The user loses all earlier input for a typo.
+	Fix: route fuel type through ReadValidated so the whole UI re-prompts the same way.
+
+[4] Exceptions used for normal input flow
+	Invalid user input is reported through FormatException / ArgumentException caught in
+	ParkVehicle. Validation of user text should return a result (TryParse style), and
+	exceptions should be kept for programmer errors. Also lets the UI re-prompt only the field
+	that failed (registration, color) instead of restarting the whole park flow.
+
+[3] Vehicle type is stored twice
+	VehicleType (enum) and the concrete class (Car, Bus, ...) both describe the type, and
+	each class has to return the matching enum. Adding a vehicle means touching the enum,
+	the class, the UI factory and the sample data. Consider a single source of truth
+	(for example a registry of type descriptors: name, prompt, factory) so a new vehicle type
+	is one change.
+
+[2] Populate partial success is intended, but the result is misleading
+	Garage.Populate parks what fits and returns Fail with the failed vehicles listed, even
+	though some vehicles were parked. Keep partial success, but consider a result that carries
+	the parked count and failures separately so "Fail" does not describe a changed garage.
+
+[3] Menu handling relies on magic strings
+	Run() switches on "1".."8" and repeats the same list again for the pause check. A table of
+	menu items (key, text, action, pauseAfter) would remove the duplication between
+	PrintMenu, the switch and the pause list, and makes adding options a one-line change.
+
+[3] Search is not extensible
+	SearchCriteria has four hard-coded properties, and the property=value parser in
+	ConsoleUI.Search.cs has a switch per property. A new vehicle property (for example
+	fuel type or seat count) needs edits in SearchCriteria, Garage.SearchByProperties and the
+	parser. Consider predicate-based criteria or a property map shared by parser and filter.
+
+[2] Lookup is a linear scan
+	Garage stores a List<T> and every add/find/remove scans it, and AddVehicle scans before
+	inserting. Fine for a capacity of tens of vehicles, but a Dictionary keyed by registration
+	number would give O(1) duplicate checks and lookups and make the intent explicit.
+
+[1] Garage<T> is a requirement and is only used as Garage<IVehicle>
+	The generic is required, so keep it. The app only ever instantiates Garage<IVehicle>;
+	a short note in the README or class summary explaining this would help readers.
+
+[2] Case/whitespace normalization is spread over several places
+	Registration numbers are normalized in the Vehicle constructor, trimmed again in
+	FindByRegistration, and compared with OrdinalIgnoreCase in Search. Search criteria values
+	(such as color) are not normalized through VehicleColors. Pick one place for normalizing
+	input and one comparison rule.
+
+[2] Capacity upper bound
+	The prompt shows "1-2147483647". Garage accepts any positive int. A realistic maximum
+	(and a constant shared by prompt, validation and tests) would be clearer.
+
+[1] Mixed code style
+	Source uses file-scoped namespaces, tests use block-scoped ones. Folder Garage uses
+	namespace SolutionSetup rather than SolutionSetup.Garage. Pick one convention and enforce
+	it with an .editorconfig.
+
+[1] Planning files live in the project folder
+	feedback-plan.txt and raw-feedback.txt are under SolutionSetup\. Move them to a docs
+	folder (or remove them once done) so the project folder only holds code.
+
+=====================================================================
+IMPROVEMENTS
+=====================================================================
+
+[4] Add an end-to-end test that drives Run() with a scripted session
+	Most tests call one UI method directly. One or two full sessions (create, populate, park,
+	search, remove, exit) would catch menu wiring and pause-handling regressions.
+
+[4] Stop asserting on exact UI strings where it is not the point
+	Many tests assert message fragments, so a wording change breaks them. Assert on handler
+	results and garage state where possible, and keep a few focused tests for the wording.
+
+[3] Enable analyzers and stricter build settings
+	Add Directory.Build.props with AnalysisLevel, EnforceCodeStyleInBuild and
+	TreatWarningsAsErrors (at least for nullable warnings), plus an .editorconfig.
+	The project currently disables ImplicitUsings and has no analyzer configuration.
+
+[3] Return richer results from the handler
+	OperationResult carries only a bool and a message. A typed error (enum or code) lets the UI
+	choose its own wording and lets tests assert on the reason without string matching.
+
+[3] Inject the console instead of defaulting to it
+	Program.Main creates ConsoleUI() with the default console and handler. Use a small
+	composition root (create IHandler, TextReader, TextWriter in Program) so the wiring is
+	visible in one place.
+
+[2] Property-based or table-driven tests for validation
+	Boundary tests are written case by case. A shared table (type, parameter, min, max)
+	used by both validation and tests would keep the ranges and the tests in sync.
+
+[2] Add a persistence option
+	The garage is lost on exit. Saving to JSON behind an interface would be a realistic
+	next feature and a good exercise in separating storage from the handler.
+
+[1] Show the UML in the README
+	MERMAID-UML.md exists but is not linked from README.md. One line would make it
+	discoverable.
+
+=====================================================================
+ANSWERED QUESTIONS
+=====================================================================
+- Populate: partial success is intended (kept).
+- Garage<T>: a requirement (kept).
