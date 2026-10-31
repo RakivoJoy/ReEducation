@@ -21,9 +21,9 @@ public partial class ConsoleUI
         try
         {
             int capacity = ReadValidated<int>(
-                $"Enter garage capacity (1-{int.MaxValue}):",
-                line => $"Invalid capacity '{line}'. Please enter a whole number (1-{int.MaxValue}).",
-                (string text, out int value) => int.TryParse(text, out value));
+                $"Enter garage capacity (1-{Garage<IVehicle>.MaxCapacity}):",
+                line => $"Invalid capacity '{line}'. Please enter a whole number (1-{Garage<IVehicle>.MaxCapacity}).",
+                (string text, out int value) => int.TryParse(text, out value) && value <= Garage<IVehicle>.MaxCapacity);
 
             OperationResult result = _handler.CreateGarage(capacity);
             if (result.Success)

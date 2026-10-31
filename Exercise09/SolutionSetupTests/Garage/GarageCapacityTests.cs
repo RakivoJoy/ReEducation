@@ -15,6 +15,23 @@ namespace SolutionSetupTests
         }
 
         [Fact]
+        public void Constructor_ThrowsForCapacityAboveMaximum()
+        {
+            // Act & Assert
+            Assert.Throws<ArgumentOutOfRangeException>(() => new Garage<IVehicle>(Garage<IVehicle>.MaxCapacity + 1));
+        }
+
+        [Fact]
+        public void Constructor_AcceptsMaximumCapacity()
+        {
+            // Arrange
+            var garage = new Garage<IVehicle>(Garage<IVehicle>.MaxCapacity);
+
+            // Act & Assert
+            Assert.Equal(2000, garage.Capacity);
+        }
+
+        [Fact]
         public void Capacity_ReturnsConstructorValue()
         {
             // Arrange

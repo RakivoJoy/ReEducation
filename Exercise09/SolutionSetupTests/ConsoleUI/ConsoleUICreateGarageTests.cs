@@ -50,6 +50,36 @@ namespace SolutionSetupTests
         }
 
         [Fact]
+        public void CreateGarage_AcceptsMaximumCapacity()
+        {
+            // Arrange
+            using var input = new StringReader("2000\n");
+            using var output = new StringWriter();
+            var ui = new ConsoleUI(input, output);
+
+            // Act
+            ui.CreateGarage();
+
+            // Assert
+            Assert.Contains("Garage created with capacity 2000.", output.ToString());
+        }
+
+        [Fact]
+        public void CreateGarage_RePromptsForCapacityAboveMaximum()
+        {
+            // Arrange
+            using var input = new StringReader("2001\n");
+            using var output = new StringWriter();
+            var ui = new ConsoleUI(input, output);
+
+            // Act
+            ui.CreateGarage();
+
+            // Assert
+            Assert.Contains("Invalid capacity '2001'", output.ToString());
+        }
+
+        [Fact]
         public void CreateGarage_AllowsRecreatingGarage()
         {
             // Arrange

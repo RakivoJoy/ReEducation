@@ -12,6 +12,11 @@ namespace SolutionSetup;
 /// </summary>
 public class Garage<T> : IEnumerable<T> where T : IVehicle
 {
+    /// <summary>
+    /// The largest capacity a garage can be created with.
+    /// </summary>
+    public const int MaxCapacity = 2000;
+
     private readonly List<T> _vehicles = [];
 
     /// <summary>
@@ -22,13 +27,13 @@ public class Garage<T> : IEnumerable<T> where T : IVehicle
     /// <summary>
     /// Creates an empty garage with the given number of parking spaces.
     /// </summary>
-    /// <param name="capacity">Number of parking spaces. Must be greater than zero.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="capacity"/> is zero or negative.</exception>
+    /// <param name="capacity">Number of parking spaces. Must be between 1 and <see cref="MaxCapacity"/>.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="capacity"/> is outside the allowed range.</exception>
     public Garage(int capacity)
     {
-        if (capacity <= 0)
+        if (capacity <= 0 || capacity > MaxCapacity)
         {
-            throw new ArgumentOutOfRangeException(nameof(capacity), "Capacity must be greater than zero.");
+            throw new ArgumentOutOfRangeException(nameof(capacity), $"Capacity must be between 1 and {MaxCapacity}.");
         }
 
         Capacity = capacity;
