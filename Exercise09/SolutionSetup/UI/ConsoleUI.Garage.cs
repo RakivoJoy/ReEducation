@@ -1,5 +1,6 @@
 using SolutionSetup.Vehicles;
 using System;
+using System.Collections.Generic;
 
 namespace SolutionSetup.UI;
 
@@ -63,7 +64,7 @@ public partial class ConsoleUI
 
         List<int> counts = garage.ListVehicleCountByType();
         int total = 0;
-        for (int i = 0; i < counts.Length; i++)
+        for (int i = 0; i < counts.Count; i++)
         {
             total += counts[i];
         }
@@ -74,7 +75,7 @@ public partial class ConsoleUI
             return;
         }
 
-        for (int i = 0; i < counts.Length; i++)
+        for (int i = 0; i < counts.Count; i++)
         {
             if (counts[i] > 0)
             {
