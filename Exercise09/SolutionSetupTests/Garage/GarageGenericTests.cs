@@ -1,5 +1,8 @@
 using SolutionSetup;
 using SolutionSetup.Vehicles;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace SolutionSetupTests
@@ -36,46 +39,89 @@ namespace SolutionSetupTests
             Assert.Equal(VehicleType.Car, vehicle.Type);
         }
 
-        // TODO: Phase 2 - Garage<Car> accepts only cars.
-        [Fact(Skip = "Not implemented: generic Garage<T> does not exist yet.")]
+        [Fact]
         public void GenericGarage_OfCar_AcceptsOnlyCars()
         {
+            var garage = new Garage<Car>(2);
+
+            Assert.True(garage.AddVehicle(new Car("ABC123", "Black", 4, FuelType.Gasoline)).Success);
+            Assert.All(garage.ListAllVehicles(), vehicle => Assert.IsType<Car>(vehicle));
         }
 
-        // TODO: Phase 2 - Garage<IVehicle> accepts mixed vehicle types.
-        [Fact(Skip = "Not implemented: generic Garage<T> does not exist yet.")]
+        [Fact]
         public void GenericGarage_OfIVehicle_AcceptsMixedTypes()
         {
+            var garage = new Garage<IVehicle>(3);
+
+            Assert.True(garage.AddVehicle(new Car("ABC123", "Black", 4, FuelType.Gasoline)).Success);
+            Assert.True(garage.AddVehicle(new Motorcycle("ABC124", "Pink", 3, 600)).Success);
+            Assert.True(garage.AddVehicle(new Boat("ABC127", "White", 0, 12.5)).Success);
+            Assert.Equal(3, garage.ListAllVehicles().Count);
         }
 
-        // TODO: Phase 2 - capacity and duplicate-registration rules are unchanged for Garage<T>.
-        [Fact(Skip = "Not implemented: generic Garage<T> does not exist yet.")]
+        [Fact]
         public void GenericGarage_KeepsCapacityAndDuplicateRules()
         {
+            var garage = new Garage<IVehicle>(1);
+
+            Assert.True(garage.AddVehicle(new Car("ABC123", "Black", 4, FuelType.Gasoline)).Success);
+            Assert.False(garage.AddVehicle(new Car("abc123", "Red", 4, FuelType.Diesel)).Success);
+            Assert.False(garage.AddVehicle(new Motorcycle("ABC124", "Pink", 3, 600)).Success);
+            Assert.Equal(1, garage.ListAllVehicles().Count);
         }
 
-        // TODO: Phase 2 - enumerating Garage<T> returns the parked vehicles.
-        [Fact(Skip = "Not implemented: Garage<T> does not implement IEnumerable<T> yet.")]
+        [Fact]
         public void Enumerating_ReturnsParkedVehicles()
         {
+            var garage = new Garage<IVehicle>(2);
+            var car = new Car("ABC123", "Black", 4, FuelType.Gasoline);
+            var motorcycle = new Motorcycle("ABC124", "Pink", 3, 600);
+            garage.AddVehicle(car);
+            garage.AddVehicle(motorcycle);
+
+            Assert.Equal(new IVehicle[] { car, motorcycle }, garage.ToArray());
         }
 
-        // TODO: Phase 2 - ListAllVehicles returns a read-only view; mutating it does not change the garage.
-        [Fact(Skip = "Not implemented: IReadOnlyList<T> return type does not exist yet.")]
+        [Fact]
         public void ListAllVehicles_CannotMutateGarage()
         {
+            var garage = new Garage<IVehicle>(2);
+            garage.AddVehicle(new Car("ABC123", "Black", 4, FuelType.Gasoline));
+
+            IReadOnlyList<IVehicle> vehicles = garage.ListAllVehicles();
+
+            Assert.IsNotType<List<IVehicle>>(vehicles);
+            Assert.Single(vehicles);
+            Assert.Single(garage.ListAllVehicles());
         }
 
-        // TODO: Phase 2 - Populate accepts any IEnumerable<T>, including a lazy sequence.
-        [Fact(Skip = "Not implemented: Populate(IEnumerable<T>) does not exist yet.")]
+        [Fact]
         public void Populate_AcceptsLazyEnumerable()
         {
+            var garage = new Garage<IVehicle>(2);
+
+            IEnumerable<IVehicle> Generate()
+            {
+                yield return new Car("ABC123", "Black", 4, FuelType.Gasoline);
+                yield return new Car("DEF456", "Red", 4, FuelType.Diesel);
+            }
+
+            var result = garage.Populate(Generate());
+
+            Assert.True(result.Success);
+            Assert.Equal(2, garage.ListAllVehicles().Count);
         }
 
-        // TODO: Phase 2 - Populate with an empty sequence parks nothing and reports "Parked 0 of 0 vehicles."
-        [Fact(Skip = "Not implemented: Populate(IEnumerable<T>) does not exist yet.")]
+        [Fact]
         public void Populate_EmptySequence_ParksNothing()
         {
+            var garage = new Garage<IVehicle>(2);
+
+            var result = garage.Populate(Array.Empty<IVehicle>());
+
+            Assert.True(result.Success);
+            Assert.Equal("Parked 0 of 0 vehicles.", result.Message);
+            Assert.Empty(garage.ListAllVehicles());
         }
 
         // TODO: Phase 3 - SearchByProperties with a single criterion matches only that criterion.
