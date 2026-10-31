@@ -18,7 +18,7 @@ public partial class ConsoleUI
         }
 
         _output.WriteLine("Enter criteria as property=value pairs separated by spaces, e.g. color=Black type=Car (leave blank for all vehicles).");
-        _output.WriteLine($"Properties: registration, color, wheels, type ({string.Join(", ", VehicleTypes.Select(info => info.Type))})");
+        _output.WriteLine($"Properties: {string.Join(", ", SearchProperties.All.Select(property => property.Name))} ({string.Join(", ", VehicleTypes.Select(info => info.Type))})");
         string line = ReadLineOrEmpty();
 
         if (!TryParseSearchCriteria(line, out SearchCriteria criteria))
@@ -52,40 +52,25 @@ public partial class ConsoleUI
         return true;
     }
 
-    // Applies a single property=value pair to the criteria; returns false (after printing an error) if it is invalid.
+    // Applies a single property=value pair to the criteria using the shared registry; returns false (after printing an error) if it is invalid.
     private bool TryApplySearchCriterion(SearchCriteria criteria, string property, string value)
     {
-        switch (property.ToLowerInvariant())
+        SearchProperty? searchProperty = SearchProperties.Find(property);
+        if (searchProperty is null)
         {
-            case "registration":
-                criteria.RegistrationNumber = value.Trim();
-                return true;
-            case "color":
-                criteria.Color = value;
-                return true;
-            case "wheels":
-                if (!int.TryParse(value, out int numberOfWheels))
-                {
-                    _output.WriteLine($"Invalid number of wheels '{value}'. Please enter a whole number.");
-                    return false;
-                }
-
-                criteria.NumberOfWheels = numberOfWheels;
-                return true;
-            case "type":
-                VehicleTypeInfo? typeInfo = Array.Find(VehicleTypes, info => string.Equals(info.Type.ToString(), value, StringComparison.OrdinalIgnoreCase));
-                if (typeInfo is null)
-                {
-                    _output.WriteLine($"Invalid vehicle type '{value}'.");
-                    return false;
-                }
-
-                criteria.Type = typeInfo.Type;
-                return true;
-            default:
-                _output.WriteLine($"Unknown search property '{property}'. Valid properties: registration, color, wheels, type.");
-                return false;
+            _output.WriteLine($"Unknown search property '{property}'. Valid properties: {string.Join(", ", SearchProperties.All.Select(p => p.Name))}.");
+            return false;
         }
+
+        object? parsed = searchProperty.Parse.Invoke(value);
+        if (parsed is null)
+        {
+            _output.WriteLine(searchProperty.InvalidValueMessage.Invoke(value));
+            return false;
+        }
+
+        criteria.SetFilter(searchProperty.Name, parsed);
+        return true;
     }
 
     // Prints each matching vehicle, or a message when nothing matched.

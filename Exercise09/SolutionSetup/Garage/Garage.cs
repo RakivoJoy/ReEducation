@@ -151,24 +151,11 @@ public class Garage<T> : IEnumerable<T> where T : IVehicle
 
         IEnumerable<T> matches = _vehicles;
 
-        if (criteria.RegistrationNumber is not null)
+        foreach (KeyValuePair<string, object> filter in criteria.Filters)
         {
-            matches = matches.Where(v => string.Equals(v.RegistrationNumber, criteria.RegistrationNumber, StringComparison.OrdinalIgnoreCase));
-        }
-
-        if (criteria.Color is not null)
-        {
-            matches = matches.Where(v => string.Equals(v.Color, criteria.Color, StringComparison.OrdinalIgnoreCase));
-        }
-
-        if (criteria.NumberOfWheels is not null)
-        {
-            matches = matches.Where(v => v.NumberOfWheels == criteria.NumberOfWheels);
-        }
-
-        if (criteria.Type is not null)
-        {
-            matches = matches.Where(v => v.Type == criteria.Type);
+            SearchProperty property = SearchProperties.Find(filter.Key)
+                ?? throw new InvalidOperationException($"Unknown search property '{filter.Key}'.");
+            matches = matches.Where(v => property.Matches.Invoke(v, filter.Value));
         }
 
         return matches.ToList();
