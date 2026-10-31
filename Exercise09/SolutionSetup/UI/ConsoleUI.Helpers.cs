@@ -2,6 +2,7 @@ using SolutionSetup.Vehicles;
 using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 
 namespace SolutionSetup.UI;
 
@@ -74,8 +75,11 @@ public partial class ConsoleUI
     private FuelType ReadFuelTypePrompt()
     {
         _output.WriteLine("Enter fuel type (Gasoline/Diesel):");
-        string line = ReadLineOrEmpty();
-        if (!Enum.TryParse(line, ignoreCase: true, out FuelType fuelType) ||
+        string line = ReadLineOrEmpty().Trim();
+        string candidate = line.Length == 1
+            ? Enum.GetNames<FuelType>().FirstOrDefault(name => name.StartsWith(line, StringComparison.OrdinalIgnoreCase)) ?? line
+            : line;
+        if (!Enum.TryParse(candidate, ignoreCase: true, out FuelType fuelType) ||
             !Enum.IsDefined(typeof(FuelType), fuelType))
         {
             throw new FormatException($"'{line}' is not a valid fuel type.");
