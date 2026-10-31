@@ -64,7 +64,14 @@ public partial class ConsoleUI
         }
     }
 
-    // One row per vehicle type. The order drives the type menu numbering; Create asks for the type-specific detail and builds the vehicle.
+    /// <summary>
+    /// Describes one selectable vehicle type: the enum value it represents and a factory that builds it.
+    /// </summary>
+    /// <param name="Type">The vehicle type this entry creates.</param>
+    /// <param name="Create">
+    /// Builds the vehicle from the registration number, color and number of wheels. It also prompts for any
+    /// type-specific detail, such as fuel type or seat count.
+    /// </param>
     internal sealed record VehicleTypeInfo(VehicleType Type, Func<string, string, int, Vehicle> Create);
 
     private VehicleTypeInfo[]? _vehicleTypes;
