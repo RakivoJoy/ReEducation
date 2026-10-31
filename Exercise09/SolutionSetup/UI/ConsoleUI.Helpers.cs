@@ -1,6 +1,7 @@
 using SolutionSetup.Vehicles;
 using System;
 using System.Globalization;
+using System.IO;
 
 namespace SolutionSetup.UI;
 
@@ -29,35 +30,42 @@ public partial class ConsoleUI
         return true;
     }
 
-    /// <summary>
-    /// Prints a prompt and reads a whole number. Throws <see cref="FormatException"/> if the input is not a number.
-    /// </summary>
-    private int ReadIntPrompt(string prompt)
-    {
-        // TODO: Phase 4 - Re-prompt on invalid input and show the valid range instead of throwing.
-        _output.WriteLine(prompt);
-        string line = ReadLineOrEmpty();
-        if (!int.TryParse(line, out int value))
-        {
-            throw new FormatException($"'{line}' is not a valid whole number.");
-        }
+    //TODO: Verify this is used in the UI and if not, remove it. It is used in the tests, but not in the UI.
+    private delegate bool TryParser<T>(string text, out T value);
 
-        return value;
+    /// <summary>
+    /// Prints a prompt and keeps asking until the input can be parsed. Throws <see cref="EndOfStreamException"/> if the input ends first.
+    /// </summary>
+    private T ReadValidated<T>(string prompt, Func<string, string> invalidMessage, TryParser<T> tryParse)
+    {
+        _output.WriteLine(prompt);
+        while (true)
+        {
+            string line = _input.ReadLine() ?? throw new EndOfStreamException();
+            if (tryParse(line, out T value))
+            {
+                return value;
+            }
+
+            _output.WriteLine(invalidMessage(line));
+            _output.WriteLine(prompt);
+        }
     }
 
     /// <summary>
-    /// Prints a prompt and reads a decimal number. Throws <see cref="FormatException"/> if the input is not a number.
+    /// Prints a prompt and reads a whole number, asking again until the input is valid.
+    /// </summary>
+    private int ReadIntPrompt(string prompt, string invalidMessage = "Invalid input. Please enter a whole number.")
+    {
+        return ReadValidated<int>(prompt, _ => invalidMessage, (string text, out int value) => int.TryParse(text, out value));
+    }
+
+    /// <summary>
+    /// Prints a prompt and reads a decimal number, asking again until the input is valid.
     /// </summary>
     private double ReadDoublePrompt(string prompt)
     {
-        _output.WriteLine(prompt);
-        string line = ReadLineOrEmpty();
-        if (!double.TryParse(line, NumberStyles.Float, CultureInfo.InvariantCulture, out double value))
-        {
-            throw new FormatException($"'{line}' is not a valid number.");
-        }
-
-        return value;
+        return ReadValidated<double>(prompt, line => $"Invalid input: '{line}' is not a valid number.", (string text, out double value) => double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out value));
     }
 
     /// <summary>

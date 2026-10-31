@@ -55,9 +55,12 @@ public partial class ConsoleUI
         bool exit = false;
         while (!exit)
         {
-            // TODO: Phase 4 - Add an empty line or "Press Enter to continue" so the result is not missed when the menu is shown.
             PrintMenu();
-            string choice = ReadLineOrEmpty();
+            string? choice = _input.ReadLine();
+            if (choice is null)
+            {
+                break;
+            }
 
             try
             {
@@ -95,6 +98,11 @@ public partial class ConsoleUI
                         _output.WriteLine("Invalid choice. Please select a valid menu option.");
                         break;
                 }
+
+                if (choice is "1" or "2" or "3" or "4" or "5" or "6" or "7" or "8")
+                {
+                    PauseForEnter();
+                }
             }
             catch (IOException)
             {
@@ -117,13 +125,22 @@ public partial class ConsoleUI
     }
 
     /// <summary>
+    /// Prints a blank line and waits for Enter so the result of the last action stays visible before the menu is shown again.
+    /// </summary>
+    private void PauseForEnter()
+    {
+        _output.WriteLine();
+        _output.WriteLine("Press Enter to continue...");
+        _input.ReadLine();
+    }
+
+    /// <summary>
     /// Prints the numbered main menu (options 1 to 8 and 0 for exit).
     /// </summary>
     private void PrintMenu()
     {
         _output.WriteLine("Welcome to your Garage 2.0");
         _output.WriteLine("1. Create garage");
-        // TODO: Phase 4 - Disable or remove option 2 after it has been used, or tell the user the samples are already added.
         _output.WriteLine("2. Populate garage with sample vehicles");
         _output.WriteLine("3. Park vehicle");
         _output.WriteLine("4. Remove vehicle");

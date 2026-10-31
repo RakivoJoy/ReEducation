@@ -2,10 +2,9 @@ using SolutionSetup.UI;
 
 namespace SolutionSetupTests
 {
-    // TODO: Phase 4 - Remove the Skip arguments once input is validated immediately and the user flow is improved.
     public class ConsoleUIInputFlowTests
     {
-        [Fact(Skip = "Phase 4: the vehicle type is validated after all prompts.")]
+        [Fact]
         public void ParkVehicle_RejectsInvalidType_BeforeAskingForOtherDetails()
         {
             // Arrange
@@ -23,7 +22,7 @@ namespace SolutionSetupTests
                 < text.IndexOf("Enter registration number:", StringComparison.Ordinal));
         }
 
-        [Fact(Skip = "Phase 4: invalid input does not re-prompt yet.")]
+        [Fact]
         public void CreateGarage_AsksAgain_WhenCapacityIsNotANumber()
         {
             // Arrange
@@ -38,7 +37,7 @@ namespace SolutionSetupTests
             Assert.Contains("Garage created with capacity 5.", output.ToString());
         }
 
-        [Fact(Skip = "Phase 4: the valid range is not shown yet.")]
+        [Fact]
         public void CreateGarage_ShowsValidRange_WhenCapacityTooBigForInt()
         {
             // Arrange
@@ -53,7 +52,7 @@ namespace SolutionSetupTests
             Assert.Contains("1-", output.ToString());
         }
 
-        [Fact(Skip = "Phase 4: invalid wheels input does not re-prompt yet.")]
+        [Fact]
         public void ParkVehicle_AsksAgain_WhenWheelsIsNotANumber()
         {
             // Arrange
@@ -69,7 +68,7 @@ namespace SolutionSetupTests
             Assert.Contains("Vehicle ABC123 parked.", output.ToString());
         }
 
-        [Fact(Skip = "Phase 4: populate twice gives no explanation yet.")]
+        [Fact]
         public void PopulateGarage_ExplainsSamplesAlreadyAdded_WhenUsedTwice()
         {
             // Arrange
@@ -86,7 +85,7 @@ namespace SolutionSetupTests
             Assert.Contains("already added", output.ToString());
         }
 
-        [Fact(Skip = "Phase 4: the menu is printed directly after the result.")]
+        [Fact]
         public void Run_SeparatesResultFromMenu()
         {
             // Arrange
@@ -99,6 +98,36 @@ namespace SolutionSetupTests
 
             // Assert
             Assert.Contains("Press Enter to continue", output.ToString());
+        }
+
+        [Fact]
+        public void Run_ExitsCleanly_WhenInputEndsWithoutExitChoice()
+        {
+            // Arrange
+            using var output = new StringWriter();
+            using var input = new StringReader("");
+            var ui = new ConsoleUI(input, output);
+
+            // Act
+            ui.Run();
+
+            // Assert
+            Assert.Contains("Welcome to your Garage 2.0", output.ToString());
+        }
+
+        [Fact]
+        public void CreateGarage_ReportsEndOfInput_WithoutThrowing()
+        {
+            // Arrange
+            using var output = new StringWriter();
+            using var input = new StringReader("abc");
+            var ui = new ConsoleUI(input, output);
+
+            // Act
+            ui.CreateGarage();
+
+            // Assert
+            Assert.Contains("Input ended before the garage was created.", output.ToString());
         }
     }
 }

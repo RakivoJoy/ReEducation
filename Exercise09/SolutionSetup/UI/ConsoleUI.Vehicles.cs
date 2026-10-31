@@ -1,6 +1,7 @@
 using SolutionSetup.Vehicles;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SolutionSetup.UI;
 
@@ -20,7 +21,6 @@ public partial class ConsoleUI
             return;
         }
 
-        // TODO: Phase 4 - Validate the type choice (and every other answer) right away and re-prompt on invalid input.
         VehicleType[] types = Enum.GetValues<VehicleType>();
         _output.WriteLine("Select vehicle type:");
         for (int i = 0; i < types.Length; i++)
@@ -28,30 +28,28 @@ public partial class ConsoleUI
             _output.WriteLine($"{i + 1}. {types[i]}");
         }
 
-        string typeChoice = ReadLineOrEmpty();
-
-        _output.WriteLine("Enter registration number:");
-        string registrationNumber = ReadLineOrEmpty();
-
-        _output.WriteLine($"Most common colors: {string.Join(", ", VehicleColors.MostCommon)}");
-        _output.WriteLine("Enter color:");
-        string color = ReadLineOrEmpty();
-
-        _output.WriteLine("Enter number of wheels:");
-        if (!int.TryParse(ReadLineOrEmpty(), out int numberOfWheels))
-        {
-            _output.WriteLine("Invalid number of wheels. Please enter a whole number.");
-            return;
-        }
-
         try
         {
-            if (!int.TryParse(typeChoice, out int typeNumber) || typeNumber < 1 || typeNumber > types.Length)
-            {
-                throw new FormatException($"'{typeChoice}' is not a valid vehicle type option.");
-            }
+            VehicleType type = ReadValidated<VehicleType>(
+                $"Enter vehicle type number (1-{types.Length}):",
+                line => $"Invalid input: '{line}' is not a valid vehicle type option. Please choose 1-{types.Length}.",
+                (string text, out VehicleType value) =>
+                {
+                    bool valid = int.TryParse(text, out int number) && number >= 1 && number <= types.Length;
+                    value = valid ? types[number - 1] : default;
+                    return valid;
+                });
 
-            Vehicle vehicle = CreateVehicle(types[typeNumber - 1], registrationNumber, color, numberOfWheels);
+            _output.WriteLine("Enter registration number:");
+            string registrationNumber = ReadLineOrEmpty();
+
+            _output.WriteLine($"Most common colors: {string.Join(", ", VehicleColors.MostCommon)}");
+            _output.WriteLine("Enter color:");
+            string color = ReadLineOrEmpty();
+
+            int numberOfWheels = ReadIntPrompt("Enter number of wheels:", "Invalid number of wheels. Please enter a whole number.");
+
+            Vehicle vehicle = CreateVehicle(type, registrationNumber, color, numberOfWheels);
 
             OperationResult result = _handler.ParkVehicle(vehicle);
             _output.WriteLine(result.Message);
@@ -63,6 +61,10 @@ public partial class ConsoleUI
         catch (ArgumentException ex)
         {
             _output.WriteLine($"Could not park vehicle: {ex.Message}");
+        }
+        catch (EndOfStreamException)
+        {
+            _output.WriteLine("Input ended before the vehicle was parked.");
         }
     }
 

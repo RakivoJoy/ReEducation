@@ -1,6 +1,7 @@
 using SolutionSetup.Vehicles;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace SolutionSetup.UI;
@@ -10,23 +11,32 @@ namespace SolutionSetup.UI;
 /// </summary>
 public partial class ConsoleUI
 {
+    private bool _samplesAdded;
+
     /// <summary>
     /// Menu option 1. Asks for a capacity and creates a new garage. Replaces any existing garage.
     /// </summary>
     internal void CreateGarage()
     {
-        // TODO: Phase 4 - Show the valid capacity range (e.g. 1-1000), handle numbers too big for an int, and re-prompt on invalid input.
-        _output.WriteLine("Enter garage capacity (positive whole number):");
-        string line = ReadLineOrEmpty();
-
-        if (!int.TryParse(line, out int capacity))
+        try
         {
-            _output.WriteLine($"Invalid capacity '{line}'. Please enter a positive whole number.");
-            return;
-        }
+            int capacity = ReadValidated<int>(
+                $"Enter garage capacity (1-{int.MaxValue}):",
+                line => $"Invalid capacity '{line}'. Please enter a whole number (1-{int.MaxValue}).",
+                (string text, out int value) => int.TryParse(text, out value));
 
-        OperationResult result = _handler.CreateGarage(capacity);
-        _output.WriteLine(result.Message);
+            OperationResult result = _handler.CreateGarage(capacity);
+            if (result.Success)
+            {
+                _samplesAdded = false;
+            }
+
+            _output.WriteLine(result.Message);
+        }
+        catch (EndOfStreamException)
+        {
+            _output.WriteLine("Input ended before the garage was created.");
+        }
     }
 
     /// <summary>
@@ -39,8 +49,14 @@ public partial class ConsoleUI
             return;
         }
 
-        // TODO: Phase 4 - Show "Sample vehicles are already added" when populate is used a second time.
+        if (_samplesAdded)
+        {
+            _output.WriteLine("Sample vehicles are already added to this garage.");
+            return;
+        }
+
         OperationResult result = _handler.PopulateGarage();
+        _samplesAdded = true;
         _output.WriteLine(result.Message);
     }
 
