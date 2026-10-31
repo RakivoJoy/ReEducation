@@ -70,21 +70,20 @@ public partial class ConsoleUI
     }
 
     /// <summary>
-    /// Prompts for a fuel type (Gasoline or Diesel). Throws <see cref="FormatException"/> if the input is not valid.
+    /// Prompts for a fuel type (Gasoline or Diesel) and asks again until the input is valid.
     /// </summary>
     private FuelType ReadFuelTypePrompt()
     {
-        _output.WriteLine("Enter fuel type (Gasoline/Diesel):");
-        string line = ReadLineOrEmpty().Trim();
-        string candidate = line.Length == 1
-            ? Enum.GetNames<FuelType>().FirstOrDefault(name => name.StartsWith(line, StringComparison.OrdinalIgnoreCase)) ?? line
-            : line;
-        if (!Enum.TryParse(candidate, ignoreCase: true, out FuelType fuelType) ||
-            !Enum.IsDefined(typeof(FuelType), fuelType))
-        {
-            throw new FormatException($"'{line}' is not a valid fuel type.");
-        }
-
-        return fuelType;
+        return ReadValidated<FuelType>(
+            "Enter fuel type (Gasoline/Diesel):",
+            line => $"Invalid input: '{line}' is not a valid fuel type.",
+            (string text, out FuelType value) =>
+            {
+                string line = text.Trim();
+                string candidate = line.Length == 1
+                    ? Enum.GetNames<FuelType>().FirstOrDefault(name => name.StartsWith(line, StringComparison.OrdinalIgnoreCase)) ?? line
+                    : line;
+                return Enum.TryParse(candidate, ignoreCase: true, out value) && Enum.IsDefined(value);
+            });
     }
 }

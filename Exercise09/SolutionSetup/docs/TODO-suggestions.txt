@@ -7,11 +7,6 @@ Scope: Exercise09 only.
 WEAKNESSES AND INCONSISTENCIES
 =====================================================================
 
-[4] Fuel type input behaves differently from every other prompt
-	ReadFuelTypePrompt throws FormatException and ParkVehicle aborts, while capacity, wheels
-	and other numbers re-prompt (ReadValidated). The user loses all earlier input for a typo.
-	Fix: route fuel type through ReadValidated so the whole UI re-prompts the same way.
-
 [4] Exceptions used for normal input flow
 	Invalid user input is reported through FormatException / ArgumentException caught in
 	ParkVehicle. Validation of user text should return a result (TryParse style), and

@@ -43,5 +43,22 @@ namespace SolutionSetupTests
             // Assert
             Assert.Contains("Invalid input: 'x' is not a valid fuel type.", output.ToString());
         }
+
+        [Fact]
+        public void ParkCar_RePromptsForFuelType_AfterInvalidInput()
+        {
+            // Arrange
+            using var output = new StringWriter();
+            using var input = new StringReader("5\n3\nABC123\nBlack\n4\nx\ng\n");
+            var ui = new ConsoleUI(input, output);
+            ui.CreateGarage();
+
+            // Act
+            ui.ParkVehicle();
+
+            // Assert
+            Assert.Contains("Invalid input: 'x' is not a valid fuel type.", output.ToString());
+            Assert.Contains("Vehicle ABC123 parked.", output.ToString());
+        }
     }
 }
