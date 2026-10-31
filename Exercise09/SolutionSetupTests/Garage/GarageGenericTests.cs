@@ -17,14 +17,14 @@ namespace SolutionSetupTests
         {
             // Arrange
             IVehicle[] vehicles =
-            {
+            [
                 new Car("ABC123", "Black", 4, FuelType.Gasoline),
                 new Motorcycle("ABC124", "Pink", 3, 600),
                 new Airplane("ABC125", "White", 3, 2),
                 new Bus("ABC126", "Yellow", 6, 50),
                 new Boat("ABC127", "White", 0, 12.5),
                 new Truck("ABC128", "Blue", 6, 12000),
-            };
+            ];
 
             // Act & Assert
             Assert.All(vehicles, vehicle => Assert.NotNull(vehicle));
@@ -104,7 +104,7 @@ namespace SolutionSetupTests
             garage.AddVehicle(motorcycle);
 
             // Act & Assert
-            Assert.Equal(new IVehicle[] { car, motorcycle }, garage.ToArray());
+            Assert.Equal([car, motorcycle], garage.ToArray());
         }
 
         [Fact]
@@ -129,7 +129,7 @@ namespace SolutionSetupTests
             // Arrange
             var garage = new Garage<IVehicle>(2);
 
-            IEnumerable<IVehicle> Generate()
+            static IEnumerable<IVehicle> Generate()
             {
                 yield return new Car("ABC123", "Black", 4, FuelType.Gasoline);
                 yield return new Car("DEF456", "Red", 4, FuelType.Diesel);

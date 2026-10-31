@@ -12,7 +12,7 @@ namespace SolutionSetup;
 /// </summary>
 public class Garage<T> : IEnumerable<T> where T : IVehicle
 {
-    private readonly List<T> _vehicles = new List<T>();
+    private readonly List<T> _vehicles = [];
 
     /// <summary>
     /// The total number of parking spaces, free or occupied.
