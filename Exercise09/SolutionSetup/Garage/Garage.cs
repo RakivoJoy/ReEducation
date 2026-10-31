@@ -9,6 +9,16 @@ namespace SolutionSetup;
 /// A garage that parks vehicles in a fixed number of spaces. Parked vehicles are stored in a list
 /// whose size never exceeds the capacity. Registration numbers are unique and compared ignoring case.
 /// </summary>
+// TODO: Phase 2 - make Garage generic: public class Garage<T> where T : IVehicle, and implement IEnumerable<T>.
+// TODO: Phase 2 - keep a non-generic Garage or use Garage<IVehicle> in ConsoleUI, and update SampleData and the tests.
+// TODO: Phase 1 - change the stored type from Vehicle to IVehicle.
+// TODO: Phase 3 - replace FindIndex with FirstOrDefault(v => string.Equals(v.RegistrationNumber, reg, OrdinalIgnoreCase)).
+// TODO: Phase 3 - change RemoveVehicleByRegistration to use Remove(vehicle) once the vehicle is found.
+// TODO: Phase 3 - rewrite SearchByProperties as chained Where() calls for each non-null criterion.
+// TODO: Phase 3 - rewrite ListVehicleCountByType as GroupBy(v => v.Type).ToDictionary(g => g.Key, g => g.Count()).
+// TODO: Phase 3 - rewrite Populate as vehicles.Count(v => AddVehicle(v).Success).
+// TODO: Phase 2 - change Populate to accept IEnumerable<T> instead of List<Vehicle>.
+// TODO: Phase 2 - return IReadOnlyList<T> from ListAllVehicles and SearchByProperties.
 public class Garage
 {
     private readonly List<Vehicle> _vehicles = new List<Vehicle>();
