@@ -1,4 +1,4 @@
-# Garage 2.0 - UML class diagram
+# Garage 3.0 - UML class diagram
 
 ```mermaid
 classDiagram
