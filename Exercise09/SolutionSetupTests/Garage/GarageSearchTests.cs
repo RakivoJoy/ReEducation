@@ -14,8 +14,10 @@ namespace SolutionSetupTests
             garage.AddVehicle(CreateCar("DEF456", "Red"));
             garage.AddVehicle(CreateCar("GHL789", "black"));
 
+            // Act
             var results = garage.SearchByProperties(new SearchCriteria { Color = "Black" });
 
+            // Assert
             Assert.Equal(2, results.Count);
         }
 
@@ -27,6 +29,7 @@ namespace SolutionSetupTests
             garage.AddVehicle(CreateCar("DEF456", "Black", FuelType.Diesel));
             garage.AddVehicle(CreateCar("GHL789", "Red", FuelType.Diesel));
 
+            // Act
             var results = garage.SearchByProperties(new SearchCriteria
             {
                 Color = "Black",
@@ -34,6 +37,7 @@ namespace SolutionSetupTests
                 NumberOfWheels = 4
             });
 
+            // Assert
             Assert.Equal(2, results.Count);
         }
 
@@ -44,8 +48,10 @@ namespace SolutionSetupTests
             garage.AddVehicle(CreateCar("ABC123"));
             garage.AddVehicle(CreateCar("DEF456"));
 
+            // Act
             var results = garage.SearchByProperties(new SearchCriteria());
 
+            // Assert
             Assert.Equal(2, results.Count);
         }
 
@@ -57,8 +63,10 @@ namespace SolutionSetupTests
             garage.AddVehicle(new Truck("DEF456", "Blue", 6, 12000));
             garage.AddVehicle(new Truck("GHL789", "Red", 6, 8000));
 
+            // Act
             var results = garage.SearchByProperties(new SearchCriteria { Type = VehicleType.Truck });
 
+            // Assert
             Assert.Equal(2, results.Count);
             Assert.All(results, vehicle => Assert.Equal(VehicleType.Truck, vehicle.Type));
         }
@@ -71,6 +79,7 @@ namespace SolutionSetupTests
             garage.AddVehicle(new Motorcycle("DEF456", "Pink", 2, 600));
             garage.AddVehicle(CreateCar("GHL789", "Pink"));
 
+            // Act
             var results = garage.SearchByProperties(new SearchCriteria
             {
                 Color = "Pink",
@@ -78,6 +87,7 @@ namespace SolutionSetupTests
                 NumberOfWheels = 3
             });
 
+            // Assert
             Assert.Single(results);
             Assert.Equal("ABC123", results[0].RegistrationNumber);
         }
