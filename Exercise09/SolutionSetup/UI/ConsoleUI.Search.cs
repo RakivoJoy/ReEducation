@@ -11,7 +11,7 @@ public partial class ConsoleUI
     /// </summary>
     internal void SearchVehicles()
     {
-        if (!TryGetGarage(out Garage garage))
+        if (!TryGetGarage(out Garage<IVehicle> garage))
         {
             return;
         }
@@ -101,7 +101,7 @@ public partial class ConsoleUI
     }
 
     // Prints each matching vehicle, or a message when nothing matched.
-    private void PrintSearchResults(List<IVehicle> results)
+    private void PrintSearchResults(IReadOnlyList<IVehicle> results)
     {
         if (results.Count == 0)
         {

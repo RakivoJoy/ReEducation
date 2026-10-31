@@ -18,7 +18,7 @@ public partial class ConsoleUI
     /// Returns true and the current garage if one exists. Otherwise prints a message and returns false.
     /// Menu handlers use this to stop early when no garage has been created.
     /// </summary>
-    private bool TryGetGarage(out Garage garage)
+    private bool TryGetGarage(out Garage<IVehicle> garage)
     {
         if (_garage is null)
         {

@@ -1,3 +1,4 @@
+using SolutionSetup.Vehicles;
 using System;
 using System.IO;
 
@@ -12,7 +13,7 @@ public partial class ConsoleUI
     private readonly TextReader _input;
     private readonly TextWriter _output;
     // The garage is null until the user creates one (menu option 1).
-    private Garage? _garage;
+    private Garage<IVehicle>? _garage;
 
     /// <summary>
     /// Creates a console UI that reads from <see cref="Console.In"/> and writes to <see cref="Console.Out"/>.

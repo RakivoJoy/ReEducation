@@ -9,14 +9,14 @@ namespace SolutionSetupTests
         [Fact]
         public void Constructor_ThrowsForNonPositiveCapacity()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => new Garage(0));
-            Assert.Throws<ArgumentOutOfRangeException>(() => new Garage(-1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new Garage<IVehicle>(0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new Garage<IVehicle>(-1));
         }
 
         [Fact]
         public void Capacity_ReturnsConstructorValue()
         {
-            var garage = new Garage(5);
+            var garage = new Garage<IVehicle>(5);
 
             Assert.Equal(5, garage.Capacity);
         }
@@ -24,7 +24,7 @@ namespace SolutionSetupTests
         [Fact]
         public void AddVehicle_ReturnsSuccess_WhenSpaceAvailable()
         {
-            var garage = new Garage(1);
+            var garage = new Garage<IVehicle>(1);
 
             var result = garage.AddVehicle(CreateCar("ABC123"));
 
@@ -35,7 +35,7 @@ namespace SolutionSetupTests
         [Fact]
         public void AddVehicle_ReturnsFailure_WhenGarageFull()
         {
-            var garage = new Garage(1);
+            var garage = new Garage<IVehicle>(1);
             garage.AddVehicle(CreateCar("ABC123"));
 
             var result = garage.AddVehicle(CreateCar("DEF456"));
@@ -47,7 +47,7 @@ namespace SolutionSetupTests
         [Fact]
         public void AddVehicle_ReturnsFailure_WhenRegistrationNumberAlreadyExists()
         {
-            var garage = new Garage(2);
+            var garage = new Garage<IVehicle>(2);
             garage.AddVehicle(CreateCar("ABC123"));
 
             var result = garage.AddVehicle(CreateCar("abc123"));
@@ -59,7 +59,7 @@ namespace SolutionSetupTests
         [Fact]
         public void AddVehicle_ThrowsForNull()
         {
-            var garage = new Garage(1);
+            var garage = new Garage<IVehicle>(1);
 
             Assert.Throws<ArgumentNullException>(() => garage.AddVehicle(null!));
         }
@@ -67,7 +67,7 @@ namespace SolutionSetupTests
         [Fact]
         public void RemoveVehicleByRegistration_ReturnsSuccess_AndFreesSpace()
         {
-            var garage = new Garage(1);
+            var garage = new Garage<IVehicle>(1);
             garage.AddVehicle(CreateCar("ABC123"));
 
             var result = garage.RemoveVehicleByRegistration("ABC123");
@@ -79,7 +79,7 @@ namespace SolutionSetupTests
         [Fact]
         public void RemoveVehicleByRegistration_ReturnsFailure_WhenNotFound()
         {
-            var garage = new Garage(1);
+            var garage = new Garage<IVehicle>(1);
 
             var result = garage.RemoveVehicleByRegistration("ABC123");
 

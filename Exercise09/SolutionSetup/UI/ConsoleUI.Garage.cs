@@ -27,7 +27,7 @@ public partial class ConsoleUI
 
         try
         {
-            _garage = new Garage(capacity);
+            _garage = new Garage<IVehicle>(capacity);
             _output.WriteLine($"Garage created with capacity {capacity}.");
         }
         catch (ArgumentOutOfRangeException ex)
@@ -41,7 +41,7 @@ public partial class ConsoleUI
     /// </summary>
     internal void PopulateGarage()
     {
-        if (!TryGetGarage(out Garage garage))
+        if (!TryGetGarage(out Garage<IVehicle> garage))
         {
             return;
         }
@@ -55,7 +55,7 @@ public partial class ConsoleUI
     /// </summary>
     internal void ListVehicleCounts()
     {
-        if (!TryGetGarage(out Garage garage))
+        if (!TryGetGarage(out Garage<IVehicle> garage))
         {
             return;
         }

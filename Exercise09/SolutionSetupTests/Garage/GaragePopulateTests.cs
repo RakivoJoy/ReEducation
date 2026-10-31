@@ -10,7 +10,7 @@ namespace SolutionSetupTests
         [Fact]
         public void Populate_ParksAllVehicles_WhenCapacityAllows()
         {
-            var garage = new Garage(3);
+            var garage = new Garage<IVehicle>(3);
 
             var result = garage.Populate(SampleData.CreateSampleVehicles());
 
@@ -21,7 +21,7 @@ namespace SolutionSetupTests
         [Fact]
         public void Populate_ReturnsFailure_WhenCapacityExceeded()
         {
-            var garage = new Garage(2);
+            var garage = new Garage<IVehicle>(2);
 
             var result = garage.Populate(SampleData.CreateSampleVehicles());
 
@@ -33,7 +33,7 @@ namespace SolutionSetupTests
         [Fact]
         public void Populate_ReturnsFailure_WhenRegistrationNumberDuplicated()
         {
-            var garage = new Garage(3);
+            var garage = new Garage<IVehicle>(3);
             var vehicles = new List<Vehicle>
             {
                 CreateCar("ABC123"),
@@ -49,7 +49,7 @@ namespace SolutionSetupTests
         [Fact]
         public void Populate_ThrowsForNull()
         {
-            var garage = new Garage(1);
+            var garage = new Garage<IVehicle>(1);
 
             Assert.Throws<ArgumentNullException>(() => garage.Populate(null!));
         }

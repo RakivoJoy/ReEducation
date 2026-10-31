@@ -9,7 +9,7 @@ namespace SolutionSetupTests
         [Fact]
         public void SearchByProperties_FiltersByColor()
         {
-            var garage = new Garage(3);
+            var garage = new Garage<IVehicle>(3);
             garage.AddVehicle(CreateCar("ABC123", "Black"));
             garage.AddVehicle(CreateCar("DEF456", "Red"));
             garage.AddVehicle(CreateCar("GHL789", "black"));
@@ -22,7 +22,7 @@ namespace SolutionSetupTests
         [Fact]
         public void SearchByProperties_CombinesMultipleCriteria()
         {
-            var garage = new Garage(3);
+            var garage = new Garage<IVehicle>(3);
             garage.AddVehicle(CreateCar("ABC123", "Black", FuelType.Gasoline));
             garage.AddVehicle(CreateCar("DEF456", "Black", FuelType.Diesel));
             garage.AddVehicle(CreateCar("GHL789", "Red", FuelType.Diesel));
@@ -40,7 +40,7 @@ namespace SolutionSetupTests
         [Fact]
         public void SearchByProperties_WithEmptyCriteria_ReturnsAllVehicles()
         {
-            var garage = new Garage(2);
+            var garage = new Garage<IVehicle>(2);
             garage.AddVehicle(CreateCar("ABC123"));
             garage.AddVehicle(CreateCar("DEF456"));
 
@@ -52,7 +52,7 @@ namespace SolutionSetupTests
         [Fact]
         public void SearchByProperties_FiltersByType()
         {
-            var garage = new Garage(3);
+            var garage = new Garage<IVehicle>(3);
             garage.AddVehicle(CreateCar("ABC123"));
             garage.AddVehicle(new Truck("DEF456", "Blue", 6, 12000));
             garage.AddVehicle(new Truck("GHL789", "Red", 6, 8000));
@@ -66,7 +66,7 @@ namespace SolutionSetupTests
         [Fact]
         public void SearchByProperties_CombinesColorTypeAndWheels()
         {
-            var garage = new Garage(3);
+            var garage = new Garage<IVehicle>(3);
             garage.AddVehicle(new Motorcycle("ABC123", "Pink", 3, 600));
             garage.AddVehicle(new Motorcycle("DEF456", "Pink", 2, 600));
             garage.AddVehicle(CreateCar("GHL789", "Pink"));

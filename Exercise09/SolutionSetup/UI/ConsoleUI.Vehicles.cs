@@ -15,7 +15,7 @@ public partial class ConsoleUI
     /// </summary>
     internal void ParkVehicle()
     {
-        if (!TryGetGarage(out Garage garage))
+        if (!TryGetGarage(out Garage<IVehicle> garage))
         {
             return;
         }
@@ -74,7 +74,7 @@ public partial class ConsoleUI
     /// </summary>
     internal void RemoveVehicle()
     {
-        if (!TryGetGarage(out Garage garage))
+        if (!TryGetGarage(out Garage<IVehicle> garage))
         {
             return;
         }
@@ -91,12 +91,12 @@ public partial class ConsoleUI
     /// </summary>
     internal void ListVehicles()
     {
-        if (!TryGetGarage(out Garage garage))
+        if (!TryGetGarage(out Garage<IVehicle> garage))
         {
             return;
         }
 
-        List<IVehicle> vehicles = garage.ListAllVehicles();
+        IReadOnlyList<IVehicle> vehicles = garage.ListAllVehicles();
         if (vehicles.Count == 0)
         {
             _output.WriteLine("No vehicles are parked in the garage.");
@@ -114,7 +114,7 @@ public partial class ConsoleUI
     /// </summary>
     internal void FindVehicle()
     {
-        if (!TryGetGarage(out Garage garage))
+        if (!TryGetGarage(out Garage<IVehicle> garage))
         {
             return;
         }

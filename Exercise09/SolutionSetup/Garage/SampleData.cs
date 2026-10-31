@@ -11,7 +11,7 @@ public static class SampleData
     /// <summary>
     /// Creates three cars with unique registration numbers.
     /// </summary>
-    public static List<Vehicle> CreateSampleVehicles() =>
+    public static List<IVehicle> CreateSampleVehicles() =>
     [
         new Car("ABC123", "Black", 4, FuelType.Gasoline),
         new Car("DEF456", "Red", 4, FuelType.Diesel),

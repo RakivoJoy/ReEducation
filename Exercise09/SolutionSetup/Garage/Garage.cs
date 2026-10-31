@@ -1,5 +1,6 @@
 using SolutionSetup.Vehicles;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,18 +10,14 @@ namespace SolutionSetup;
 /// A garage that parks vehicles in a fixed number of spaces. Parked vehicles are stored in a list
 /// whose size never exceeds the capacity. Registration numbers are unique and compared ignoring case.
 /// </summary>
-// TODO: Phase 2 - make Garage generic: public class Garage<T> where T : IVehicle, and implement IEnumerable<T>.
-// TODO: Phase 2 - keep a non-generic Garage or use Garage<IVehicle> in ConsoleUI, and update SampleData and the tests.
-// TODO: Phase 3 - replace FindIndex with FirstOrDefault(v => string.Equals(v.RegistrationNumber, reg, OrdinalIgnoreCase)).
+// TODO: Phase 3 - replace FindIndex
 // TODO: Phase 3 - change RemoveVehicleByRegistration to use Remove(vehicle) once the vehicle is found.
 // TODO: Phase 3 - rewrite SearchByProperties as chained Where() calls for each non-null criterion.
 // TODO: Phase 3 - rewrite ListVehicleCountByType as GroupBy(v => v.Type).ToDictionary(g => g.Key, g => g.Count()).
 // TODO: Phase 3 - rewrite Populate as vehicles.Count(v => AddVehicle(v).Success).
-// TODO: Phase 2 - change Populate to accept IEnumerable<T> instead of List<Vehicle>.
-// TODO: Phase 2 - return IReadOnlyList<T> from ListAllVehicles and SearchByProperties.
-public class Garage
+public class Garage<T> : IEnumerable<T> where T : IVehicle
 {
-    private readonly List<IVehicle> _vehicles = new List<IVehicle>();
+    private readonly List<T> _vehicles = new List<T>();
 
     /// <summary>
     /// The total number of parking spaces, free or occupied.
@@ -47,7 +44,7 @@ public class Garage
     /// </summary>
     /// <returns>A failed result if the registration number is already parked or the garage is full; otherwise a success result.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="vehicle"/> is null.</exception>
-    public OperationResult AddVehicle(IVehicle vehicle)
+    public OperationResult AddVehicle(T vehicle)
     {
         ArgumentNullException.ThrowIfNull(vehicle);
 
@@ -86,29 +83,31 @@ public class Garage
     /// </summary>
     /// <returns>A success result if all vehicles were parked; otherwise a failed result. The message states how many were parked.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="vehicles"/> is null.</exception>
-    public OperationResult Populate(List<Vehicle> vehicles)
+    public OperationResult Populate(IEnumerable<T> vehicles)
     {
         ArgumentNullException.ThrowIfNull(vehicles);
 
         int parked = 0;
-        for (int i = 0; i < vehicles.Count; i++)
+        int total = 0;
+        foreach (T vehicle in vehicles)
         {
-            if (AddVehicle(vehicles[i]).Success)
+            total++;
+            if (AddVehicle(vehicle).Success)
             {
                 parked++;
             }
         }
 
-        string message = $"Parked {parked} of {vehicles.Count} vehicles.";
-        return parked == vehicles.Count ? OperationResult.Ok(message) : OperationResult.Fail(message);
+        string message = $"Parked {parked} of {total} vehicles.";
+        return parked == total ? OperationResult.Ok(message) : OperationResult.Fail(message);
     }
 
     /// <summary>
-    /// Returns a new list of the parked vehicles.
+    /// Returns a read-only snapshot of the parked vehicles.
     /// </summary>
-    public List<IVehicle> ListAllVehicles()
+    public IReadOnlyList<T> ListAllVehicles()
     {
-        return new List<IVehicle>(_vehicles);
+        return new List<T>(_vehicles).AsReadOnly();
     }
 
     /// <summary>
@@ -117,7 +116,7 @@ public class Garage
     public List<int> ListVehicleCountByType()
     {
         List<int> counts = Enumerable.Repeat(0, Enum.GetNames(typeof(VehicleType)).Length).ToList();
-        foreach (IVehicle vehicle in _vehicles)
+        foreach (T vehicle in _vehicles)
         {
             counts[(int)vehicle.Type]++;
         }
@@ -129,10 +128,10 @@ public class Garage
     /// Finds a parked vehicle by registration number, ignoring case and surrounding spaces.
     /// </summary>
     /// <returns>The vehicle, or null if none matches.</returns>
-    public IVehicle? FindByRegistration(string registrationNumber)
+    public T? FindByRegistration(string registrationNumber)
     {
         int index = FindIndex(registrationNumber);
-        return index < 0 ? null : _vehicles[index];
+        return index < 0 ? default : _vehicles[index];
     }
 
     /// <summary>
@@ -140,14 +139,14 @@ public class Garage
     /// Text filters are compared ignoring case.
     /// </summary>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="criteria"/> is null.</exception>
-    public List<IVehicle> SearchByProperties(SearchCriteria criteria)
+    public IReadOnlyList<T> SearchByProperties(SearchCriteria criteria)
     {
         ArgumentNullException.ThrowIfNull(criteria);
 
-        List<IVehicle> matches = new List<IVehicle>();
+        List<T> matches = new List<T>();
         for (int i = 0; i < _vehicles.Count; i++)
         {
-            IVehicle vehicle = _vehicles[i];
+            T vehicle = _vehicles[i];
 
             bool matchesRegistration = criteria.RegistrationNumber is null
                 || string.Equals(vehicle.RegistrationNumber, criteria.RegistrationNumber, StringComparison.OrdinalIgnoreCase);
@@ -167,7 +166,17 @@ public class Garage
         return matches;
     }
 
-    // Returns the index of the vehicle with the given registration number (case-insensitive, trimmed), or -1.
+    public IEnumerator<T> GetEnumerator()
+    {
+        return _vehicles.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    // Returns the index of the vehicle with the given registration number
     private int FindIndex(string registrationNumber)
     {
         string? trimmed = registrationNumber?.Trim();

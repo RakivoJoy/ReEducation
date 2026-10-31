@@ -9,7 +9,7 @@ namespace SolutionSetupTests
         [Fact]
         public void FindByRegistration_IsCaseInsensitive()
         {
-            var garage = new Garage(2);
+            var garage = new Garage<IVehicle>(2);
             var car = CreateCar("AbC123");
             garage.AddVehicle(car);
 
@@ -20,7 +20,7 @@ namespace SolutionSetupTests
         [Fact]
         public void FindByRegistration_ReturnsNull_WhenNotFound()
         {
-            var garage = new Garage(2);
+            var garage = new Garage<IVehicle>(2);
 
             Assert.Null(garage.FindByRegistration("ABC123"));
         }
@@ -28,7 +28,7 @@ namespace SolutionSetupTests
         [Fact]
         public void ListAllVehicles_ReturnsOnlyParkedVehicles()
         {
-            var garage = new Garage(3);
+            var garage = new Garage<IVehicle>(3);
             garage.AddVehicle(CreateCar("ABC123"));
             garage.AddVehicle(CreateCar("DEF456"));
             garage.RemoveVehicleByRegistration("ABC123");
@@ -42,7 +42,7 @@ namespace SolutionSetupTests
         [Fact]
         public void ListVehicleCountByType_CountsParkedCars()
         {
-            var garage = new Garage(3);
+            var garage = new Garage<IVehicle>(3);
             garage.AddVehicle(CreateCar("ABC123"));
             garage.AddVehicle(CreateCar("DEF456"));
 
@@ -55,7 +55,7 @@ namespace SolutionSetupTests
         [Fact]
         public void ListVehicleCountByType_CountsMixedTypes()
         {
-            var garage = new Garage(3);
+            var garage = new Garage<IVehicle>(3);
             garage.AddVehicle(CreateCar("ABC123"));
             garage.AddVehicle(new Truck("DEF456", "Blue", 6, 12000));
             garage.AddVehicle(new Bus("GHL789", "Yellow", 6, 50));
