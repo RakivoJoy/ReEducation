@@ -1,6 +1,7 @@
 using SolutionSetup.Vehicles;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SolutionSetup.UI;
 
@@ -17,7 +18,7 @@ public partial class ConsoleUI
         }
 
         _output.WriteLine("Enter criteria as property=value pairs separated by spaces, e.g. color=Black type=Car (leave blank for all vehicles).");
-        _output.WriteLine($"Properties: registration, color, wheels, type ({string.Join(", ", Enum.GetValues<VehicleType>())})");
+        _output.WriteLine($"Properties: registration, color, wheels, type ({string.Join(", ", VehicleTypes.Select(info => info.Type))})");
         string line = ReadLineOrEmpty();
 
         if (!TryParseSearchCriteria(line, out SearchCriteria criteria))
@@ -72,13 +73,14 @@ public partial class ConsoleUI
                 criteria.NumberOfWheels = numberOfWheels;
                 return true;
             case "type":
-                if (!Enum.TryParse(value, ignoreCase: true, out VehicleType type) || !Enum.IsDefined(type))
+                VehicleTypeInfo? typeInfo = Array.Find(VehicleTypes, info => string.Equals(info.Type.ToString(), value, StringComparison.OrdinalIgnoreCase));
+                if (typeInfo is null)
                 {
                     _output.WriteLine($"Invalid vehicle type '{value}'.");
                     return false;
                 }
 
-                criteria.Type = type;
+                criteria.Type = typeInfo.Type;
                 return true;
             default:
                 _output.WriteLine($"Unknown search property '{property}'. Valid properties: registration, color, wheels, type.");

@@ -21,22 +21,22 @@ public partial class ConsoleUI
             return;
         }
 
-        VehicleType[] types = Enum.GetValues<VehicleType>();
+        VehicleTypeInfo[] types = VehicleTypes;
         _output.WriteLine("Select vehicle type:");
         for (int i = 0; i < types.Length; i++)
         {
-            _output.WriteLine($"{i + 1}. {types[i]}");
+            _output.WriteLine($"{i + 1}. {types[i].Type}");
         }
 
         try
         {
-            VehicleType type = ReadValidated<VehicleType>(
+            VehicleTypeInfo typeInfo = ReadValidated<VehicleTypeInfo>(
                 $"Enter vehicle type number (1-{types.Length}):",
                 line => $"Invalid input: '{line}' is not a valid vehicle type option. Please choose 1-{types.Length}.",
-                (string text, out VehicleType value) =>
+                (string text, out VehicleTypeInfo value) =>
                 {
                     bool valid = int.TryParse(text, out int number) && number >= 1 && number <= types.Length;
-                    value = valid ? types[number - 1] : default;
+                    value = valid ? types[number - 1] : types[0];
                     return valid;
                 });
 
@@ -53,7 +53,7 @@ public partial class ConsoleUI
 
             int numberOfWheels = ReadIntPrompt("Enter number of wheels:", "Invalid number of wheels. Please enter a whole number.");
 
-            Vehicle vehicle = CreateVehicle(type, registrationNumber, color, numberOfWheels);
+            Vehicle vehicle = typeInfo.Create(registrationNumber, color, numberOfWheels);
 
             OperationResult result = _handler.ParkVehicle(vehicle);
             _output.WriteLine(result.Message);
@@ -64,16 +64,20 @@ public partial class ConsoleUI
         }
     }
 
-    private Vehicle CreateVehicle(VehicleType type, string registrationNumber, string color, int numberOfWheels) => type switch
-    {
-        VehicleType.Motorcycle => new Motorcycle(registrationNumber, color, numberOfWheels, ReadIntPrompt("Enter cylinder volume (cc):")),
-        VehicleType.Airplane => new Airplane(registrationNumber, color, numberOfWheels, ReadIntPrompt("Enter number of engines:")),
-        VehicleType.Car => new Car(registrationNumber, color, numberOfWheels, ReadFuelTypePrompt()),
-        VehicleType.Bus => new Bus(registrationNumber, color, numberOfWheels, ReadIntPrompt("Enter number of seats:")),
-        VehicleType.Boat => new Boat(registrationNumber, color, numberOfWheels, ReadDoublePrompt("Enter length (m):")),
-        VehicleType.Truck => new Truck(registrationNumber, color, numberOfWheels, ReadIntPrompt("Enter load capacity (kg):")),
-        _ => throw new FormatException($"'{type}' is not a valid vehicle type option.")
-    };
+    // One row per vehicle type. The order drives the type menu numbering; Create asks for the type-specific detail and builds the vehicle.
+    internal sealed record VehicleTypeInfo(VehicleType Type, Func<string, string, int, Vehicle> Create);
+
+    private VehicleTypeInfo[]? _vehicleTypes;
+
+    internal VehicleTypeInfo[] VehicleTypes => _vehicleTypes ??=
+    [
+        new(VehicleType.Motorcycle, (reg, color, wheels) => new Motorcycle(reg, color, wheels, ReadIntPrompt("Enter cylinder volume (cc):"))),
+        new(VehicleType.Airplane, (reg, color, wheels) => new Airplane(reg, color, wheels, ReadIntPrompt("Enter number of engines:"))),
+        new(VehicleType.Car, (reg, color, wheels) => new Car(reg, color, wheels, ReadFuelTypePrompt())),
+        new(VehicleType.Bus, (reg, color, wheels) => new Bus(reg, color, wheels, ReadIntPrompt("Enter number of seats:"))),
+        new(VehicleType.Boat, (reg, color, wheels) => new Boat(reg, color, wheels, ReadDoublePrompt("Enter length (m):"))),
+        new(VehicleType.Truck, (reg, color, wheels) => new Truck(reg, color, wheels, ReadIntPrompt("Enter load capacity (kg):")))
+    ];
 
     /// <summary>
     /// Menu option 4. Asks for a registration number and removes the matching vehicle.

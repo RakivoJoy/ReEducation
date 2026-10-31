@@ -7,12 +7,7 @@ Scope: Exercise09 only.
 WEAKNESSES AND INCONSISTENCIES
 =====================================================================
 
-[3] Vehicle type is stored twice
-	VehicleType (enum) and the concrete class (Car, Bus, ...) both describe the type, and
-	each class has to return the matching enum. Adding a vehicle means touching the enum,
-	the class, the UI factory and the sample data. Consider a single source of truth
-	(for example a registry of type descriptors: name, prompt, factory) so a new vehicle type
-	is one change.
+
 
 [2] Populate partial success is intended, but the result is misleading
 	Garage.Populate parks what fits and returns Fail with the failed vehicles listed, even
