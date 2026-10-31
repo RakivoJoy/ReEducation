@@ -51,10 +51,6 @@ WEAKNESSES AND INCONSISTENCIES
 IMPROVEMENTS
 =====================================================================
 
-[4] Add an end-to-end test that drives Run() with a scripted session
-	Most tests call one UI method directly. One or two full sessions (create, populate, park,
-	search, remove, exit) would catch menu wiring and pause-handling regressions.
-
 [3] Enable analyzers and stricter build settings
 	Add Directory.Build.props with AnalysisLevel, EnforceCodeStyleInBuild and
 	TreatWarningsAsErrors (at least for nullable warnings), plus an .editorconfig.
