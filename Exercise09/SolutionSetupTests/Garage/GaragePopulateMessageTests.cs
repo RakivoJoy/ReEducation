@@ -3,10 +3,9 @@ using SolutionSetup.Vehicles;
 
 namespace SolutionSetupTests
 {
-    // TODO: Phase 1 - Remove the Skip arguments once Populate() reports why each vehicle was not parked.
     public class GaragePopulateMessageTests
     {
-        [Fact(Skip = "Phase 1: Populate() does not report failure reasons yet.")]
+        [Fact]
         public void Populate_ReportsReason_WhenGarageIsFull()
         {
             // Arrange
@@ -26,7 +25,7 @@ namespace SolutionSetupTests
             Assert.Contains("The garage is full.", result.Message);
         }
 
-        [Fact(Skip = "Phase 1: Populate() does not report failure reasons yet.")]
+        [Fact]
         public void Populate_ReportsReason_WhenVehicleAlreadyParked()
         {
             // Arrange
@@ -42,7 +41,7 @@ namespace SolutionSetupTests
             Assert.Contains("already parked", result.Message);
         }
 
-        [Fact(Skip = "Phase 1: Populate() does not report failure reasons yet.")]
+        [Fact]
         public void Populate_ListsEveryFailedVehicle()
         {
             // Arrange
@@ -64,3 +63,4 @@ namespace SolutionSetupTests
         }
     }
 }
+

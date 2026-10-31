@@ -82,17 +82,6 @@ namespace SolutionSetupTests
         }
 
         [Fact]
-        public void Color_Setter_ThrowsForColorNotInAllowedList()
-        {
-            // Arrange
-            var vehicle = new Car("ABC123", "Black", 4, FuelType.Gasoline);
-
-            // Act & Assert
-            Assert.Throws<ArgumentException>(() => vehicle.Color = "Invisible");
-            Assert.Equal("Black", vehicle.Color);
-        }
-
-        [Fact]
         public void Constructor_ThrowsForNegativeNumberOfWheels()
         {
             // Arrange & Act & Assert

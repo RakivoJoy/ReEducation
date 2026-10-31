@@ -348,7 +348,7 @@ namespace SolutionSetupTests
 
             // Assert
             Assert.False(result.Success);
-            Assert.Equal("Parked 2 of 4 vehicles.", result.Message);
+            Assert.StartsWith("Parked 2 of 4 vehicles.", result.Message);
         }
 
         [Fact]
