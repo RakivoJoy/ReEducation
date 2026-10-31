@@ -1,14 +1,13 @@
 using SolutionSetup.Vehicles;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SolutionSetup.UI;
 
 /// <summary>
 /// Menu handlers that create, populate and report on the garage as a whole.
 /// </summary>
-// TODO: Phase 3 - rewrite the total and print loops with counts.Sum() and LINQ over the dictionary once ListVehicleCountByType returns one.
-// TODO: Phase 2 - use Garage<IVehicle> in ConsoleUI once the generic garage exists.
 public partial class ConsoleUI
 {
     /// <summary>
@@ -60,25 +59,17 @@ public partial class ConsoleUI
             return;
         }
 
-        List<int> counts = garage.ListVehicleCountByType();
-        int total = 0;
-        for (int i = 0; i < counts.Count; i++)
-        {
-            total += counts[i];
-        }
+        Dictionary<VehicleType, int> counts = garage.ListVehicleCountByType();
 
-        if (total == 0)
+        if (counts.Values.Sum() == 0)
         {
             _output.WriteLine("No vehicles are parked in the garage.");
             return;
         }
 
-        for (int i = 0; i < counts.Count; i++)
+        foreach (var entry in counts.OrderBy(e => e.Key))
         {
-            if (counts[i] > 0)
-            {
-                _output.WriteLine($"{(VehicleType)i}: {counts[i]}");
-            }
+            _output.WriteLine($"{entry.Key}: {entry.Value}");
         }
     }
 }

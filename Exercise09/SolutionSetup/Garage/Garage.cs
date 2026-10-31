@@ -10,11 +10,6 @@ namespace SolutionSetup;
 /// A garage that parks vehicles in a fixed number of spaces. Parked vehicles are stored in a list
 /// whose size never exceeds the capacity. Registration numbers are unique and compared ignoring case.
 /// </summary>
-// TODO: Phase 3 - replace FindIndex
-// TODO: Phase 3 - change RemoveVehicleByRegistration to use Remove(vehicle) once the vehicle is found.
-// TODO: Phase 3 - rewrite SearchByProperties as chained Where() calls for each non-null criterion.
-// TODO: Phase 3 - rewrite ListVehicleCountByType as GroupBy(v => v.Type).ToDictionary(g => g.Key, g => g.Count()).
-// TODO: Phase 3 - rewrite Populate as vehicles.Count(v => AddVehicle(v).Success).
 public class Garage<T> : IEnumerable<T> where T : IVehicle
 {
     private readonly List<T> _vehicles = new List<T>();
@@ -68,13 +63,13 @@ public class Garage<T> : IEnumerable<T> where T : IVehicle
     /// <returns>A failed result if no such vehicle is parked; otherwise a success result.</returns>
     public OperationResult RemoveVehicleByRegistration(string registrationNumber)
     {
-        int index = FindIndex(registrationNumber);
-        if (index < 0)
+        T? vehicle = FindByRegistration(registrationNumber);
+        if (vehicle is null)
         {
             return OperationResult.Fail($"No vehicle with registration number {registrationNumber} was found.");
         }
 
-        _vehicles.RemoveAt(index);
+        _vehicles.Remove(vehicle);
         return OperationResult.Ok($"Vehicle {registrationNumber} removed.");
     }
 
@@ -87,19 +82,14 @@ public class Garage<T> : IEnumerable<T> where T : IVehicle
     {
         ArgumentNullException.ThrowIfNull(vehicles);
 
-        int parked = 0;
         int total = 0;
-        foreach (T vehicle in vehicles)
+        int parked = vehicles.Count(v =>
         {
             total++;
-            if (AddVehicle(vehicle).Success)
-            {
-                parked++;
-            }
-        }
+            return AddVehicle(v).Success;
+        });
 
-        string message = $"Parked {parked} of {total} vehicles.";
-        return parked == total ? OperationResult.Ok(message) : OperationResult.Fail(message);
+        string message = $"Parked {parked} of {total} vehicles.";        return parked == total ? OperationResult.Ok(message) : OperationResult.Fail(message);
     }
 
     /// <summary>
@@ -111,17 +101,11 @@ public class Garage<T> : IEnumerable<T> where T : IVehicle
     }
 
     /// <summary>
-    /// Counts the parked vehicles per type. The returned array is indexed by (int)VehicleType.
+    /// Counts the parked vehicles per type. Types with no parked vehicles are absent from the result.
     /// </summary>
-    public List<int> ListVehicleCountByType()
+    public Dictionary<VehicleType, int> ListVehicleCountByType()
     {
-        List<int> counts = Enumerable.Repeat(0, Enum.GetNames(typeof(VehicleType)).Length).ToList();
-        foreach (T vehicle in _vehicles)
-        {
-            counts[(int)vehicle.Type]++;
-        }
-
-        return counts;
+        return _vehicles.GroupBy(v => v.Type).ToDictionary(g => g.Key, g => g.Count());
     }
 
     /// <summary>
@@ -130,8 +114,8 @@ public class Garage<T> : IEnumerable<T> where T : IVehicle
     /// <returns>The vehicle, or null if none matches.</returns>
     public T? FindByRegistration(string registrationNumber)
     {
-        int index = FindIndex(registrationNumber);
-        return index < 0 ? default : _vehicles[index];
+        string? trimmed = registrationNumber?.Trim();
+        return _vehicles.FirstOrDefault(v => string.Equals(v.RegistrationNumber, trimmed, StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>
@@ -143,27 +127,29 @@ public class Garage<T> : IEnumerable<T> where T : IVehicle
     {
         ArgumentNullException.ThrowIfNull(criteria);
 
-        List<T> matches = new List<T>();
-        for (int i = 0; i < _vehicles.Count; i++)
+        IEnumerable<T> matches = _vehicles;
+
+        if (criteria.RegistrationNumber is not null)
         {
-            T vehicle = _vehicles[i];
-
-            bool matchesRegistration = criteria.RegistrationNumber is null
-                || string.Equals(vehicle.RegistrationNumber, criteria.RegistrationNumber, StringComparison.OrdinalIgnoreCase);
-            bool matchesColor = criteria.Color is null
-                || string.Equals(vehicle.Color, criteria.Color, StringComparison.OrdinalIgnoreCase);
-            bool matchesWheels = criteria.NumberOfWheels is null
-                || vehicle.NumberOfWheels == criteria.NumberOfWheels;
-            bool matchesType = criteria.Type is null
-                || vehicle.Type == criteria.Type;
-
-            if (matchesRegistration && matchesColor && matchesWheels && matchesType)
-            {
-                matches.Add(vehicle);
-            }
+            matches = matches.Where(v => string.Equals(v.RegistrationNumber, criteria.RegistrationNumber, StringComparison.OrdinalIgnoreCase));
         }
 
-        return matches;
+        if (criteria.Color is not null)
+        {
+            matches = matches.Where(v => string.Equals(v.Color, criteria.Color, StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (criteria.NumberOfWheels is not null)
+        {
+            matches = matches.Where(v => v.NumberOfWheels == criteria.NumberOfWheels);
+        }
+
+        if (criteria.Type is not null)
+        {
+            matches = matches.Where(v => v.Type == criteria.Type);
+        }
+
+        return matches.ToList();
     }
 
     public IEnumerator<T> GetEnumerator()
@@ -174,20 +160,5 @@ public class Garage<T> : IEnumerable<T> where T : IVehicle
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
-    }
-
-    // Returns the index of the vehicle with the given registration number
-    private int FindIndex(string registrationNumber)
-    {
-        string? trimmed = registrationNumber?.Trim();
-        for (int i = 0; i < _vehicles.Count; i++)
-        {
-            if (string.Equals(_vehicles[i].RegistrationNumber, trimmed, StringComparison.OrdinalIgnoreCase))
-            {
-                return i;
-            }
-        }
-
-        return -1;
     }
 }
