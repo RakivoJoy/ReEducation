@@ -74,7 +74,7 @@ public partial class ConsoleUI
 
         if (counts.Values.Sum() == 0)
         {
-            _output.WriteLine("No vehicles are parked in the garage.");
+            _output.WriteLine(ConsoleUIText.NoVehiclesParked);
             return;
         }
 

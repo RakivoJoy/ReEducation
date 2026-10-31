@@ -24,7 +24,7 @@ public partial class ConsoleUI
     {
         if (!_handler.HasGarage)
         {
-            _output.WriteLine("No garage has been created yet. Please create a garage first.");
+            _output.WriteLine(ConsoleUIText.NoGaragePleaseCreate);
             return false;
         }
 

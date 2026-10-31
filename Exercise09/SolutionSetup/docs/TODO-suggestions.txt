@@ -25,11 +25,6 @@ WEAKNESSES AND INCONSISTENCIES
 	though some vehicles were parked. Keep partial success, but consider a result that carries
 	the parked count and failures separately so "Fail" does not describe a changed garage.
 
-[3] Menu handling relies on magic strings
-	Run() switches on "1".."8" and repeats the same list again for the pause check. A table of
-	menu items (key, text, action, pauseAfter) would remove the duplication between
-	PrintMenu, the switch and the pause list, and makes adding options a one-line change.
-
 [3] Search is not extensible
 	SearchCriteria has four hard-coded properties, and the property=value parser in
 	ConsoleUI.Search.cs has a switch per property. A new vehicle property (for example

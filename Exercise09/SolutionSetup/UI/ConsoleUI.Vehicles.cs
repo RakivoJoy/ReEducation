@@ -64,7 +64,7 @@ public partial class ConsoleUI
         }
         catch (EndOfStreamException)
         {
-            _output.WriteLine("Input ended before the vehicle was parked.");
+            _output.WriteLine(ConsoleUIText.InputEndedBeforeVehicleParked);
         }
     }
 
@@ -109,7 +109,7 @@ public partial class ConsoleUI
         IReadOnlyList<IVehicle> vehicles = _handler.ListVehicles();
         if (vehicles.Count == 0)
         {
-            _output.WriteLine("No vehicles are parked in the garage.");
+            _output.WriteLine(ConsoleUIText.NoVehiclesParked);
             return;
         }
 

@@ -32,7 +32,7 @@ namespace SolutionSetupTests
             ui.PopulateGarage();
 
             // Assert
-            Assert.Contains("No garage has been created yet.", output.ToString());
+            Assert.Contains(ConsoleUIText.NoGarage, output.ToString());
         }
 
         [Fact]

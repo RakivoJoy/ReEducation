@@ -14,6 +14,9 @@ public partial class ConsoleUI
     private readonly TextWriter _output;
     // The handler owns the garage; the UI only reads input, calls the handler and prints results.
     private readonly IHandler _handler;
+    private readonly MenuItem[] _menu;
+
+    private sealed record MenuItem(string Key, string Text, Action? Action, bool PauseAfter);
 
     /// <summary>
     /// Creates a console UI that reads from <see cref="Console.In"/> and writes to <see cref="Console.Out"/>.
@@ -44,6 +47,18 @@ public partial class ConsoleUI
         _input = input;
         _output = output;
         _handler = handler;
+        _menu =
+        [
+            new MenuItem("1", "Create garage", CreateGarage, PauseAfter: true),
+            new MenuItem("2", "Populate garage with sample vehicles", PopulateGarage, PauseAfter: true),
+            new MenuItem("3", "Park vehicle", ParkVehicle, PauseAfter: true),
+            new MenuItem("4", "Remove vehicle", RemoveVehicle, PauseAfter: true),
+            new MenuItem("5", "List all vehicles", ListVehicles, PauseAfter: true),
+            new MenuItem("6", "List vehicle count by type", ListVehicleCounts, PauseAfter: true),
+            new MenuItem("7", "Find vehicle by registration number", FindVehicle, PauseAfter: true),
+            new MenuItem("8", "Search vehicles by properties", SearchVehicles, PauseAfter: true),
+            new MenuItem("0", "Exit", Action: null, PauseAfter: false),
+        ];
     }
 
     /// <summary>
@@ -64,44 +79,22 @@ public partial class ConsoleUI
 
             try
             {
-                // Each menu option maps to one handler method in the partial class files.
-                switch (choice)
+                MenuItem? item = Array.Find(_menu, menuItem => menuItem.Key == choice);
+                if (item is null)
                 {
-                    case "1":
-                        CreateGarage();
-                        break;
-                    case "2":
-                        PopulateGarage();
-                        break;
-                    case "3":
-                        ParkVehicle();
-                        break;
-                    case "4":
-                        RemoveVehicle();
-                        break;
-                    case "5":
-                        ListVehicles();
-                        break;
-                    case "6":
-                        ListVehicleCounts();
-                        break;
-                    case "7":
-                        FindVehicle();
-                        break;
-                    case "8":
-                        SearchVehicles();
-                        break;
-                    case "0":
-                        exit = true;
-                        break;
-                    default:
-                        _output.WriteLine("Invalid choice. Please select a valid menu option.");
-                        break;
+                    _output.WriteLine(ConsoleUIText.InvalidChoice);
                 }
-
-                if (choice is "1" or "2" or "3" or "4" or "5" or "6" or "7" or "8")
+                else if (item.Action is null)
                 {
-                    PauseForEnter();
+                    exit = true;
+                }
+                else
+                {
+                    item.Action();
+                    if (item.PauseAfter)
+                    {
+                        PauseForEnter();
+                    }
                 }
             }
             catch (IOException)
@@ -130,24 +123,19 @@ public partial class ConsoleUI
     private void PauseForEnter()
     {
         _output.WriteLine();
-        _output.WriteLine("Press Enter to continue...");
+        _output.WriteLine(ConsoleUIText.PressEnterToContinue);
         _input.ReadLine();
     }
 
     /// <summary>
-    /// Prints the numbered main menu (options 1 to 8 and 0 for exit).
+    /// Prints the numbered main menu from the menu table.
     /// </summary>
     private void PrintMenu()
     {
-        _output.WriteLine("Welcome to your Garage 2.0");
-        _output.WriteLine("1. Create garage");
-        _output.WriteLine("2. Populate garage with sample vehicles");
-        _output.WriteLine("3. Park vehicle");
-        _output.WriteLine("4. Remove vehicle");
-        _output.WriteLine("5. List all vehicles");
-        _output.WriteLine("6. List vehicle count by type");
-        _output.WriteLine("7. Find vehicle by registration number");
-        _output.WriteLine("8. Search vehicles by properties");
-        _output.WriteLine("0. Exit");
+        _output.WriteLine(ConsoleUIText.MenuTitle);
+        foreach (MenuItem item in _menu)
+        {
+            _output.WriteLine($"{item.Key}. {item.Text}");
+        }
     }
 }

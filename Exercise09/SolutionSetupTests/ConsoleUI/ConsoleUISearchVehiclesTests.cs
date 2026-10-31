@@ -113,7 +113,7 @@ namespace SolutionSetupTests
             ui.SearchVehicles();
 
             // Assert
-            Assert.Contains("No garage has been created yet.", output.ToString());
+            Assert.Contains(ConsoleUIText.NoGarage, output.ToString());
         }
     }
 }

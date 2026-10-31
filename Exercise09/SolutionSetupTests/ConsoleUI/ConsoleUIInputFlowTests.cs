@@ -97,7 +97,7 @@ namespace SolutionSetupTests
             ui.Run();
 
             // Assert
-            Assert.Contains("Press Enter to continue", output.ToString());
+            Assert.Contains(ConsoleUIText.PressEnterToContinue, output.ToString());
         }
 
         [Fact]
@@ -112,7 +112,7 @@ namespace SolutionSetupTests
             ui.Run();
 
             // Assert
-            Assert.Contains("Welcome to your Garage 2.0", output.ToString());
+            Assert.Contains(ConsoleUIText.MenuTitle, output.ToString());
         }
 
         [Fact]

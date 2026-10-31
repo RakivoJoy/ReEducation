@@ -34,7 +34,7 @@ namespace SolutionSetupTests
 
             // Assert
             string result = output.ToString();
-            Assert.Contains("Invalid choice. Please select a valid menu option.", result);
+            Assert.Contains(ConsoleUIText.InvalidChoice, result);
         }
 
         [Fact]

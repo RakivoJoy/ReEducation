@@ -37,7 +37,7 @@ namespace SolutionSetupTests
             ui.ListVehicles();
 
             // Assert
-            Assert.Contains("No vehicles are parked in the garage.", output.ToString());
+            Assert.Contains(ConsoleUIText.NoVehiclesParked, output.ToString());
         }
 
         [Fact]
@@ -52,7 +52,7 @@ namespace SolutionSetupTests
             ui.ListVehicles();
 
             // Assert
-            Assert.Contains("No garage has been created yet.", output.ToString());
+            Assert.Contains(ConsoleUIText.NoGarage, output.ToString());
         }
 
         [Fact]
@@ -85,7 +85,7 @@ namespace SolutionSetupTests
             ui.ListVehicleCounts();
 
             // Assert
-            Assert.Contains("No vehicles are parked in the garage.", output.ToString());
+            Assert.Contains(ConsoleUIText.NoVehiclesParked, output.ToString());
         }
 
         [Fact]
