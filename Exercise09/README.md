@@ -1,4 +1,4 @@
-# Exercise 06 - Garage 2.0
+# Exercise 09 - Garage 3.0
 
 A console application that manages a parking garage for vehicles. The solution is built with .NET 10 and includes a unit test project.
 
@@ -23,7 +23,7 @@ The implementation should follow these rules:
 | Path | Purpose |
 | --- | --- |
 | `SolutionSetup\Program.cs` | Entry point. Starts the console UI. |
-| `SolutionSetup\Garage\Garage.cs` | Stores parked vehicles and implements parking, removal, lookup, counting, and search. |
+| `SolutionSetup\Garage\` | `Garage`, `GarageHandler` (implements `IHandler`), search criteria, and operation results. |
 | `SolutionSetup\Vehicles\` | `Vehicle` base class, derived vehicle types, `VehicleType`, and `FuelType`. |
 | `SolutionSetup\UI\` | Console user interface, split into partial class files per feature. |
 | `SolutionSetupTests\` | xUnit tests for vehicles, the garage, and the console UI. |
@@ -31,21 +31,21 @@ The implementation should follow these rules:
 ## How the program works
 
 1. **Start.** `Program.Main` creates a `ConsoleUI` that reads from the console and writes to the console, then runs the menu loop.
-2. **Menu.** The UI prints the menu and reads one choice. Each choice calls a handler method:
-
+2. **Menu.** The UI prints the menu and reads one choice. Each choice calls a handler method: create garage, populate sample vehicles, park, remove, list, count by type, find, and search.
 
 3. **Validation.** Most operations need a garage, so the UI reports an error if option 1 has not been used yet. Invalid numbers and unknown menu choices print a message and the menu is shown again. Vehicle constructors validate their input and throw `ArgumentException` or `ArgumentOutOfRangeException`. The UI catches these and shows the message.
-4. **Garage operations.** `Garage` returns an `OperationResult` for park and remove requests. The result carries a success flag and a message, which the UI prints. Lookups and searches return vehicles or lists directly.
-5. **Error handling.** Unexpected exceptions are caught in the menu loop, so the application keeps running. Closed input or output streams end the loop.
+4. **Search.** Enter `property=value` pairs on one line, such as `color=Black wheels=4`. Leave the line blank to list all vehicles. Fuel type accepts `g` or `d` as well as the full name.
+5. **Garage operations.**
+6. **Error handling.**
 
 ## Running the application
 
 ```powershell
-dotnet run --project Excercise06\SolutionSetup\SolutionSetup.csproj
+dotnet run --project Exercise09\SolutionSetup\SolutionSetup.csproj
 ```
 
 ## Running the tests
 
 ```powershell
-dotnet test Excercise06\SolutionSetupTests\SolutionSetupTests.csproj
+dotnet test Exercise09\SolutionSetupTests\SolutionSetupTests.csproj
 ```
