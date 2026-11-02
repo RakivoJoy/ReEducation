@@ -31,7 +31,9 @@ public partial class ConsoleUI
         return true;
     }
 
-    //TODO: Verify this is used in the UI and if not, remove it. It is used in the tests, but not in the UI.
+    /// <summary>
+    /// Parses user text into a value. Declared as a delegate because <see cref="Func{T1, T2, TResult}"/> cannot have an out parameter.
+    /// </summary>
     private delegate bool TryParser<T>(string text, out T value);
 
     /// <summary>

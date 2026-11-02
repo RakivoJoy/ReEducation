@@ -15,11 +15,7 @@ UI\ConsoleUI.Vehicles.cs
 UI\ConsoleUI.Helpers.cs
 =====================================================================
 
-[Prio:2, Effort:Low, Impact:Low] Resolve the in-code TODO about the TryParser delegate
-	The comment says to verify that TryParser<T> is used in the UI and otherwise remove it.
-	It is used by ReadValidated, and a custom delegate is needed because Func cannot have an
-	out parameter. Verify, then replace the TODO with a short summary comment (or remove the
-	delegate if it turns out to be unused).
+
 
 [Prio:2, Effort:Low, Impact:Medium] Extract the fuel type parsing from ReadFuelTypePrompt
 	The lambda trims the text, expands a one-letter shortcut with a ternary and then parses.
