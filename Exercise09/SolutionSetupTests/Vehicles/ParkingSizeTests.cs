@@ -15,15 +15,24 @@ namespace SolutionSetupTests
         [InlineData(VehicleType.Airplane, 50, 400)]
         public void Limits_AreDefinedPerType(VehicleType type, int min, int max)
         {
-            Assert.Equal((min, max), ParkingSizeLimits.For(type));
+            // Arrange
+            // Act
+            var limits = ParkingSizeLimits.For(type);
+
+            // Assert
+            Assert.Equal((min, max), limits);
         }
 
         [Fact]
         public void Limits_AreInsideOverallRange_ForEveryType()
         {
+            // Arrange
             foreach (VehicleType type in Enum.GetValues<VehicleType>())
             {
+                // Act
                 var (min, max) = ParkingSizeLimits.For(type);
+
+                // Assert
                 Assert.InRange(min, ParkingSizeLimits.Min, ParkingSizeLimits.Max);
                 Assert.InRange(max, ParkingSizeLimits.Min, ParkingSizeLimits.Max);
             }
@@ -42,13 +51,27 @@ namespace SolutionSetupTests
         [InlineData(30)]
         public void Car_AcceptsParkingSizeAtLimits(int size)
         {
-            Assert.Equal(size, new Car("ABC123", "Black", 4, FuelType.Diesel, size).ParkingSize);
+            // Arrange
+            var car = new Car("ABC123", "Black", 4, FuelType.Diesel, size);
+
+            // Act
+            int actual = car.ParkingSize;
+
+            // Assert
+            Assert.Equal(size, actual);
         }
 
         [Fact]
         public void Vehicle_DefaultsToSmallestSizeForType()
         {
-            Assert.Equal(1, new Motorcycle("ABC123", "Black", 2, 600).ParkingSize);
+            // Arrange
+            var motorcycle = new Motorcycle("ABC123", "Black", 2, 600);
+
+            // Act
+            int size = motorcycle.ParkingSize;
+
+            // Assert
+            Assert.Equal(1, size);
         }
 
         [Theory]
@@ -56,8 +79,15 @@ namespace SolutionSetupTests
         [InlineData("10-30", 10, 30)]
         public void IntRange_ParsesSingleValueAndRange(string text, int min, int max)
         {
-            Assert.True(IntRange.TryParse(text, out IntRange? range));
-            Assert.Equal(new IntRange(min, max), range);
+            // Arrange
+            var expected = new IntRange(min, max);
+
+            // Act
+            bool parsed = IntRange.TryParse(text, out IntRange? range);
+
+            // Assert
+            Assert.True(parsed);
+            Assert.Equal(expected, range);
         }
 
         [Theory]
@@ -68,12 +98,18 @@ namespace SolutionSetupTests
         [InlineData("1-2-3")]
         public void IntRange_RejectsInvalidText(string text)
         {
-            Assert.False(IntRange.TryParse(text, out _));
+            // Arrange
+            // Act
+            bool parsed = IntRange.TryParse(text, out _);
+
+            // Assert
+            Assert.False(parsed);
         }
 
         [Fact]
         public void SearchByProperties_FiltersBySizeRange()
         {
+            // Arrange
             var garage = new Garage<IVehicle>(3);
             garage.AddVehicle(new Car("AAA111", "Black", 4, FuelType.Diesel, 10));
             garage.AddVehicle(new Car("BBB222", "Black", 4, FuelType.Diesel, 20));
@@ -81,20 +117,25 @@ namespace SolutionSetupTests
             var criteria = new SearchCriteria();
             Assert.True(criteria.TrySetFilter("size", "15-30", out _));
 
+            // Act
             var results = garage.SearchByProperties(criteria);
 
+            // Assert
             Assert.Equal(["BBB222", "CCC333"], results.Select(v => v.RegistrationNumber).Order());
         }
 
         [Fact]
         public void SearchByProperties_SingleSizeMatchesExactly()
         {
+            // Arrange
             var garage = new Garage<IVehicle>(2);
             garage.AddVehicle(new Car("AAA111", "Black", 4, FuelType.Diesel, 10));
             garage.AddVehicle(new Car("BBB222", "Black", 4, FuelType.Diesel, 11));
 
+            // Act
             var results = garage.SearchByProperties(new SearchCriteria { ParkingSize = new IntRange(10, 10) });
 
+            // Assert
             Assert.Single(results);
         }
 
@@ -103,21 +144,28 @@ namespace SolutionSetupTests
         {
             var criteria = new SearchCriteria();
 
-            Assert.False(criteria.TrySetFilter("size", "30-10", out string error));
+            // Act
+            bool isSet = criteria.TrySetFilter("size", "30-10", out string error);
+
+            // Assert
+            Assert.False(isSet);
             Assert.Contains("Invalid parking size '30-10'", error);
         }
 
         [Fact]
         public void ParkVehicle_PromptsForSizeWithTypeLimits_AndRetriesOutOfRange()
         {
+            // Arrange
             var handler = new GarageHandler();
             using var output = new StringWriter();
             using var input = new StringReader("5\n3\nABC123\nBlack\n4\n99\n12\nGasoline\n");
             var ui = new ConsoleUI(input, output, handler);
             ui.CreateGarage();
 
+            // Act
             ui.ParkVehicle();
 
+            // Assert
             string text = output.ToString();
             Assert.Contains("Enter parking size (5-30):", text);
             Assert.Contains("Invalid parking size '99'", text);
@@ -127,6 +175,7 @@ namespace SolutionSetupTests
         [Fact]
         public void SearchVehicles_FindsBySizeRange()
         {
+            // Arrange
             var handler = new GarageHandler();
             using var output = new StringWriter();
             using var input = new StringReader(
@@ -139,8 +188,10 @@ namespace SolutionSetupTests
             ui.ParkVehicle();
             ui.ParkVehicle();
 
+            // Act
             ui.SearchVehicles();
 
+            // Assert
             string text = output.ToString();
             Assert.Contains("DEF456", text.Substring(text.LastIndexOf("Enter criteria", StringComparison.Ordinal)));
             Assert.DoesNotContain("ABC123", text.Substring(text.LastIndexOf("Enter criteria", StringComparison.Ordinal)));
