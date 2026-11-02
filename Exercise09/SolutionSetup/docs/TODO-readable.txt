@@ -34,9 +34,7 @@ UI\ConsoleUI.cs
 =====================================================================
 
 
-[Prio:1, Effort:Low, Impact:Low] Drop the constant PauseAfter argument
-	Every menu item except Exit passes PauseAfter: true. Either default it to true or derive it
-	from "Action is not null". Less noise in the menu table.
+
 
 =====================================================================
 UI\ConsoleUI.Garage.cs, ConsoleUI.Vehicles.cs, ConsoleUI.Search.cs, ConsoleUIText.cs
