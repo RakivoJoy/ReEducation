@@ -116,10 +116,7 @@ Garage\GarageHandler.cs
 Garage\SearchCriteria.cs
 =====================================================================
 
-[Prio:3, Effort:Medium, Impact:Medium] Replace repeated property name strings with constants
-	"registration", "color", "wheels", "type", "fuel" and "size" are written once in the
-	Definitions table and again in each typed accessor (Get/Set). A typo compiles fine and
-	fails at runtime. Use private const string names shared by both places.
+
 
 [Prio:2, Effort:Medium, Impact:Medium] Make the Definitions table easier to read
 	Each entry uses four lambdas with object casts ((string)value, (int)value). Consider a

@@ -24,29 +24,36 @@ public class SearchCriteria
         Func<IVehicle, object, bool> Matches,
         Func<string, string> InvalidMessage);
 
+    private const string RegistrationKey = "registration";
+    private const string ColorKey = "color";
+    private const string WheelsKey = "wheels";
+    private const string TypeKey = "type";
+    private const string FuelKey = "fuel";
+    private const string SizeKey = "size";
+
     private static readonly Definition[] Definitions =
     [
-        new("registration",
+        new(RegistrationKey,
             text => text.Trim(),
             (v, value) => string.Equals(v.RegistrationNumber, (string)value, StringComparison.OrdinalIgnoreCase),
             text => $"Invalid registration '{text}'."),
-        new("color",
+        new(ColorKey,
             text => text,
             (v, value) => string.Equals(v.Color, (string)value, StringComparison.OrdinalIgnoreCase),
             text => $"Invalid color '{text}'."),
-        new("wheels",
+        new(WheelsKey,
             text => int.TryParse(text, out int wheels) ? wheels : null,
             (v, value) => v.NumberOfWheels == (int)value,
             text => $"Invalid number of wheels '{text}'. Please enter a whole number."),
-        new("type",
+        new(TypeKey,
             text => Enum.TryParse(text, true, out VehicleType type) && Enum.IsDefined(type) ? type : null,
             (v, value) => v.Type == (VehicleType)value,
             text => $"Invalid vehicle type '{text}'."),
-        new("fuel",
+        new(FuelKey,
             text => Enum.TryParse(text, true, out FuelType fuel) && Enum.IsDefined(fuel) ? fuel : null,
             (v, value) => v is Car car && car.FuelType == (FuelType)value,
             text => $"Invalid fuel type '{text}'. Valid fuel types: {string.Join(", ", Enum.GetNames<FuelType>())}."),
-        new("size",
+        new(SizeKey,
             text => IntRange.TryParse(text, out IntRange? range) ? range : null,
             (v, value) => ((IntRange)value).Contains(v.ParkingSize),
             text => $"Invalid parking size '{text}'. Use a whole number or a range such as 10-30."),
@@ -60,43 +67,43 @@ public class SearchCriteria
     /// <summary>Registration number to match, ignoring case.</summary>
     public string? RegistrationNumber
     {
-        get => Get("registration");
-        set => Set("registration", value);
+        get => Get(RegistrationKey);
+        set => Set(RegistrationKey, value);
     }
 
     /// <summary>Color to match, ignoring case.</summary>
     public string? Color
     {
-        get => Get("color");
-        set => Set("color", value);
+        get => Get(ColorKey);
+        set => Set(ColorKey, value);
     }
 
     /// <summary>Exact number of wheels to match.</summary>
     public int? NumberOfWheels
     {
-        get => Get<int>("wheels");
-        set => Set("wheels", value);
+        get => Get<int>(WheelsKey);
+        set => Set(WheelsKey, value);
     }
 
     /// <summary>Vehicle type to match.</summary>
     public VehicleType? Type
     {
-        get => Get<VehicleType>("type");
-        set => Set("type", value);
+        get => Get<VehicleType>(TypeKey);
+        set => Set(TypeKey, value);
     }
 
     /// <summary>Fuel type to match. Only cars have a fuel type, so other vehicles never match.</summary>
     public FuelType? FuelType
     {
-        get => Get<FuelType>("fuel");
-        set => Set("fuel", value);
+        get => Get<FuelType>(FuelKey);
+        set => Set(FuelKey, value);
     }
 
     /// <summary>Parking size to match, as an inclusive range. A single size is the range size-size.</summary>
     public IntRange? ParkingSize
     {
-        get => Get<IntRange>("size");
-        set => Set("size", value);
+        get => Get<IntRange>(SizeKey);
+        set => Set(SizeKey, value);
     }
 
     /// <summary>
