@@ -52,15 +52,6 @@ public partial class ConsoleUI
     // Prints each matching vehicle, or a message when nothing matched.
     private void PrintSearchResults(IReadOnlyList<IVehicle> results)
     {
-        if (results.Count == 0)
-        {
-            _output.WriteLine(ConsoleUIText.NoVehiclesMatched);
-            return;
-        }
-
-        foreach (IVehicle vehicle in results)
-        {
-            _output.WriteLine(vehicle.ToString());
-        }
+        PrintVehicles(results, ConsoleUIText.NoVehiclesMatched);
     }
 }

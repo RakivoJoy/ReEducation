@@ -17,11 +17,6 @@ UI\ConsoleUI.Vehicles.cs
 	ReadRegistrationNumber(), ReadColor() and ReadParkingSize(typeInfo.Type) so ParkVehicle
 	reads like a short list of steps. The try/catch for EndOfStreamException stays in ParkVehicle.
 
-[Prio:3, Effort:Low, Impact:Medium] Share the "print vehicles" loop
-	ListVehicles and PrintSearchResults (ConsoleUI.Search.cs) both loop over vehicles and
-	write ToString(), each with its own "nothing found" message. One helper such as
-	PrintVehicles(IReadOnlyList<IVehicle>, string emptyMessage) removes the duplicate.
-
 [Prio:2, Effort:Low, Impact:Medium] Simplify the vehicle type parser lambda
 	The lambda assigns "value = valid ? types[number - 1] : types[0]" just to satisfy the out
 	parameter. Move it to a named method (TryParseVehicleType) so the intent is clear and the

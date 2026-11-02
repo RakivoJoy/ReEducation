@@ -104,10 +104,14 @@ public partial class ConsoleUI
     /// </summary>
     internal void ListVehicles()
     {
-        IReadOnlyList<IVehicle> vehicles = _handler.ListVehicles();
+        PrintVehicles(_handler.ListVehicles(), ConsoleUIText.NoVehiclesParked);
+    }
+
+    private void PrintVehicles(IReadOnlyList<IVehicle> vehicles, string emptyMessage)
+    {
         if (vehicles.Count == 0)
         {
-            _output.WriteLine(ConsoleUIText.NoVehiclesParked);
+            _output.WriteLine(emptyMessage);
             return;
         }
 
