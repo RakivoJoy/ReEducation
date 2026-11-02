@@ -11,12 +11,10 @@ Format: [Prio:X, Effort:Y, Impact:Z]
 UI\ConsoleUI.Vehicles.cs
 =====================================================================
 
+
 =====================================================================
 UI\ConsoleUI.Helpers.cs
 =====================================================================
-
-
-
 
 
 =====================================================================
@@ -24,12 +22,9 @@ UI\ConsoleUI.cs
 =====================================================================
 
 
-
-
 =====================================================================
 UI\ConsoleUI.Garage.cs, ConsoleUI.Vehicles.cs, ConsoleUI.Search.cs, ConsoleUIText.cs
 =====================================================================
-
 
 
 =====================================================================
@@ -60,7 +55,6 @@ Garage\SearchCriteria.cs
 =====================================================================
 
 
-
 [Prio:2, Effort:Medium, Impact:Medium] Make the Definitions table easier to read
 	Each entry uses four lambdas with object casts ((string)value, (int)value). Consider a
 	small generic Definition<T> (or a helper that builds an entry from a parser and a match
@@ -73,8 +67,6 @@ Garage\SearchCriteria.cs
 =====================================================================
 Vehicles\Vehicle.cs and subclasses
 =====================================================================
-
-
 
 [Prio:2, Effort:Medium, Impact:Medium] Remove repeated subclass boilerplate
 	Subclasses such as Boat repeat the same shape: Min/Max constants, a ThrowIfOutOfRange call
