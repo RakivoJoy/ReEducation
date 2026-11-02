@@ -19,7 +19,7 @@ public partial class ConsoleUI
 
     internal VehicleTypeInfo[] VehicleTypes => _vehicleTypes;
 
-    private sealed record MenuItem(string Key, string Text, Action? Action, bool PauseAfter = true, bool RequiresGarage = false);
+    private sealed record MenuItem(string Key, string Text, Action? Action, bool PauseAfter = true, bool RequiresGarage = true);
 
     /// <summary>
     /// Creates a console UI that reads from <see cref="Console.In"/> and writes to <see cref="Console.Out"/>.
@@ -52,15 +52,15 @@ public partial class ConsoleUI
         _handler = handler;
         _menu =
         [
-            new MenuItem("1", "Create garage", CreateGarage),
-            new MenuItem("2", "Populate garage with sample vehicles", PopulateGarage, RequiresGarage: true),
-            new MenuItem("3", "Park vehicle", ParkVehicle, RequiresGarage: true),
-            new MenuItem("4", "Remove vehicle", RemoveVehicle, RequiresGarage: true),
-            new MenuItem("5", "List all vehicles", ListVehicles, RequiresGarage: true),
-            new MenuItem("6", "List vehicle count by type", ListVehicleCounts, RequiresGarage: true),
-            new MenuItem("7", "Find vehicle by registration number", FindVehicle, RequiresGarage: true),
-            new MenuItem("8", "Search vehicles by properties", SearchVehicles, RequiresGarage: true),
-            new MenuItem("0", "Exit", Action: null, PauseAfter: false),
+            new MenuItem("1", "Create garage", CreateGarage, RequiresGarage: false),
+            new MenuItem("2", "Populate garage with sample vehicles", PopulateGarage),
+            new MenuItem("3", "Park vehicle", ParkVehicle),
+            new MenuItem("4", "Remove vehicle", RemoveVehicle),
+            new MenuItem("5", "List all vehicles", ListVehicles),
+            new MenuItem("6", "List vehicle count by type", ListVehicleCounts),
+            new MenuItem("7", "Find vehicle by registration number", FindVehicle),
+            new MenuItem("8", "Search vehicles by properties", SearchVehicles),
+            new MenuItem("0", "Exit", Action: null, PauseAfter: false, RequiresGarage: false),
         ];
         _vehicleTypes = BuildVehicleTypes();
     }
