@@ -1,6 +1,6 @@
-TODO-suggestions.txt - Exercise09 (Garage 2.0)
+TODO-suggestions.txt - Exercise09 (Garage 3.0)
 
-Grade = value for a mid-level engineer to work on: 4 = most valuable, 1 = least valuable.
+Grade : 4 = most valuable, 1 = least valuable.
 Scope: Exercise09 only.
 
 =====================================================================
@@ -20,8 +20,6 @@ WEAKNESSES AND INCONSISTENCIES
 	number would give O(1) duplicate checks and lookups and make the intent explicit.
 
 [1] Garage<T> is a requirement and is only used as Garage<IVehicle>
-	The generic is required, so keep it. The app only ever instantiates Garage<IVehicle>;
-	a short note in the README or class summary explaining this would help readers.
 
 [2] Case/whitespace normalization is spread over several places
 	Registration numbers are normalized in the Vehicle constructor, trimmed again in
