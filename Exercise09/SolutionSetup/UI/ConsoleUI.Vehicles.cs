@@ -61,7 +61,7 @@ public partial class ConsoleUI
     {
         return ReadValidated<string>(
             ConsoleUIText.EnterRegistrationNumber,
-            line => $"Invalid registration number '{line}'. Use three letters (excluding I, Q, V) followed by three alphanumerics.",
+            line => $"Invalid registration number '{line}'. Use {Vehicle.RegistrationNumberRule}.",
             (string text, out string value) => Vehicle.TryNormalizeRegistrationNumber(text, out value));
     }
 

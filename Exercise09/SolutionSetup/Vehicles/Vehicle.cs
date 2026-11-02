@@ -11,6 +11,8 @@ public abstract class Vehicle : IVehicle
 {
     private static readonly Regex RegistrationNumberPattern = new("^[A-HJ-PR-UW-Z]{3}[0-9]{2}[0-9A-HJ-PR-UW-Z]{1}$");
 
+    public const string RegistrationNumberRule = "three letters (excluding I, Q, V) followed by 3 numbers or 2 numbers and 1 letter. ABC123 or ABC12D. ";
+
     /// <summary>Unique registration number in ABC123 or ABC12D. Excluding I, Q, V. Set once and stored trimmed and uppercase.</summary>
     public string RegistrationNumber { get; }
 
@@ -48,7 +50,7 @@ public abstract class Vehicle : IVehicle
 
         if (!TryNormalizeRegistrationNumber(registrationNumber, out string? normalizedRegistrationNumber))
         {
-            throw new ArgumentException($"Registration number '{registrationNumber}' must be three letters (excluding I, Q, V) followed by three alphanumerics.", nameof(registrationNumber));
+            throw new ArgumentException($"Registration number '{registrationNumber}' must be {RegistrationNumberRule}.", nameof(registrationNumber));
         }
 
         RegistrationNumber = normalizedRegistrationNumber;
