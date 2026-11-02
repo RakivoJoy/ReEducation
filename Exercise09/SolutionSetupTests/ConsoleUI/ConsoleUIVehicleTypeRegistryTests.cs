@@ -34,7 +34,7 @@ namespace SolutionSetupTests
             var info = ui.VehicleTypes.Single(i => i.Type == type);
 
             // Act
-            Vehicle vehicle = info.Create("ABC123", "Black", 4);
+            Vehicle vehicle = info.Create("ABC123", "Black", 4, ParkingSizeLimits.For(type).Min);
 
             // Assert
             Assert.Equal(type, vehicle.Type);

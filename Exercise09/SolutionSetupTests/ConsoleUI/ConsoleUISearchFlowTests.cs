@@ -43,7 +43,7 @@ namespace SolutionSetupTests
         {
             // Arrange
             using var output = new StringWriter();
-            using var input = new StringReader("5\nsize=Large\n");
+            using var input = new StringReader("5\nweight=Large\n");
             var ui = new ConsoleUI(input, output);
             ui.CreateGarage();
 
@@ -51,7 +51,7 @@ namespace SolutionSetupTests
             ui.SearchVehicles();
 
             // Assert
-            Assert.Contains("Unknown search property 'size'", output.ToString());
+            Assert.Contains("Unknown search property 'weight'", output.ToString());
         }
 
         [Fact]

@@ -8,8 +8,8 @@ public class Car : Vehicle
 
     protected override string Details => $"Fuel: {FuelType}";
 
-    public Car(string registrationNumber, string color, int numberOfWheels, FuelType fuelType)
-        : base(registrationNumber, color, numberOfWheels)
+    public Car(string registrationNumber, string color, int numberOfWheels, FuelType fuelType, int? parkingSize = null)
+        : base(registrationNumber, color, numberOfWheels, parkingSize)
     {
         FuelType = fuelType;
     }

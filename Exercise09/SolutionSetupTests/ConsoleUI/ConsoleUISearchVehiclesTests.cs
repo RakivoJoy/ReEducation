@@ -11,8 +11,8 @@ namespace SolutionSetupTests
             using var output = new StringWriter();
             using var input = new StringReader(
                 "5\n" +
-                "3\nABC123\nBlack\n4\nGasoline\n" +
-                "3\nDEF456\nRed\n4\nDiesel\n" +
+                "3\nABC123\nBlack\n4\n10\nGasoline\n" +
+                "3\nDEF456\nRed\n4\n10\nDiesel\n" +
                 "color=Black\n\n");
             var ui = new ConsoleUI(input, output);
             ui.CreateGarage();
@@ -36,8 +36,8 @@ namespace SolutionSetupTests
             using var output = new StringWriter();
             using var input = new StringReader(
                 "5\n" +
-                "3\nABC123\nBlack\n4\nGasoline\n" +
-                "3\nDEF456\nBlack\n4\nDiesel\n" +
+                "3\nABC123\nBlack\n4\n10\nGasoline\n" +
+                "3\nDEF456\nBlack\n4\n10\nDiesel\n" +
                 "color=Black wheels=4 type=Car\n");
             var ui = new ConsoleUI(input, output);
             ui.CreateGarage();

@@ -15,8 +15,8 @@ public class Bus : Vehicle
 
     protected override string Details => $"Seats: {NumberOfSeats}";
 
-    public Bus(string registrationNumber, string color, int numberOfWheels, int numberOfSeats)
-        : base(registrationNumber, color, numberOfWheels)
+    public Bus(string registrationNumber, string color, int numberOfWheels, int numberOfSeats, int? parkingSize = null)
+        : base(registrationNumber, color, numberOfWheels, parkingSize)
     {
         ThrowIfOutOfRange(numberOfSeats, MinSeats, MaxSeats, "Number of seats", string.Empty, nameof(numberOfSeats));
 

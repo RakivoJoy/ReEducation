@@ -17,7 +17,7 @@ namespace SolutionSetupTests
         {
             // Arrange
             using var output = new StringWriter();
-            using var input = new StringReader($"5\n3\nABC123\nBlack\n4\n{fuelInput}\n");
+            using var input = new StringReader($"5\n3\nABC123\nBlack\n4\n10\n{fuelInput}\n");
             var ui = new ConsoleUI(input, output);
             ui.CreateGarage();
 
@@ -33,7 +33,7 @@ namespace SolutionSetupTests
         {
             // Arrange
             using var output = new StringWriter();
-            using var input = new StringReader("5\n3\nABC123\nBlack\n4\nx\n");
+            using var input = new StringReader("5\n3\nABC123\nBlack\n4\n10\nx\n");
             var ui = new ConsoleUI(input, output);
             ui.CreateGarage();
 
@@ -49,7 +49,7 @@ namespace SolutionSetupTests
         {
             // Arrange
             using var output = new StringWriter();
-            using var input = new StringReader("5\n3\nABC123\nBlack\n4\nx\ng\n");
+            using var input = new StringReader("5\n3\nABC123\nBlack\n4\n10\nx\ng\n");
             var ui = new ConsoleUI(input, output);
             ui.CreateGarage();
 

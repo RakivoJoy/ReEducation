@@ -67,7 +67,7 @@ namespace SolutionSetupTests
             var handler = new FakeHandler();
             handler.CreateGarage(3);
             using var output = new StringWriter();
-            using var input = new StringReader("3\nABC123\nBlack\n4\nGasoline\n");
+            using var input = new StringReader("3\nABC123\nBlack\n4\n10\nGasoline\n");
             var ui = new ConsoleUI(input, output, handler);
 
             // Act

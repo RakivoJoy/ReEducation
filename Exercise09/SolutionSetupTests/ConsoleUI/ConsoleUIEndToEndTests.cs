@@ -11,7 +11,7 @@ namespace SolutionSetupTests
             // Arrange
             var handler = new GarageHandler();
             using var output = new StringWriter();
-            using var input = new StringReader("1\n5\n\n3\n3\nABC123\nBlack\n4\nGasoline\n\n0\n");
+            using var input = new StringReader("1\n5\n\n3\n3\nABC123\nBlack\n4\n10\nGasoline\n\n0\n");
             var ui = new ConsoleUI(input, output, handler);
 
             // Act
@@ -30,7 +30,7 @@ namespace SolutionSetupTests
             using var output = new StringWriter();
             using var input = new StringReader(
                 "1\n5\n\n" +
-                "3\n3\nABC123\nBlack\n4\nGasoline\n\n" +
+                "3\n3\nABC123\nBlack\n4\n10\nGasoline\n\n" +
                 "8\ncolor=Black\n\n" +
                 "4\nABC123\n\n" +
                 "0\n");
@@ -53,7 +53,7 @@ namespace SolutionSetupTests
             using var input = new StringReader(
                 "9\n" +
                 "1\n5\n\n" +
-                "3\n3\nAB1234\nABC123\nInvisible\nRed\n4\nGasoline\n\n" +
+                "3\n3\nAB1234\nABC123\nInvisible\nRed\n4\n10\nGasoline\n\n" +
                 "7\nABC123\n\n" +
                 "0\n");
             var ui = new ConsoleUI(input, output, handler);

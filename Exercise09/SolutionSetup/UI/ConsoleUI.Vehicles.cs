@@ -53,7 +53,13 @@ public partial class ConsoleUI
 
             int numberOfWheels = ReadIntPrompt("Enter number of wheels:", "Invalid number of wheels. Please enter a whole number.");
 
-            Vehicle vehicle = typeInfo.Create(registrationNumber, color, numberOfWheels);
+            (int minSize, int maxSize) = ParkingSizeLimits.For(typeInfo.Type);
+            int parkingSize = ReadValidated<int>(
+                $"Enter parking size ({minSize}-{maxSize}):",
+                line => $"Invalid parking size '{line}'. Enter a whole number between {minSize} and {maxSize}.",
+                (string text, out int value) => int.TryParse(text, out value) && value >= minSize && value <= maxSize);
+
+            Vehicle vehicle = typeInfo.Create(registrationNumber, color, numberOfWheels, parkingSize);
 
             OperationResult result = _handler.ParkVehicle(vehicle);
             _output.WriteLine(result.Message);
@@ -69,21 +75,21 @@ public partial class ConsoleUI
     /// </summary>
     /// <param name="Type">The vehicle type this entry creates.</param>
     /// <param name="Create">
-    /// Builds the vehicle from the registration number, color and number of wheels. It also prompts for any
+    /// Builds the vehicle from the registration number, color, number of wheels and parking size. It also prompts for any
     /// type-specific detail, such as fuel type or seat count.
     /// </param>
-    internal sealed record VehicleTypeInfo(VehicleType Type, Func<string, string, int, Vehicle> Create);
+    internal sealed record VehicleTypeInfo(VehicleType Type, Func<string, string, int, int, Vehicle> Create);
 
     private VehicleTypeInfo[]? _vehicleTypes;
 
     internal VehicleTypeInfo[] VehicleTypes => _vehicleTypes ??=
     [
-        new(VehicleType.Motorcycle, (reg, color, wheels) => new Motorcycle(reg, color, wheels, ReadIntPrompt("Enter cylinder volume (cc):"))),
-        new(VehicleType.Airplane, (reg, color, wheels) => new Airplane(reg, color, wheels, ReadIntPrompt("Enter number of engines:"))),
-        new(VehicleType.Car, (reg, color, wheels) => new Car(reg, color, wheels, ReadFuelTypePrompt())),
-        new(VehicleType.Bus, (reg, color, wheels) => new Bus(reg, color, wheels, ReadIntPrompt("Enter number of seats:"))),
-        new(VehicleType.Boat, (reg, color, wheels) => new Boat(reg, color, wheels, ReadDoublePrompt("Enter length (m):"))),
-        new(VehicleType.Truck, (reg, color, wheels) => new Truck(reg, color, wheels, ReadIntPrompt("Enter load capacity (kg):")))
+        new(VehicleType.Motorcycle, (reg, color, wheels, size) => new Motorcycle(reg, color, wheels, ReadIntPrompt("Enter cylinder volume (cc):"), size)),
+        new(VehicleType.Airplane, (reg, color, wheels, size) => new Airplane(reg, color, wheels, ReadIntPrompt("Enter number of engines:"), size)),
+        new(VehicleType.Car, (reg, color, wheels, size) => new Car(reg, color, wheels, ReadFuelTypePrompt(), size)),
+        new(VehicleType.Bus, (reg, color, wheels, size) => new Bus(reg, color, wheels, ReadIntPrompt("Enter number of seats:"), size)),
+        new(VehicleType.Boat, (reg, color, wheels, size) => new Boat(reg, color, wheels, ReadDoublePrompt("Enter length (m):"), size)),
+        new(VehicleType.Truck, (reg, color, wheels, size) => new Truck(reg, color, wheels, ReadIntPrompt("Enter load capacity (kg):"), size))
     ];
 
     /// <summary>

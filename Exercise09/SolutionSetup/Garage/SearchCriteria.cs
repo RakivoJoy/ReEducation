@@ -46,6 +46,10 @@ public class SearchCriteria
             text => Enum.TryParse(text, true, out FuelType fuel) && Enum.IsDefined(fuel) ? fuel : null,
             (v, value) => v is Car car && car.FuelType == (FuelType)value,
             text => $"Invalid fuel type '{text}'. Valid fuel types: {string.Join(", ", Enum.GetNames<FuelType>())}."),
+        new("size",
+            text => IntRange.TryParse(text, out IntRange? range) ? range : null,
+            (v, value) => ((IntRange)value).Contains(v.ParkingSize),
+            text => $"Invalid parking size '{text}'. Use a whole number or a range such as 10-30."),
     ];
 
     private readonly Dictionary<string, object> _filters = new(StringComparer.OrdinalIgnoreCase);
@@ -88,8 +92,15 @@ public class SearchCriteria
         set => Set("fuel", value);
     }
 
+    /// <summary>Parking size to match, as an inclusive range. A single size is the range size-size.</summary>
+    public IntRange? ParkingSize
+    {
+        get => Get<IntRange>("size");
+        set => Set("size", value);
+    }
+
     /// <summary>
-    /// Parses <paramref name="text"/> for the named property and stores it as a filter. Returns false and sets
+    /// Parses <paramref name="text"/> for the named property
     /// <paramref name="error"/> when the property is unknown or the text is invalid.
     /// </summary>
     public bool TrySetFilter(string property, string text, out string error)

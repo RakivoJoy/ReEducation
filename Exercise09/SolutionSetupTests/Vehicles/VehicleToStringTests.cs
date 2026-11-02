@@ -15,7 +15,7 @@ namespace SolutionSetupTests
             var result = vehicle.ToString();
 
             // Assert
-            Assert.Equal("Car ABC123, Black, 4 wheels, Fuel: Gasoline", result);
+            Assert.Equal("Car ABC123, Black, 4 wheels, size 5, Fuel: Gasoline", result);
         }
 
         [Fact]
@@ -28,7 +28,7 @@ namespace SolutionSetupTests
             var result = vehicle.ToString();
 
             // Assert
-            Assert.Equal("Motorcycle ABC123, Pink, 3 wheels, Cylinder volume: 600 cc", result);
+            Assert.Equal("Motorcycle ABC123, Pink, 3 wheels, size 1, Cylinder volume: 600 cc", result);
         }
 
         [Fact]
@@ -41,7 +41,7 @@ namespace SolutionSetupTests
             var result = vehicle.ToString();
 
             // Assert
-            Assert.Equal("Airplane ABC123, White, 3 wheels, Engines: 2", result);
+            Assert.Equal("Airplane ABC123, White, 3 wheels, size 50, Engines: 2", result);
         }
 
         [Fact]
@@ -54,7 +54,7 @@ namespace SolutionSetupTests
             var result = vehicle.ToString();
 
             // Assert
-            Assert.Equal("Bus ABC123, Yellow, 6 wheels, Seats: 50", result);
+            Assert.Equal("Bus ABC123, Yellow, 6 wheels, size 20, Seats: 50", result);
         }
 
         [Fact]
@@ -67,7 +67,7 @@ namespace SolutionSetupTests
             var result = vehicle.ToString();
 
             // Assert
-            Assert.Equal("Boat ABC123, White, 0 wheels, Length: 12.5 m", result);
+            Assert.Equal("Boat ABC123, White, 0 wheels, size 10, Length: 12.5 m", result);
         }
 
         [Fact]
@@ -80,7 +80,7 @@ namespace SolutionSetupTests
             var result = vehicle.ToString();
 
             // Assert
-            Assert.Equal("Truck ABC123, Blue, 6 wheels, Load: 12000 kg", result);
+            Assert.Equal("Truck ABC123, Blue, 6 wheels, size 15, Load: 12000 kg", result);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace SolutionSetupTests
         [InlineData("fuel", "water", "Invalid fuel type 'water'")]
         [InlineData("fuel", "7", "Invalid fuel type '7'")]
         [InlineData("wheels", "many", "Invalid number of wheels")]
-        [InlineData("size", "big", "Unknown search property 'size'")]
+        [InlineData("weight", "big", "Unknown search property 'weight'")]
         public void TrySetFilter_RejectsInvalidInput(string property, string text, string expected)
         {
             var criteria = new SearchCriteria();

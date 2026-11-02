@@ -17,8 +17,8 @@ public class Boat : Vehicle
 
     protected override string Details => $"Length: {Length.ToString(CultureInfo.InvariantCulture)} m";
 
-    public Boat(string registrationNumber, string color, int numberOfWheels, double length)
-        : base(registrationNumber, color, numberOfWheels)
+    public Boat(string registrationNumber, string color, int numberOfWheels, double length, int? parkingSize = null)
+        : base(registrationNumber, color, numberOfWheels, parkingSize)
     {
         ThrowIfOutOfRange(length, MinLength, MaxLength, "Length", "m", nameof(length));
 

@@ -11,7 +11,7 @@ namespace SolutionSetupTests
             // Arrange
             var handler = new GarageHandler();
             using var output = new StringWriter();
-            using var input = new StringReader("5\n3\nABC123\nBlack\n4\nGasoline\nABC123\n");
+            using var input = new StringReader("5\n3\nABC123\nBlack\n4\n10\nGasoline\nABC123\n");
             var ui = new ConsoleUI(input, output, handler);
             ui.CreateGarage();
             ui.ParkVehicle();

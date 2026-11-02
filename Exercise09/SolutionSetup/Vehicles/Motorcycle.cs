@@ -15,8 +15,8 @@ public class Motorcycle : Vehicle
 
     protected override string Details => $"Cylinder volume: {CylinderVolume} cc";
 
-    public Motorcycle(string registrationNumber, string color, int numberOfWheels, int cylinderVolume)
-        : base(registrationNumber, color, numberOfWheels)
+    public Motorcycle(string registrationNumber, string color, int numberOfWheels, int cylinderVolume, int? parkingSize = null)
+        : base(registrationNumber, color, numberOfWheels, parkingSize)
     {
         ThrowIfOutOfRange(cylinderVolume, MinCylinderVolume, MaxCylinderVolume, "Cylinder volume", "cc", nameof(cylinderVolume));
 

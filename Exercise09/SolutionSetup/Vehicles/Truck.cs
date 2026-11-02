@@ -17,8 +17,8 @@ public class Truck : Vehicle
 
     protected override string Details => $"Load: {LoadCapacity} kg";
 
-    public Truck(string registrationNumber, string color, int numberOfWheels, int loadCapacity)
-        : base(registrationNumber, color, numberOfWheels)
+    public Truck(string registrationNumber, string color, int numberOfWheels, int loadCapacity, int? parkingSize = null)
+        : base(registrationNumber, color, numberOfWheels, parkingSize)
     {
         ThrowIfOutOfRange(loadCapacity, MinLoadCapacity, MaxLoadCapacity, "Load capacity", "kg", nameof(loadCapacity));
 

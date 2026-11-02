@@ -12,7 +12,7 @@ namespace SolutionSetupTests
             // Arrange
             var handler = new GarageHandler();
             using var output = new StringWriter();
-            using var input = new StringReader("5\n3\nABC123\nBlack\n4\nGasoline\n");
+            using var input = new StringReader("5\n3\nABC123\nBlack\n4\n10\nGasoline\n");
             var ui = new ConsoleUI(input, output, handler);
             ui.CreateGarage();
 
@@ -29,7 +29,7 @@ namespace SolutionSetupTests
             // Arrange
             var handler = new GarageHandler();
             using var output = new StringWriter();
-            using var input = new StringReader("5\n6\nTRK001\nBlue\n6\n9000\n");
+            using var input = new StringReader("5\n6\nTRK001\nBlue\n6\n20\n9000\n");
             var ui = new ConsoleUI(input, output, handler);
             ui.CreateGarage();
 
@@ -45,7 +45,7 @@ namespace SolutionSetupTests
         {
             // Arrange
             using var output = new StringWriter();
-            using var input = new StringReader("5\n3\nABC123\nBlack\n4\nGasoline\n");
+            using var input = new StringReader("5\n3\nABC123\nBlack\n4\n10\nGasoline\n");
             var ui = new ConsoleUI(input, output);
             ui.CreateGarage();
 
@@ -62,7 +62,7 @@ namespace SolutionSetupTests
             // Arrange
             var handler = new GarageHandler();
             using var output = new StringWriter();
-            using var input = new StringReader("5\n3\nABC123\nInvisible\n4\nGasoline\n");
+            using var input = new StringReader("5\n3\nABC123\nInvisible\n4\n10\nGasoline\n");
             var ui = new ConsoleUI(input, output, handler);
             ui.CreateGarage();
 
@@ -128,7 +128,7 @@ namespace SolutionSetupTests
             // Arrange
             var handler = new GarageHandler();
             using var output = new StringWriter();
-            using var input = new StringReader("5\n3\nABC123\nBlack\n4\nElectric\n");
+            using var input = new StringReader("5\n3\nABC123\nBlack\n4\n10\nElectric\n");
             var ui = new ConsoleUI(input, output, handler);
             ui.CreateGarage();
 
@@ -144,7 +144,7 @@ namespace SolutionSetupTests
         {
             // Arrange
             using var output = new StringWriter();
-            using var input = new StringReader("5\n3\nABC123\nBlack\n4\nGasoline\n3\nABC123\nRed\n4\nDiesel\n");
+            using var input = new StringReader("5\n3\nABC123\nBlack\n4\n10\nGasoline\n3\nABC123\nRed\n4\n10\nDiesel\n");
             var ui = new ConsoleUI(input, output);
             ui.CreateGarage();
 

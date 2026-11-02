@@ -16,4 +16,7 @@ public interface IVehicle
 
     /// <summary>The vehicle type.</summary>
     VehicleType Type { get; }
+
+    /// <summary>Space the vehicle takes up, within the limits in <see cref="ParkingSizeLimits"/> for its type.</summary>
+    int ParkingSize { get; }
 }

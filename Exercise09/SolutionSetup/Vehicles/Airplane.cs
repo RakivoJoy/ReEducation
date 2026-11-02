@@ -15,8 +15,8 @@ public class Airplane : Vehicle
 
     protected override string Details => $"Engines: {NumberOfEngines}";
 
-    public Airplane(string registrationNumber, string color, int numberOfWheels, int numberOfEngines)
-        : base(registrationNumber, color, numberOfWheels)
+    public Airplane(string registrationNumber, string color, int numberOfWheels, int numberOfEngines, int? parkingSize = null)
+        : base(registrationNumber, color, numberOfWheels, parkingSize)
     {
         ThrowIfOutOfRange(numberOfEngines, MinEngines, MaxEngines, "Number of engines", string.Empty, nameof(numberOfEngines));
 

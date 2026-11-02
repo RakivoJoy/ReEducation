@@ -25,18 +25,26 @@ public abstract class Vehicle : IVehicle
     /// <summary>The vehicle type, implemented by each subclass.</summary>
     public abstract VehicleType Type { get; }
 
+    /// <summary>Parking size, validated against <see cref="ParkingSizeLimits.For"/> for the vehicle type. Set once at construction.</summary>
+    public int ParkingSize { get; }
+
     /// <summary>
     /// Creates a vehicle with the shared properties.
     /// </summary>
     /// <param name="registrationNumber">Registration number in the format ABC123 (three letters followed by three digits). Must not be null, empty or whitespace.</param>
     /// <param name="color">Color. Must be one of the colors in <see cref="VehicleColors.All"/>.</param>
     /// <param name="numberOfWheels">Number of wheels. Must not be negative.</param>
+    /// <param name="parkingSize">Parking size within the limits for the vehicle type. When null, the smallest size allowed for the type is used.</param>
     /// <exception cref="ArgumentException">Thrown when the registration number is null, empty or whitespace or not in the format ABC123, or when the color is not an allowed color.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="numberOfWheels"/> is negative.</exception>
-    protected Vehicle(string registrationNumber, string color, int numberOfWheels)
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="numberOfWheels"/> is negative or <paramref name="parkingSize"/> is outside the limits for the type.</exception>
+    protected Vehicle(string registrationNumber, string color, int numberOfWheels, int? parkingSize = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(registrationNumber);
         ArgumentOutOfRangeException.ThrowIfNegative(numberOfWheels);
+
+        (int minSize, int maxSize) = ParkingSizeLimits.For(Type);
+        int size = parkingSize ?? minSize;
+        ThrowIfOutOfRange(size, minSize, maxSize, "Parking size", string.Empty, nameof(parkingSize));
 
         if (!TryNormalizeRegistrationNumber(registrationNumber, out string? normalizedRegistrationNumber))
         {
@@ -46,6 +54,7 @@ public abstract class Vehicle : IVehicle
         RegistrationNumber = normalizedRegistrationNumber;
         Color = VehicleColors.Normalize(color);
         NumberOfWheels = numberOfWheels;
+        ParkingSize = size;
     }
 
     /// <summary>
@@ -87,7 +96,7 @@ public abstract class Vehicle : IVehicle
     /// </summary>
     public override string ToString()
     {
-        string summary = $"{Type} {RegistrationNumber}, {Color}, {NumberOfWheels} wheels";
+        string summary = $"{Type} {RegistrationNumber}, {Color}, {NumberOfWheels} wheels, size {ParkingSize}";
         return string.IsNullOrEmpty(Details) ? summary : $"{summary}, {Details}";
     }
 }
