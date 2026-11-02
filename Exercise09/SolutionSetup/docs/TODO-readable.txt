@@ -1,0 +1,150 @@
+TODO-readable.txt - Exercise09 (Garage 3.0)
+
+Suggested improvements for readability.
+Items are grouped by file/area. Each item is rated:
+  Prio   : 1-4 (4 = do first)
+  Effort : Low / Medium / High
+  Impact : Low / Medium / High
+Format: [Prio:X, Effort:Y, Impact:Z]
+
+=====================================================================
+UI\ConsoleUI.Vehicles.cs
+=====================================================================
+
+[Prio:4, Effort:Medium, Impact:High] Split ParkVehicle into smaller methods
+	ParkVehicle is about 50 lines: it prints the type menu, reads six values with inline
+	lambdas, creates the vehicle and prints the result. Extract ReadVehicleType(),
+	ReadRegistrationNumber(), ReadColor() and ReadParkingSize(typeInfo.Type) so ParkVehicle
+	reads like a short list of steps. The try/catch for EndOfStreamException stays in ParkVehicle.
+
+[Prio:3, Effort:Low, Impact:Medium] Remove the repeated "if (!EnsureGarage()) return;" guard
+	Six handlers (ParkVehicle, RemoveVehicle, ListVehicles, FindVehicle, SearchVehicles,
+	PopulateGarage, ListVehicleCounts) start with the same four lines. Either wrap the
+	guard once where the menu dispatches (for example a RequiresGarage flag on MenuItem) or add
+	a helper that takes the action to run.
+
+[Prio:3, Effort:Low, Impact:Medium] Share the "print vehicles" loop
+	ListVehicles and PrintSearchResults (ConsoleUI.Search.cs) both loop over vehicles and
+	write ToString(), each with its own "nothing found" message. One helper such as
+	PrintVehicles(IReadOnlyList<IVehicle>, string emptyMessage) removes the duplicate.
+
+[Prio:2, Effort:Low, Impact:Medium] Simplify the vehicle type parser lambda
+	The lambda assigns "value = valid ? types[number - 1] : types[0]" just to satisfy the out
+	parameter. Move it to a named method (TryParseVehicleType) so the intent is clear and the
+	dummy fallback is hidden.
+
+[Prio:1, Effort:Low, Impact:Low] Build VehicleTypes once in the constructor
+	VehicleTypes uses a lazy "_vehicleTypes ??=" property. A readonly field set in the
+	constructor is simpler to read. Note the lambdas use instance methods, so it has to be
+	created after the fields are set.
+
+=====================================================================
+UI\ConsoleUI.Helpers.cs
+=====================================================================
+
+[Prio:2, Effort:Low, Impact:Low] Resolve the in-code TODO about the TryParser delegate
+	The comment says to verify that TryParser<T> is used in the UI and otherwise remove it.
+	It is used by ReadValidated, and a custom delegate is needed because Func cannot have an
+	out parameter. Verify, then replace the TODO with a short summary comment (or remove the
+	delegate if it turns out to be unused).
+
+[Prio:2, Effort:Low, Impact:Medium] Extract the fuel type parsing from ReadFuelTypePrompt
+	The lambda trims the text, expands a one-letter shortcut with a ternary and then parses.
+	Move this to a named TryParseFuelType method with a comment about the shortcut (G/D).
+
+[Prio:1, Effort:Low, Impact:Low] Wrap long one-line calls
+	ReadDoublePrompt has a very long single line (prompt, message lambda and parser together).
+	Break it over several lines like ReadFuelTypePrompt.
+
+=====================================================================
+UI\ConsoleUI.cs
+=====================================================================
+
+[Prio:3, Effort:Medium, Impact:Medium] Flatten Run()
+	Run has a while loop, a try with three catch blocks and an if/else-if/else chain inside.
+	Extract HandleChoice(string choice) (returns true when the user exits) and keep the
+	catch blocks in Run. The loop then reads: print menu, read choice, handle it.
+
+[Prio:1, Effort:Low, Impact:Low] Drop the constant PauseAfter argument
+	Every menu item except Exit passes PauseAfter: true. Either default it to true or derive it
+	from "Action is not null". Less noise in the menu table.
+
+=====================================================================
+UI\ConsoleUI.Garage.cs, ConsoleUI.Vehicles.cs, ConsoleUI.Search.cs, ConsoleUIText.cs
+=====================================================================
+
+[Prio:2, Effort:Medium, Impact:Medium] Move remaining message literals to ConsoleUIText
+	Some messages are in ConsoleUIText (NoVehiclesParked, InputEndedBeforeVehicleParked) but
+	others are inline, for example "Input ended before the garage was created.", "Sample
+	vehicles are already added to this garage.", "No vehicles matched the given criteria." and
+	all prompts. Use one place so wording is easy to find and consistent.
+
+[Prio:2, Effort:Low, Impact:Medium] Remove duplicated "not found" wording
+	"No vehicle with registration number {x} was found." exists both in Garage.cs
+	(RemoveVehicleByRegistration) and ConsoleUI.Vehicles.cs (FindVehicle). Define it once, or
+	let the handler return an OperationResult for find as well.
+
+[Prio:2, Effort:Low, Impact:Medium] Duplicated registration number rule text
+	The "three letters (excluding I, Q, V) followed by three alphanumerics" text appears in
+	Vehicle (exception message) and ConsoleUI.Vehicles.cs (prompt error). Expose it as one
+	constant next to the regex in Vehicle.
+
+=====================================================================
+Garage\Garage.cs
+=====================================================================
+
+[Prio:2, Effort:Low, Impact:Medium] Simplify Populate
+	Populate keeps three accumulators (total, parked, failures) and builds the message at the
+	end. Collect the OperationResult per vehicle in a list, then derive the counts with
+	Count(). Fewer mutable variables to follow.
+
+[Prio:1, Effort:Low, Impact:Low] Use shorter collection expressions
+	ListAllVehicles uses "new List<T>(_vehicles).AsReadOnly()"; "[.. _vehicles]" is shorter and
+	the explicit IEnumerable.GetEnumerator forwarders can use expression bodies like the rest
+	of the file.
+
+=====================================================================
+Garage\GarageHandler.cs
+=====================================================================
+
+[Prio:1, Effort:Low, Impact:Low] Reduce repeated XML doc blocks
+	Each method repeats the same <inheritdoc/> and InvalidOperationException documentation.
+	Document the exception once on IHandler (or in the class summary) and keep only
+	<inheritdoc/> here.
+
+=====================================================================
+Garage\SearchCriteria.cs
+=====================================================================
+
+[Prio:3, Effort:Medium, Impact:Medium] Replace repeated property name strings with constants
+	"registration", "color", "wheels", "type", "fuel" and "size" are written once in the
+	Definitions table and again in each typed accessor (Get/Set). A typo compiles fine and
+	fails at runtime. Use private const string names shared by both places.
+
+[Prio:2, Effort:Medium, Impact:Medium] Make the Definitions table easier to read
+	Each entry uses four lambdas with object casts ((string)value, (int)value). Consider a
+	small generic Definition<T> (or a helper that builds an entry from a parser and a match
+	function) so casts are in one place and each row is shorter.
+
+[Prio:1, Effort:Low, Impact:Low] Rename the two Get overloads
+	Get<T> (structs) and Get (string) differ only by type constraint. Names like GetValue<T>
+	and GetText make call sites easier to understand.
+
+=====================================================================
+Vehicles\Vehicle.cs and subclasses
+=====================================================================
+
+[Prio:3, Effort:Medium, Impact:Medium] Split the Vehicle constructor validation
+	The constructor validates the registration number, wheels and parking size in one block
+	with a tuple deconstruction in the middle. Extract ValidateParkingSize(...) and
+	NormalizeRegistrationNumberOrThrow(...) so the constructor only assigns properties.
+
+[Prio:2, Effort:Medium, Impact:Medium] Remove repeated subclass boilerplate
+	Subclasses such as Boat repeat the same shape: Min/Max constants, a ThrowIfOutOfRange call
+	with a description, unit and paramName, and a Details override. ThrowIfOutOfRange takes six
+	arguments; consider an overload without unit for the common case, and check the other
+	subclasses (Bus, Truck, Motorcycle, Airplane) for the same pattern.
+
+[Prio:1, Effort:Low, Impact:Low] Make XML docs consistent
+	Boat documents its constants but not Type, Details or the constructor, while Vehicle
+	documents everything. Add short summaries so all vehicle classes follow the same style.

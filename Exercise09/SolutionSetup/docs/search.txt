@@ -85,7 +85,7 @@ Example: seats for buses.
 	2. Optionally add a typed accessor (public int? Seats { get; set; }).
 	3. Add tests.
 The parser, the help line, the error messages and the garage filter pick it up with no
-other change. The fuel and size properties were added exactly like this.
+other change.
 
 =====================================================================
 5. WEAKNESSES OF THE CURRENT DESIGN
