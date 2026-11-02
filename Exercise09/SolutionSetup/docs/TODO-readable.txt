@@ -17,13 +17,7 @@ UI\ConsoleUI.Helpers.cs
 
 
 
-[Prio:2, Effort:Low, Impact:Medium] Extract the fuel type parsing from ReadFuelTypePrompt
-	The lambda trims the text, expands a one-letter shortcut with a ternary and then parses.
-	Move this to a named TryParseFuelType method with a comment about the shortcut (G/D).
 
-[Prio:1, Effort:Low, Impact:Low] Wrap long one-line calls
-	ReadDoublePrompt has a very long single line (prompt, message lambda and parser together).
-	Break it over several lines like ReadFuelTypePrompt.
 
 =====================================================================
 UI\ConsoleUI.cs

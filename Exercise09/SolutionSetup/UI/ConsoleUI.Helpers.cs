@@ -68,7 +68,10 @@ public partial class ConsoleUI
     /// </summary>
     private double ReadDoublePrompt(string prompt)
     {
-        return ReadValidated<double>(prompt, line => $"Invalid input: '{line}' is not a valid number.", (string text, out double value) => double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out value));
+        return ReadValidated<double>(
+            prompt,
+            line => $"Invalid input: '{line}' is not a valid number.",
+            (string text, out double value) => double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out value));
     }
 
     /// <summary>
@@ -79,13 +82,16 @@ public partial class ConsoleUI
         return ReadValidated<FuelType>(
             "Enter fuel type (Gasoline/Diesel):",
             line => $"Invalid input: '{line}' is not a valid fuel type.",
-            (string text, out FuelType value) =>
-            {
-                string line = text.Trim();
-                string candidate = line.Length == 1
-                    ? Enum.GetNames<FuelType>().FirstOrDefault(name => name.StartsWith(line, StringComparison.OrdinalIgnoreCase)) ?? line
-                    : line;
-                return Enum.TryParse(candidate, ignoreCase: true, out value) && Enum.IsDefined(value);
-            });
+            TryParseFuelType);
+    }
+
+    // A single letter is accepted as a shortcut for the first fuel type starting with it (G = Gasoline, D = Diesel).
+    private static bool TryParseFuelType(string text, out FuelType value)
+    {
+        string line = text.Trim();
+        string candidate = line.Length == 1
+            ? Enum.GetNames<FuelType>().FirstOrDefault(name => name.StartsWith(line, StringComparison.OrdinalIgnoreCase)) ?? line
+            : line;
+        return Enum.TryParse(candidate, ignoreCase: true, out value) && Enum.IsDefined(value);
     }
 }
