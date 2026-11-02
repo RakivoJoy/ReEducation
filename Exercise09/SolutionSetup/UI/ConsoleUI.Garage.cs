@@ -35,7 +35,7 @@ public partial class ConsoleUI
         }
         catch (EndOfStreamException)
         {
-            _output.WriteLine("Input ended before the garage was created.");
+            _output.WriteLine(ConsoleUIText.InputEndedBeforeGarageCreated);
         }
     }
 
@@ -46,7 +46,7 @@ public partial class ConsoleUI
     {
         if (_samplesAdded)
         {
-            _output.WriteLine("Sample vehicles are already added to this garage.");
+            _output.WriteLine(ConsoleUIText.SamplesAlreadyAdded);
             return;
         }
 

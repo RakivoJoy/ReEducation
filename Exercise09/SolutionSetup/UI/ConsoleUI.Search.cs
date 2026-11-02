@@ -13,7 +13,7 @@ public partial class ConsoleUI
     internal void SearchVehicles()
     {
 
-        _output.WriteLine("Enter criteria as property=value pairs separated by spaces, e.g. color=Black type=Car (leave blank for all vehicles).");
+        _output.WriteLine(ConsoleUIText.SearchCriteriaPrompt);
         _output.WriteLine($"Properties: {string.Join(", ", SearchCriteria.PropertyNames)} ({string.Join(", ", VehicleTypes.Select(info => info.Type))})");
         string line = ReadLineOrEmpty();
 
@@ -54,7 +54,7 @@ public partial class ConsoleUI
     {
         if (results.Count == 0)
         {
-            _output.WriteLine("No vehicles matched the given criteria.");
+            _output.WriteLine(ConsoleUIText.NoVehiclesMatched);
             return;
         }
 

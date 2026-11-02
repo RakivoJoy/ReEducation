@@ -17,7 +17,7 @@ public partial class ConsoleUI
     internal void ParkVehicle()
     {
         VehicleTypeInfo[] types = VehicleTypes;
-        _output.WriteLine("Select vehicle type:");
+        _output.WriteLine(ConsoleUIText.SelectVehicleType);
         for (int i = 0; i < types.Length; i++)
         {
             _output.WriteLine($"{i + 1}. {types[i].Type}");
@@ -36,17 +36,17 @@ public partial class ConsoleUI
                 });
 
             string registrationNumber = ReadValidated<string>(
-                "Enter registration number:",
+                ConsoleUIText.EnterRegistrationNumber,
                 line => $"Invalid registration number '{line}'. Use three letters (excluding I, Q, V) followed by three alphanumerics.",
                 (string text, out string value) => Vehicle.TryNormalizeRegistrationNumber(text, out value));
 
             _output.WriteLine($"Most common colors: {string.Join(", ", VehicleColors.MostCommon)}");
             string color = ReadValidated<string>(
-                "Enter color:",
+                ConsoleUIText.EnterColor,
                 line => $"Invalid color '{line}'. Choose one of the allowed colors.",
                 (string text, out string value) => VehicleColors.TryNormalize(text, out value));
 
-            int numberOfWheels = ReadIntPrompt("Enter number of wheels:", "Invalid number of wheels. Please enter a whole number.");
+            int numberOfWheels = ReadIntPrompt(ConsoleUIText.EnterNumberOfWheels, ConsoleUIText.InvalidNumberOfWheels);
 
             (int minSize, int maxSize) = ParkingSizeLimits.For(typeInfo.Type);
             int parkingSize = ReadValidated<int>(
@@ -92,7 +92,7 @@ public partial class ConsoleUI
     /// </summary>
     internal void RemoveVehicle()
     {
-        _output.WriteLine("Enter registration number to remove:");
+        _output.WriteLine(ConsoleUIText.EnterRegistrationNumberToRemove);
         string registrationNumber = ReadLineOrEmpty();
 
         OperationResult result = _handler.RemoveVehicle(registrationNumber);
@@ -122,13 +122,13 @@ public partial class ConsoleUI
     /// </summary>
     internal void FindVehicle()
     {
-        _output.WriteLine("Enter registration number to find:");
+        _output.WriteLine(ConsoleUIText.EnterRegistrationNumberToFind);
         string registrationNumber = ReadLineOrEmpty();
 
         IVehicle? vehicle = _handler.FindVehicle(registrationNumber);
         if (vehicle is null)
         {
-            _output.WriteLine($"No vehicle with registration number {registrationNumber} was found.");
+            _output.WriteLine(Garage<IVehicle>.NotFoundMessage(registrationNumber));
             return;
         }
 

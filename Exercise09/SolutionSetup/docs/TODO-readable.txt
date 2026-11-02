@@ -63,17 +63,6 @@ UI\ConsoleUI.cs
 UI\ConsoleUI.Garage.cs, ConsoleUI.Vehicles.cs, ConsoleUI.Search.cs, ConsoleUIText.cs
 =====================================================================
 
-[Prio:2, Effort:Medium, Impact:Medium] Move remaining message literals to ConsoleUIText
-	Some messages are in ConsoleUIText (NoVehiclesParked, InputEndedBeforeVehicleParked) but
-	others are inline, for example "Input ended before the garage was created.", "Sample
-	vehicles are already added to this garage.", "No vehicles matched the given criteria." and
-	all prompts. Use one place so wording is easy to find and consistent.
-
-[Prio:2, Effort:Low, Impact:Medium] Remove duplicated "not found" wording
-	"No vehicle with registration number {x} was found." exists both in Garage.cs
-	(RemoveVehicleByRegistration) and ConsoleUI.Vehicles.cs (FindVehicle). Define it once, or
-	let the handler return an OperationResult for find as well.
-
 [Prio:2, Effort:Low, Impact:Medium] Duplicated registration number rule text
 	The "three letters (excluding I, Q, V) followed by three alphanumerics" text appears in
 	Vehicle (exception message) and ConsoleUI.Vehicles.cs (prompt error). Expose it as one

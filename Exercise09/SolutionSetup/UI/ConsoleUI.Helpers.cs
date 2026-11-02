@@ -56,7 +56,7 @@ public partial class ConsoleUI
     /// <summary>
     /// Prints a prompt and reads a whole number, asking again until the input is valid.
     /// </summary>
-    private int ReadIntPrompt(string prompt, string invalidMessage = "Invalid input. Please enter a whole number.")
+    private int ReadIntPrompt(string prompt, string invalidMessage = ConsoleUIText.InvalidWholeNumber)
     {
         return ReadValidated<int>(prompt, _ => invalidMessage, (string text, out int value) => int.TryParse(text, out value));
     }

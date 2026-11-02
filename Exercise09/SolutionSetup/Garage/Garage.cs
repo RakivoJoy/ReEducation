@@ -63,6 +63,11 @@ public class Garage<T> : IEnumerable<T> where T : IVehicle
     }
 
     /// <summary>
+    /// Returns the message reported when no parked vehicle has the given registration number.
+    /// </summary>
+    public static string NotFoundMessage(string registrationNumber) => $"No vehicle with registration number {registrationNumber} was found.";
+
+    /// <summary>
     /// Removes the vehicle with the given registration number (case-insensitive) and frees its space.
     /// </summary>
     /// <returns>A failed result if no such vehicle is parked; otherwise a success result.</returns>
@@ -71,7 +76,7 @@ public class Garage<T> : IEnumerable<T> where T : IVehicle
         T? vehicle = FindByRegistration(registrationNumber);
         if (vehicle is null)
         {
-            return OperationResult.Fail($"No vehicle with registration number {registrationNumber} was found.");
+            return OperationResult.Fail(NotFoundMessage(registrationNumber));
         }
 
         _vehicles.Remove(vehicle);
