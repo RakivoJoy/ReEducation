@@ -1,0 +1,148 @@
+search.txt - How vehicle search works in Exercise09 (Garage 2.0)
+
+=====================================================================
+1. OVERVIEW
+=====================================================================
+
+Search lets the user find parked vehicles by one or more properties, for example:
+
+	color=Black type=Car fuel=Diesel size=10-30
+
+Every property=value pair narrows the result. A vehicle is returned only when it
+matches ALL pairs (logical AND). A blank line returns every vehicle.
+
+Four pieces take part. Data flows left to right:
+
+	ConsoleUI.SearchVehicles  ->  SearchCriteria  ->  Garage<T>.SearchByProperties
+	(reads and parses text)       (holds filters,     (applies Matches to each
+								   knows properties)   parked vehicle)
+
+=====================================================================
+2. THE PIECES IN DETAIL
+=====================================================================
+
+2.1 UI/ConsoleUI.Search.cs
+	- Prints the prompt and the list of property names (SearchCriteria.PropertyNames).
+	- Reads one line and splits it on spaces into property=value pairs.
+	- A pair without '=' or with an empty side prints "Invalid search criterion ...".
+	- Each valid pair goes to SearchCriteria.TrySetFilter(property, text, out error).
+	  On failure the error is printed and nothing is searched.
+	- On success it calls IHandler.SearchVehicles(criteria), which forwards to the garage,
+	  and prints the matches.
+	The UI contains no knowledge about which properties exist.
+
+2.2 Garage/SearchCriteria.cs  (the core)
+	SearchCriteria is both the set of active filters and the single place that knows what
+	can be searched.
+	- A private table "Definitions" has one entry per property:
+		Name            the word the user types, e.g. "color"
+		Parse           text -> typed value, or null when the text is invalid
+		Matches         (vehicle, typed value) -> bool
+		InvalidMessage  the error text for invalid input
+	- Active filters live in a dictionary: property name -> typed value.
+	- TrySetFilter(name, text, out error)   parses text and stores the filter.
+	- Matches(vehicle)                      true when the vehicle satisfies every filter.
+	- Typed accessors (Color, Type, FuelType, ParkingSize, ...) read and write the same
+	  dictionary so code can still write: new SearchCriteria { Color = "Black" }.
+	  Setting an accessor to null removes the filter.
+
+2.3 Garage/IntRange.cs
+	A small inclusive whole-number range. "40" is 40-40 and "10-30" is 10 to 30.
+	Used by the size property so numbers can be searched by range.
+	Negative numbers are not supported, so the first '-' always separates the two ends.
+
+2.4 Garage/Garage.cs - SearchByProperties(criteria)
+	Throws ArgumentNullException for null, then returns the parked vehicles for which
+	criteria.Matches(vehicle) is true. It has no property-specific code.
+
+=====================================================================
+3. THE PROPERTIES TODAY
+=====================================================================
+
+	registration  text, case-insensitive exact match
+	color         text, case-insensitive exact match
+	wheels        whole number, exact match
+	type          VehicleType name (Car, Bus, ...), case-insensitive
+	fuel          FuelType name (Gasoline, Diesel). Only cars have fuel; any other
+				  vehicle never matches a fuel filter
+	size          parking size, a number or range such as 10-30
+
+Parking size
+	Every vehicle has a ParkingSize between 1 and 400 (Vehicles/ParkingSizeLimits.cs).
+	Each type has its own limits:
+		Motorcycle 1-10, Car 5-30, Truck 15-80, Bus 20-100, Boat 10-400, Airplane 50-400
+	The Vehicle constructor validates the size against the limits of its type. The
+	ParkVehicle prompt shows the limits for the chosen type and asks again when the
+	value is outside them. When no size is passed to a constructor (tests, sample data)
+	the smallest size allowed for the type is used.
+
+=====================================================================
+4. HOW TO ADD ANOTHER SEARCHABLE PROPERTY
+=====================================================================
+
+Example: seats for buses.
+	1. Add one entry to SearchCriteria.Definitions (name, Parse, Matches, InvalidMessage).
+	2. Optionally add a typed accessor (public int? Seats { get; set; }).
+	3. Add tests.
+The parser, the help line, the error messages and the garage filter pick it up with no
+other change. The fuel and size properties were added exactly like this.
+
+=====================================================================
+5. WEAKNESSES OF THE CURRENT DESIGN
+=====================================================================
+
+[a] Values are stored as object. The table casts ((int)value, (string)value) so a wrong
+	cast is a runtime error, not a compile error. Tests protect against it.
+[b] The typed accessors duplicate the property names as strings ("fuel", "size"), so a
+	typo is not caught by the compiler.
+[c] Only AND is supported. There is no OR (color=Black or Red) and no NOT.
+[d] Only equality and numeric ranges. There is no "contains" or "starts with" for text.
+[e] Values cannot contain spaces because pairs are split on spaces.
+[f] A range cannot start with a negative number. Fine for sizes and wheels today.
+[g] Properties that only exist on one subclass (fuel) are matched with a type check
+	("v is Car"). Each new subclass-only property needs a similar check.
+[h] SearchCriteria is public and mixes two jobs: the set of filters and the catalogue of
+	properties. It is small enough to live together, but would not scale to dozens of
+	properties.
+
+=====================================================================
+6. IMPROVEMENTS AND ALTERNATIVES
+=====================================================================
+
+[1] Generic definition per property (low effort, removes [a] and [b])
+	Define SearchProperty<TValue>(Name, Parse, Matches) and keep the typed value
+	inside the definition so casts disappear. Typed accessors then use the definition
+	object instead of a string name.
+
+[2] Predicate-based criteria (medium effort)
+	SearchCriteria holds a list of Func<IVehicle, bool>. The UI parser builds the
+	predicates, tests build them directly. Fully flexible and trivial to extend, but
+	the criteria can no longer be listed, printed or compared, and there is no single
+	place that documents the available properties.
+
+[3] Small query language (medium to high effort)
+	Parse expressions such as: color=Black AND (type=Car OR type=Bus) AND size>=10.
+	Solves [c], [d] and [f]. Needs a tokenizer and a parser, and a lot more tests.
+	Only worth it if users really need combined conditions.
+
+[4] Reflection or attributes on the vehicle classes (medium effort)
+	Mark vehicle properties with [Searchable] and build definitions automatically.
+	Adding a property to a vehicle makes it searchable with no extra code. The cost is
+	reflection and less explicit, harder-to-debug behavior.
+
+[5] LINQ expression trees and IQueryable (high effort)
+	Useful when vehicles come from a database. Overkill for an in-memory garage.
+
+[6] Indexes for large garages (only if needed)
+	Garage stores a List<T> and every search is a linear scan. For tens or hundreds
+	of vehicles this is fine. If the garage grew large, keep a Dictionary by
+	registration number
+	tables.
+
+[7] Move the property table out of SearchCriteria (low effort)
+	Split into a SearchProperties catalogue (definitions) and SearchCriteria (filters).
+	This is the layout used in the first version of this refactor. It was merged
+	because two public types for one concept confused readers.
+
+Recommended next step: [1]. It keeps today's simple model and removes the most likely
+source of bugs (the object casts).
