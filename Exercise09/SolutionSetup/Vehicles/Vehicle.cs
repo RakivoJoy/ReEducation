@@ -44,19 +44,29 @@ public abstract class Vehicle : IVehicle
         ArgumentException.ThrowIfNullOrWhiteSpace(registrationNumber);
         ArgumentOutOfRangeException.ThrowIfNegative(numberOfWheels);
 
+        int size = ValidateParkingSize(parkingSize);
+        RegistrationNumber = NormalizeRegistrationNumberOrThrow(registrationNumber);
+        Color = VehicleColors.Normalize(color);
+        NumberOfWheels = numberOfWheels;
+        ParkingSize = size;
+    }
+
+    private int ValidateParkingSize(int? parkingSize)
+    {
         (int minSize, int maxSize) = ParkingSizeLimits.For(Type);
         int size = parkingSize ?? minSize;
         ThrowIfOutOfRange(size, minSize, maxSize, "Parking size", string.Empty, nameof(parkingSize));
+        return size;
+    }
 
+    private static string NormalizeRegistrationNumberOrThrow(string registrationNumber)
+    {
         if (!TryNormalizeRegistrationNumber(registrationNumber, out string? normalizedRegistrationNumber))
         {
             throw new ArgumentException($"Registration number '{registrationNumber}' must be {RegistrationNumberRule}.", nameof(registrationNumber));
         }
 
-        RegistrationNumber = normalizedRegistrationNumber;
-        Color = VehicleColors.Normalize(color);
-        NumberOfWheels = numberOfWheels;
-        ParkingSize = size;
+        return normalizedRegistrationNumber;
     }
 
     /// <summary>

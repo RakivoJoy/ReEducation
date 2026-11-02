@@ -84,10 +84,7 @@ Garage\SearchCriteria.cs
 Vehicles\Vehicle.cs and subclasses
 =====================================================================
 
-[Prio:3, Effort:Medium, Impact:Medium] Split the Vehicle constructor validation
-	The constructor validates the registration number, wheels and parking size in one block
-	with a tuple deconstruction in the middle. Extract ValidateParkingSize(...) and
-	NormalizeRegistrationNumberOrThrow(...) so the constructor only assigns properties.
+
 
 [Prio:2, Effort:Medium, Impact:Medium] Remove repeated subclass boilerplate
 	Subclasses such as Boat repeat the same shape: Min/Max constants, a ThrowIfOutOfRange call
