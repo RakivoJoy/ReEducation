@@ -11,12 +11,6 @@ Format: [Prio:X, Effort:Y, Impact:Z]
 UI\ConsoleUI.Vehicles.cs
 =====================================================================
 
-
-[Prio:1, Effort:Low, Impact:Low] Build VehicleTypes once in the constructor
-	VehicleTypes uses a lazy "_vehicleTypes ??=" property. A readonly field set in the
-	constructor is simpler to read. Note the lambdas use instance methods, so it has to be
-	created after the fields are set.
-
 =====================================================================
 UI\ConsoleUI.Helpers.cs
 =====================================================================

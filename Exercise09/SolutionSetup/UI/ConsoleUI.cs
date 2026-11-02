@@ -15,6 +15,9 @@ public partial class ConsoleUI
     // The handler owns the garage; the UI only reads input, calls the handler and prints results.
     private readonly IHandler _handler;
     private readonly MenuItem[] _menu;
+    private readonly VehicleTypeInfo[] _vehicleTypes;
+
+    internal VehicleTypeInfo[] VehicleTypes => _vehicleTypes;
 
     private sealed record MenuItem(string Key, string Text, Action? Action, bool PauseAfter, bool RequiresGarage = false);
 
@@ -59,6 +62,7 @@ public partial class ConsoleUI
             new MenuItem("8", "Search vehicles by properties", SearchVehicles, PauseAfter: true, RequiresGarage: true),
             new MenuItem("0", "Exit", Action: null, PauseAfter: false),
         ];
+        _vehicleTypes = BuildVehicleTypes();
     }
 
     /// <summary>

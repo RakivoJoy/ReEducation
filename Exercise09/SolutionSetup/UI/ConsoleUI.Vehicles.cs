@@ -37,7 +37,7 @@ public partial class ConsoleUI
 
     private VehicleTypeInfo ReadVehicleType()
     {
-        VehicleTypeInfo[] types = VehicleTypes;
+        VehicleTypeInfo[] types = _vehicleTypes;
         _output.WriteLine(ConsoleUIText.SelectVehicleType);
         for (int i = 0; i < types.Length; i++)
         {
@@ -93,9 +93,7 @@ public partial class ConsoleUI
     /// </param>
     internal sealed record VehicleTypeInfo(VehicleType Type, Func<string, string, int, int, Vehicle> Create);
 
-    private VehicleTypeInfo[]? _vehicleTypes;
-
-    internal VehicleTypeInfo[] VehicleTypes => _vehicleTypes ??=
+    private VehicleTypeInfo[] BuildVehicleTypes() =>
     [
         new(VehicleType.Motorcycle, (reg, color, wheels, size) => new Motorcycle(reg, color, wheels, ReadIntPrompt("Enter cylinder volume (cc):"), size)),
         new(VehicleType.Airplane, (reg, color, wheels, size) => new Airplane(reg, color, wheels, ReadIntPrompt("Enter number of engines:"), size)),
