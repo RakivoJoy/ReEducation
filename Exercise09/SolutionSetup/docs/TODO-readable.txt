@@ -12,12 +12,6 @@ UI\ConsoleUI.Vehicles.cs
 =====================================================================
 
 
-
-[Prio:2, Effort:Low, Impact:Medium] Simplify the vehicle type parser lambda
-	The lambda assigns "value = valid ? types[number - 1] : types[0]" just to satisfy the out
-	parameter. Move it to a named method (TryParseVehicleType) so the intent is clear and the
-	dummy fallback is hidden.
-
 [Prio:1, Effort:Low, Impact:Low] Build VehicleTypes once in the constructor
 	VehicleTypes uses a lazy "_vehicleTypes ??=" property. A readonly field set in the
 	constructor is simpler to read. Note the lambdas use instance methods, so it has to be

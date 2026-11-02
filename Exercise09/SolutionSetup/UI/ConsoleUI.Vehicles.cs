@@ -47,12 +47,14 @@ public partial class ConsoleUI
         return ReadValidated<VehicleTypeInfo>(
             $"Enter vehicle type number (1-{types.Length}):",
             line => $"Invalid input: '{line}' is not a valid vehicle type option. Please choose 1-{types.Length}.",
-            (string text, out VehicleTypeInfo value) =>
-            {
-                bool valid = int.TryParse(text, out int number) && number >= 1 && number <= types.Length;
-                value = valid ? types[number - 1] : types[0];
-                return valid;
-            });
+            (string text, out VehicleTypeInfo value) => TryParseVehicleType(text, types, out value));
+    }
+
+    private static bool TryParseVehicleType(string text, VehicleTypeInfo[] types, out VehicleTypeInfo value)
+    {
+        bool valid = int.TryParse(text, out int number) && number >= 1 && number <= types.Length;
+        value = valid ? types[number - 1] : types[0];
+        return valid;
     }
 
     private string ReadRegistrationNumber()
