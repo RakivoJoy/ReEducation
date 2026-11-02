@@ -44,11 +44,6 @@ public partial class ConsoleUI
     /// </summary>
     internal void PopulateGarage()
     {
-        if (!EnsureGarage())
-        {
-            return;
-        }
-
         if (_samplesAdded)
         {
             _output.WriteLine("Sample vehicles are already added to this garage.");
@@ -65,11 +60,6 @@ public partial class ConsoleUI
     /// </summary>
     internal void ListVehicleCounts()
     {
-        if (!EnsureGarage())
-        {
-            return;
-        }
-
         Dictionary<VehicleType, int> counts = _handler.ListVehicleCounts();
 
         if (counts.Values.Sum() == 0)

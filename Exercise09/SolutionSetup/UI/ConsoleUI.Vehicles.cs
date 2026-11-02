@@ -16,11 +16,6 @@ public partial class ConsoleUI
     /// </summary>
     internal void ParkVehicle()
     {
-        if (!EnsureGarage())
-        {
-            return;
-        }
-
         VehicleTypeInfo[] types = VehicleTypes;
         _output.WriteLine("Select vehicle type:");
         for (int i = 0; i < types.Length; i++)
@@ -97,11 +92,6 @@ public partial class ConsoleUI
     /// </summary>
     internal void RemoveVehicle()
     {
-        if (!EnsureGarage())
-        {
-            return;
-        }
-
         _output.WriteLine("Enter registration number to remove:");
         string registrationNumber = ReadLineOrEmpty();
 
@@ -114,11 +104,6 @@ public partial class ConsoleUI
     /// </summary>
     internal void ListVehicles()
     {
-        if (!EnsureGarage())
-        {
-            return;
-        }
-
         IReadOnlyList<IVehicle> vehicles = _handler.ListVehicles();
         if (vehicles.Count == 0)
         {
@@ -137,11 +122,6 @@ public partial class ConsoleUI
     /// </summary>
     internal void FindVehicle()
     {
-        if (!EnsureGarage())
-        {
-            return;
-        }
-
         _output.WriteLine("Enter registration number to find:");
         string registrationNumber = ReadLineOrEmpty();
 

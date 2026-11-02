@@ -45,11 +45,11 @@ namespace SolutionSetupTests
         {
             // Arrange
             using var output = new StringWriter();
-            using var input = new StringReader("");
+            using var input = new StringReader("5\n\n0\n");
             var ui = new ConsoleUI(input, output);
 
             // Act
-            ui.ListVehicles();
+            ui.Run();
 
             // Assert
             Assert.Contains(ConsoleUIText.NoGarage, output.ToString());
@@ -93,11 +93,11 @@ namespace SolutionSetupTests
         {
             // Arrange
             using var output = new StringWriter();
-            using var input = new StringReader("");
+            using var input = new StringReader("6\n\n0\n");
             var ui = new ConsoleUI(input, output);
 
             // Act
-            ui.ListVehicleCounts();
+            ui.Run();
 
             // Assert
             Assert.Contains("No garage has been created yet.", output.ToString());

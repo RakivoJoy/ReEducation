@@ -83,11 +83,11 @@ namespace SolutionSetupTests
             // Arrange
             var handler = new FakeHandler();
             using var output = new StringWriter();
-            using var input = new StringReader(string.Empty);
+            using var input = new StringReader("5\n\n0\n");
             var ui = new ConsoleUI(input, output, handler);
 
             // Act
-            ui.ListVehicles();
+            ui.Run();
 
             // Assert
             Assert.Contains("No garage has been created yet", output.ToString());

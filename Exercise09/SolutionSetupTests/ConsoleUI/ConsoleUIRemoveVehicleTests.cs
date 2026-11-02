@@ -42,11 +42,11 @@ namespace SolutionSetupTests
         {
             // Arrange
             using var output = new StringWriter();
-            using var input = new StringReader("");
+            using var input = new StringReader("4\n\n0\n");
             var ui = new ConsoleUI(input, output);
 
             // Act
-            ui.RemoveVehicle();
+            ui.Run();
 
             // Assert
             Assert.Contains(ConsoleUIText.NoGarage, output.ToString());

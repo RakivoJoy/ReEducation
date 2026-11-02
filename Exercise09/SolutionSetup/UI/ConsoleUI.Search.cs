@@ -12,10 +12,6 @@ public partial class ConsoleUI
     /// </summary>
     internal void SearchVehicles()
     {
-        if (!EnsureGarage())
-        {
-            return;
-        }
 
         _output.WriteLine("Enter criteria as property=value pairs separated by spaces, e.g. color=Black type=Car (leave blank for all vehicles).");
         _output.WriteLine($"Properties: {string.Join(", ", SearchCriteria.PropertyNames)} ({string.Join(", ", VehicleTypes.Select(info => info.Type))})");

@@ -24,12 +24,12 @@ namespace SolutionSetupTests
         public void PopulateGarage_ShowsError_WhenGarageNotCreated()
         {
             // Arrange
-            using var input = new StringReader("");
+            using var input = new StringReader("2\n\n0\n");
             using var output = new StringWriter();
             var ui = new ConsoleUI(input, output);
 
             // Act
-            ui.PopulateGarage();
+            ui.Run();
 
             // Assert
             Assert.Contains(ConsoleUIText.NoGarage, output.ToString());

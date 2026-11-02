@@ -16,7 +16,7 @@ public partial class ConsoleUI
     private readonly IHandler _handler;
     private readonly MenuItem[] _menu;
 
-    private sealed record MenuItem(string Key, string Text, Action? Action, bool PauseAfter);
+    private sealed record MenuItem(string Key, string Text, Action? Action, bool PauseAfter, bool RequiresGarage = false);
 
     /// <summary>
     /// Creates a console UI that reads from <see cref="Console.In"/> and writes to <see cref="Console.Out"/>.
@@ -50,13 +50,13 @@ public partial class ConsoleUI
         _menu =
         [
             new MenuItem("1", "Create garage", CreateGarage, PauseAfter: true),
-            new MenuItem("2", "Populate garage with sample vehicles", PopulateGarage, PauseAfter: true),
-            new MenuItem("3", "Park vehicle", ParkVehicle, PauseAfter: true),
-            new MenuItem("4", "Remove vehicle", RemoveVehicle, PauseAfter: true),
-            new MenuItem("5", "List all vehicles", ListVehicles, PauseAfter: true),
-            new MenuItem("6", "List vehicle count by type", ListVehicleCounts, PauseAfter: true),
-            new MenuItem("7", "Find vehicle by registration number", FindVehicle, PauseAfter: true),
-            new MenuItem("8", "Search vehicles by properties", SearchVehicles, PauseAfter: true),
+            new MenuItem("2", "Populate garage with sample vehicles", PopulateGarage, PauseAfter: true, RequiresGarage: true),
+            new MenuItem("3", "Park vehicle", ParkVehicle, PauseAfter: true, RequiresGarage: true),
+            new MenuItem("4", "Remove vehicle", RemoveVehicle, PauseAfter: true, RequiresGarage: true),
+            new MenuItem("5", "List all vehicles", ListVehicles, PauseAfter: true, RequiresGarage: true),
+            new MenuItem("6", "List vehicle count by type", ListVehicleCounts, PauseAfter: true, RequiresGarage: true),
+            new MenuItem("7", "Find vehicle by registration number", FindVehicle, PauseAfter: true, RequiresGarage: true),
+            new MenuItem("8", "Search vehicles by properties", SearchVehicles, PauseAfter: true, RequiresGarage: true),
             new MenuItem("0", "Exit", Action: null, PauseAfter: false),
         ];
     }
@@ -90,7 +90,11 @@ public partial class ConsoleUI
                 }
                 else
                 {
-                    item.Action();
+                    if (!item.RequiresGarage || EnsureGarage())
+                    {
+                        item.Action();
+                    }
+
                     if (item.PauseAfter)
                     {
                         PauseForEnter();

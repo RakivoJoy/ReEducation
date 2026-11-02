@@ -17,12 +17,6 @@ UI\ConsoleUI.Vehicles.cs
 	ReadRegistrationNumber(), ReadColor() and ReadParkingSize(typeInfo.Type) so ParkVehicle
 	reads like a short list of steps. The try/catch for EndOfStreamException stays in ParkVehicle.
 
-[Prio:3, Effort:Low, Impact:Medium] Remove the repeated "if (!EnsureGarage()) return;" guard
-	Six handlers (ParkVehicle, RemoveVehicle, ListVehicles, FindVehicle, SearchVehicles,
-	PopulateGarage, ListVehicleCounts) start with the same four lines. Either wrap the
-	guard once where the menu dispatches (for example a RequiresGarage flag on MenuItem) or add
-	a helper that takes the action to run.
-
 [Prio:3, Effort:Low, Impact:Medium] Share the "print vehicles" loop
 	ListVehicles and PrintSearchResults (ConsoleUI.Search.cs) both loop over vehicles and
 	write ToString(), each with its own "nothing found" message. One helper such as
