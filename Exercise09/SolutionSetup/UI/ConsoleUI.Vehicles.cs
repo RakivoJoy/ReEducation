@@ -16,43 +16,13 @@ public partial class ConsoleUI
     /// </summary>
     internal void ParkVehicle()
     {
-        VehicleTypeInfo[] types = VehicleTypes;
-        _output.WriteLine(ConsoleUIText.SelectVehicleType);
-        for (int i = 0; i < types.Length; i++)
-        {
-            _output.WriteLine($"{i + 1}. {types[i].Type}");
-        }
-
         try
         {
-            VehicleTypeInfo typeInfo = ReadValidated<VehicleTypeInfo>(
-                $"Enter vehicle type number (1-{types.Length}):",
-                line => $"Invalid input: '{line}' is not a valid vehicle type option. Please choose 1-{types.Length}.",
-                (string text, out VehicleTypeInfo value) =>
-                {
-                    bool valid = int.TryParse(text, out int number) && number >= 1 && number <= types.Length;
-                    value = valid ? types[number - 1] : types[0];
-                    return valid;
-                });
-
-            string registrationNumber = ReadValidated<string>(
-                ConsoleUIText.EnterRegistrationNumber,
-                line => $"Invalid registration number '{line}'. Use three letters (excluding I, Q, V) followed by three alphanumerics.",
-                (string text, out string value) => Vehicle.TryNormalizeRegistrationNumber(text, out value));
-
-            _output.WriteLine($"Most common colors: {string.Join(", ", VehicleColors.MostCommon)}");
-            string color = ReadValidated<string>(
-                ConsoleUIText.EnterColor,
-                line => $"Invalid color '{line}'. Choose one of the allowed colors.",
-                (string text, out string value) => VehicleColors.TryNormalize(text, out value));
-
+            VehicleTypeInfo typeInfo = ReadVehicleType();
+            string registrationNumber = ReadRegistrationNumber();
+            string color = ReadColor();
             int numberOfWheels = ReadIntPrompt(ConsoleUIText.EnterNumberOfWheels, ConsoleUIText.InvalidNumberOfWheels);
-
-            (int minSize, int maxSize) = ParkingSizeLimits.For(typeInfo.Type);
-            int parkingSize = ReadValidated<int>(
-                $"Enter parking size ({minSize}-{maxSize}):",
-                line => $"Invalid parking size '{line}'. Enter a whole number between {minSize} and {maxSize}.",
-                (string text, out int value) => int.TryParse(text, out value) && value >= minSize && value <= maxSize);
+            int parkingSize = ReadParkingSize(typeInfo.Type);
 
             Vehicle vehicle = typeInfo.Create(registrationNumber, color, numberOfWheels, parkingSize);
 
@@ -63,6 +33,52 @@ public partial class ConsoleUI
         {
             _output.WriteLine(ConsoleUIText.InputEndedBeforeVehicleParked);
         }
+    }
+
+    private VehicleTypeInfo ReadVehicleType()
+    {
+        VehicleTypeInfo[] types = VehicleTypes;
+        _output.WriteLine(ConsoleUIText.SelectVehicleType);
+        for (int i = 0; i < types.Length; i++)
+        {
+            _output.WriteLine($"{i + 1}. {types[i].Type}");
+        }
+
+        return ReadValidated<VehicleTypeInfo>(
+            $"Enter vehicle type number (1-{types.Length}):",
+            line => $"Invalid input: '{line}' is not a valid vehicle type option. Please choose 1-{types.Length}.",
+            (string text, out VehicleTypeInfo value) =>
+            {
+                bool valid = int.TryParse(text, out int number) && number >= 1 && number <= types.Length;
+                value = valid ? types[number - 1] : types[0];
+                return valid;
+            });
+    }
+
+    private string ReadRegistrationNumber()
+    {
+        return ReadValidated<string>(
+            ConsoleUIText.EnterRegistrationNumber,
+            line => $"Invalid registration number '{line}'. Use three letters (excluding I, Q, V) followed by three alphanumerics.",
+            (string text, out string value) => Vehicle.TryNormalizeRegistrationNumber(text, out value));
+    }
+
+    private string ReadColor()
+    {
+        _output.WriteLine($"Most common colors: {string.Join(", ", VehicleColors.MostCommon)}");
+        return ReadValidated<string>(
+            ConsoleUIText.EnterColor,
+            line => $"Invalid color '{line}'. Choose one of the allowed colors.",
+            (string text, out string value) => VehicleColors.TryNormalize(text, out value));
+    }
+
+    private int ReadParkingSize(VehicleType type)
+    {
+        (int minSize, int maxSize) = ParkingSizeLimits.For(type);
+        return ReadValidated<int>(
+            $"Enter parking size ({minSize}-{maxSize}):",
+            line => $"Invalid parking size '{line}'. Enter a whole number between {minSize} and {maxSize}.",
+            (string text, out int value) => int.TryParse(text, out value) && value >= minSize && value <= maxSize);
     }
 
     /// <summary>

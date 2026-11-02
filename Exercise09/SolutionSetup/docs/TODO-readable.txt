@@ -11,11 +11,7 @@ Format: [Prio:X, Effort:Y, Impact:Z]
 UI\ConsoleUI.Vehicles.cs
 =====================================================================
 
-[Prio:4, Effort:Medium, Impact:High] Split ParkVehicle into smaller methods
-	ParkVehicle is about 50 lines: it prints the type menu, reads six values with inline
-	lambdas, creates the vehicle and prints the result. Extract ReadVehicleType(),
-	ReadRegistrationNumber(), ReadColor() and ReadParkingSize(typeInfo.Type) so ParkVehicle
-	reads like a short list of steps. The try/catch for EndOfStreamException stays in ParkVehicle.
+
 
 [Prio:2, Effort:Low, Impact:Medium] Simplify the vehicle type parser lambda
 	The lambda assigns "value = valid ? types[number - 1] : types[0]" just to satisfy the out
