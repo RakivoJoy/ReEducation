@@ -79,27 +79,7 @@ public partial class ConsoleUI
 
             try
             {
-                MenuItem? item = Array.Find(_menu, menuItem => menuItem.Key == choice);
-                if (item is null)
-                {
-                    _output.WriteLine(ConsoleUIText.InvalidChoice);
-                }
-                else if (item.Action is null)
-                {
-                    exit = true;
-                }
-                else
-                {
-                    if (!item.RequiresGarage || EnsureGarage())
-                    {
-                        item.Action();
-                    }
-
-                    if (item.PauseAfter)
-                    {
-                        PauseForEnter();
-                    }
-                }
+                exit = HandleChoice(choice);
             }
             catch (IOException)
             {
@@ -119,6 +99,37 @@ public partial class ConsoleUI
                 _output.WriteLine($"An unexpected error occurred: {ex.Message}");
             }
         }
+    }
+
+    /// <summary>
+    /// Runs the menu item matching the choice. Returns true when the user selected Exit.
+    /// </summary>
+    /// <param name="choice">The menu key entered by the user.</param>
+    private bool HandleChoice(string choice)
+    {
+        MenuItem? item = Array.Find(_menu, menuItem => menuItem.Key == choice);
+        if (item is null)
+        {
+            _output.WriteLine(ConsoleUIText.InvalidChoice);
+            return false;
+        }
+
+        if (item.Action is null)
+        {
+            return true;
+        }
+
+        if (!item.RequiresGarage || EnsureGarage())
+        {
+            item.Action();
+        }
+
+        if (item.PauseAfter)
+        {
+            PauseForEnter();
+        }
+
+        return false;
     }
 
     /// <summary>
