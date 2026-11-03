@@ -6,6 +6,7 @@ namespace SolutionSetup;
 
 /// <summary>
 /// Default <see cref="IHandler"/>. Owns the garage and forwards each menu action to it.
+/// Every method except <see cref="CreateGarage(int)"/> and <see cref="HasGarage"/> throws <see cref="InvalidOperationException"/> when no garage has been created.
 /// </summary>
 public class GarageHandler : IHandler
 {
@@ -30,32 +31,25 @@ public class GarageHandler : IHandler
     }
 
     /// <inheritdoc/>
-    /// <exception cref="InvalidOperationException">Thrown when no garage has been created.</exception>
-    public OperationResult PopulateGarage() => RequireGarage().Populate(SampleData.CreateSampleVehicles());
+    public OperationResult PopulateGarage()
 
     /// <inheritdoc/>
-    /// <exception cref="InvalidOperationException">Thrown when no garage has been created.</exception>
-    public OperationResult ParkVehicle(IVehicle vehicle) => RequireGarage().AddVehicle(vehicle);
+    public OperationResult ParkVehicle(
 
     /// <inheritdoc/>
-    /// <exception cref="InvalidOperationException">Thrown when no garage has been created.</exception>
-    public OperationResult RemoveVehicle(string registrationNumber) => RequireGarage().RemoveVehicleByRegistration(registrationNumber);
+    public OperationResult RemoveVehicle(
 
     /// <inheritdoc/>
-    /// <exception cref="InvalidOperationException">Thrown when no garage has been created.</exception>
-    public IReadOnlyList<IVehicle> ListVehicles() => RequireGarage().ListAllVehicles();
+    public IReadOnlyList<IVehicle> ListVehicles()
 
     /// <inheritdoc/>
-    /// <exception cref="InvalidOperationException">Thrown when no garage has been created.</exception>
-    public Dictionary<VehicleType, int> ListVehicleCounts() => RequireGarage().ListVehicleCountByType();
+    public Dictionary<VehicleType, int> ListVehicleCounts()
 
     /// <inheritdoc/>
-    /// <exception cref="InvalidOperationException">Thrown when no garage has been created.</exception>
-    public IVehicle? FindVehicle(string registrationNumber) => RequireGarage().FindByRegistration(registrationNumber);
+    public IVehicle? FindVehicle(
 
     /// <inheritdoc/>
-    /// <exception cref="InvalidOperationException">Thrown when no garage has been created.</exception>
-    public IReadOnlyList<IVehicle> SearchVehicles(SearchCriteria criteria) => RequireGarage().SearchByProperties(criteria);
+    public IReadOnlyList<IVehicle> SearchVehicles(
 
     private Garage<IVehicle> RequireGarage()
     {
