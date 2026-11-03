@@ -24,6 +24,11 @@ The site is published at `https://rakivojoy.github.io/ReEducation/` (adjust if t
 - Red X: open the failed job and read the log. Common causes are a YAML syntax error in the
   workflow file, a C# build error in the project, or a DocFX warning treated as an error.
 
+## Adding an exercise
+
+- The workflow publishes each `Exercise*/<project>/docfx/` site under a **lowercase** folder name, for example `exercise10/`. GitHub Pages URLs are case-sensitive, so links must use lowercase.
+- Add a link to `docs/site-index.html` using the same lowercase path, for example `<a href="exercise10/">Exercise 10</a>`.
+
 ## Notes
 
 - GitHub Pages has one site per repository. If both branches deploy, the last successful run replaces the site.
