@@ -73,4 +73,37 @@ public partial class ConsoleUI
             _output.WriteLine($"{entry.Key}: {entry.Value}");
         }
     }
+
+    /// <summary>
+    /// Menu option 9. Saves the current garage through the handler and prints the result.
+    /// </summary>
+    internal void SaveGarage()
+    {
+        _output.WriteLine(_handler.SaveGarage().Message);
+    }
+
+    /// <summary>
+    /// Menu option 10. Loads the saved garage. Asks for confirmation first when the current garage has parked vehicles.
+    /// </summary>
+    internal void LoadGarage()
+    {
+        if (_handler.HasGarage && _handler.ListVehicles().Count > 0)
+        {
+            _output.WriteLine(ConsoleUIText.ConfirmLoadOverwrite);
+            string answer = ReadLineOrEmpty().Trim();
+            if (!answer.Equals("y", StringComparison.OrdinalIgnoreCase))
+            {
+                _output.WriteLine(ConsoleUIText.LoadCancelled);
+                return;
+            }
+        }
+
+        OperationResult result = _handler.LoadGarage();
+        if (result.Success)
+        {
+            _samplesAdded = false;
+        }
+
+        _output.WriteLine(result.Message);
+    }
 }

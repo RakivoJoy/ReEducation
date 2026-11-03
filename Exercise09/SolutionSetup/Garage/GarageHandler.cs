@@ -1,3 +1,4 @@
+using SolutionSetup.Persistence;
 using SolutionSetup.Vehicles;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,26 @@ public class GarageHandler : IHandler
 {
     // The garage is null until one is created (menu option 1).
     private Garage<IVehicle>? _garage;
+    private readonly IGarageStorage _storage;
+
+    /// <summary>
+    /// Creates a handler that saves and loads the garage at <see cref="JsonGarageStorage.DefaultFilePath"/>.
+    /// </summary>
+    public GarageHandler()
+        : this(new JsonGarageStorage(JsonGarageStorage.DefaultFilePath))
+    {
+    }
+
+    /// <summary>
+    /// Creates a handler that saves and loads the garage through the given storage.
+    /// </summary>
+    /// <param name="storage">Storage used for menu options 9 and 10.</param>
+    public GarageHandler(IGarageStorage storage)
+    {
+        ArgumentNullException.ThrowIfNull(storage);
+
+        _storage = storage;
+    }
 
     /// <inheritdoc/>
     public bool HasGarage => _garage is not null;
@@ -44,6 +65,22 @@ public class GarageHandler : IHandler
 
     /// <inheritdoc/>
     public Dictionary<VehicleType, int> ListVehicleCounts() => RequireGarage().ListVehicleCountByType();
+
+    /// <inheritdoc/>
+    public OperationResult SaveGarage() => _storage.SaveAsync(RequireGarage()).GetAwaiter().GetResult();
+
+    /// <inheritdoc/>
+    public OperationResult LoadGarage()
+    {
+        GarageLoadResult result = _storage.LoadAsync().GetAwaiter().GetResult();
+        if (result.Success && result.Garage is not null)
+        {
+            _garage = result.Garage;
+            return OperationResult.Ok(result.Message);
+        }
+
+        return OperationResult.Fail(result.Message);
+    }
 
     /// <inheritdoc/>
     public IVehicle? FindVehicle(string registrationNumber) => RequireGarage().FindByRegistration(registrationNumber);

@@ -152,3 +152,12 @@ Step 4 - test: add garage save and load round-trip test
 
   Verify capacity and every vehicle type, including subtype fields,
   survive JsonGarageStorage save and load unchanged.
+
+Step 5 - feat: add save and load to handler and console UI
+
+  feat: add save and load to garage handler and console UI
+
+  Inject IGarageStorage into GarageHandler, add SaveGarage and LoadGarage
+  to IHandler, add menu options 9 (Save) and 10 (Load). Loading asks for
+  confirmation before replacing a garage with parked vehicles. Replace
+  skipped UI placeholders with fake-storage tests.

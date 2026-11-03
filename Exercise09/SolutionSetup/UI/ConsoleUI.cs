@@ -60,6 +60,8 @@ public partial class ConsoleUI
             new MenuItem("6", "List vehicle count by type", ListVehicleCounts),
             new MenuItem("7", "Find vehicle by registration number", FindVehicle),
             new MenuItem("8", "Search vehicles by properties", SearchVehicles),
+            new MenuItem("9", "Save garage", SaveGarage),
+            new MenuItem("10", "Load garage", LoadGarage, RequiresGarage: false),
             new MenuItem("0", "Exit", Action: null, PauseAfter: false, RequiresGarage: false),
         ];
         _vehicleTypes = BuildVehicleTypes();

@@ -1,3 +1,10 @@
+using SolutionSetup;
+using SolutionSetup.Persistence;
+using SolutionSetup.UI;
+using SolutionSetup.Vehicles;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace SolutionSetupTests;
@@ -5,9 +12,83 @@ namespace SolutionSetupTests;
 // Uses a fake storage, so no file IO and no [Collection] needed.
 public class ConsoleUISaveLoadTests
 {
-    [Fact(Skip = "Placeholder: save/load UI not implemented yet.")]
-    public void SaveMenuOption_CallsStorageSave() { }
+    private sealed class FakeStorage : IGarageStorage
+    {
+        public int SaveCount { get; private set; }
+        public int LoadCount { get; private set; }
+        public Garage<IVehicle>? LoadedGarage { get; set; }
 
-    [Fact(Skip = "Placeholder: save/load UI not implemented yet.")]
-    public void LoadMenuOption_ReplacesGarage() { }
+        public Task<OperationResult> SaveAsync(Garage<IVehicle> garage, CancellationToken cancellationToken = default)
+        {
+            SaveCount++;
+            return Task.FromResult(OperationResult.Ok("fake saved"));
+        }
+
+        public Task<GarageLoadResult> LoadAsync(CancellationToken cancellationToken = default)
+        {
+            LoadCount++;
+            return Task.FromResult(LoadedGarage is null
+                ? GarageLoadResult.Fail("fake load failed")
+                : GarageLoadResult.Ok(LoadedGarage, "fake loaded"));
+        }
+    }
+
+    [Fact]
+    public void SaveMenuOption_CallsStorageSave()
+    {
+        // Arrange
+        var storage = new FakeStorage();
+        var handler = new GarageHandler(storage);
+        handler.CreateGarage(5);
+        using var output = new StringWriter();
+        using var input = new StringReader(string.Empty);
+        var ui = new ConsoleUI(input, output, handler);
+
+        // Act
+        ui.SaveGarage();
+
+        // Assert
+        Assert.Equal(1, storage.SaveCount);
+        Assert.Contains("fake saved", output.ToString());
+    }
+
+    [Fact]
+    public void LoadMenuOption_ReplacesGarage()
+    {
+        // Arrange
+        var storage = new FakeStorage { LoadedGarage = new Garage<IVehicle>(7) };
+        var handler = new GarageHandler(storage);
+        using var output = new StringWriter();
+        using var input = new StringReader(string.Empty);
+        var ui = new ConsoleUI(input, output, handler);
+
+        // Act
+        ui.LoadGarage();
+
+        // Assert
+        Assert.Equal(1, storage.LoadCount);
+        Assert.True(handler.HasGarage);
+        Assert.Contains("fake loaded", output.ToString());
+    }
+
+    [Fact]
+    public void LoadMenuOption_DeclinedConfirmation_KeepsCurrentGarage()
+    {
+        // Arrange
+        var storage = new FakeStorage { LoadedGarage = new Garage<IVehicle>(7) };
+        var handler = new GarageHandler(storage);
+        handler.CreateGarage(3);
+        handler.PopulateGarage();
+        using var output = new StringWriter();
+        using var input = new StringReader("n\n");
+        var ui = new ConsoleUI(input, output, handler);
+
+        // Act
+        ui.LoadGarage();
+
+        // Assert
+        Assert.Equal(0, storage.LoadCount);
+        Assert.NotEmpty(handler.ListVehicles());
+        Assert.Contains("Load cancelled", output.ToString());
+    }
 }

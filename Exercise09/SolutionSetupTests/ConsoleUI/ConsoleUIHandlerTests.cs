@@ -24,6 +24,8 @@ namespace SolutionSetupTests
             public Dictionary<VehicleType, int> ListVehicleCounts() => [];
             public IVehicle? FindVehicle(string registrationNumber) => null;
             public IReadOnlyList<IVehicle> SearchVehicles(SearchCriteria criteria) => [];
+            public OperationResult SaveGarage() => OperationResult.Ok("fake saved");
+            public OperationResult LoadGarage() => OperationResult.Ok("fake loaded");
         }
 
         [Fact]

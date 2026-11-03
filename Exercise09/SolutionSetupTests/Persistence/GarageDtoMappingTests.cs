@@ -8,7 +8,6 @@ using Xunit;
 
 namespace SolutionSetupTests;
 
-// No file IO here, so no [Collection] needed.
 public class GarageDtoMappingTests
 {
     private static Garage<IVehicle> CreateGarageWithOneOfEachType()

@@ -24,4 +24,6 @@ public static class ConsoleUIText
     public const string EnterNumberOfWheels = "Enter number of wheels:";
     public const string InvalidNumberOfWheels = "Invalid number of wheels. Please enter a whole number.";
     public const string InvalidWholeNumber = "Invalid input. Please enter a whole number.";
+    public const string ConfirmLoadOverwrite = "The current garage has parked vehicles. Loading will replace them. Continue? (y/n):";
+    public const string LoadCancelled = "Load cancelled. The current garage was kept.";
 }

@@ -35,4 +35,10 @@ public interface IHandler
 
     /// <summary>Menu option 8. Returns the vehicles matching every filter set in the criteria.</summary>
     IReadOnlyList<IVehicle> SearchVehicles(SearchCriteria criteria);
+
+    /// <summary>Menu option 9. Saves the current garage to storage.</summary>
+    OperationResult SaveGarage();
+
+    /// <summary>Menu option 10. Replaces the current garage with the one loaded from storage.</summary>
+    OperationResult LoadGarage();
 }
