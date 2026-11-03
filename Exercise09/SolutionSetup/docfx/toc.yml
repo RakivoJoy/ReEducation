@@ -1,4 +1,6 @@
 - name: Overview
   href: index.md
+- name: UML Diagram
+  href: uml.md
 - name: API Reference
   href: api/
