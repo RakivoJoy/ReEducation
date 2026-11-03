@@ -44,13 +44,13 @@ The implementation should follow these rules:
 ## Running the application
 
 ```powershell
-dotnet run --project Excercise06\SolutionSetup\SolutionSetup.csproj
+dotnet run --project Excercise09\SolutionSetup\SolutionSetup.csproj
 ```
 
 ## Running the tests
 
 ```powershell
-dotnet test Excercise06\SolutionSetupTests\SolutionSetupTests.csproj
+dotnet test Excercise09\SolutionSetupTests\SolutionSetupTests.csproj
 ```
 
 ## Saving and loading the garage
