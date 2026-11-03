@@ -1,6 +1,9 @@
-# Exercise 06 - Garage 2.0
+# Exercise 09 - Garage 3.0
 
 A console application that manages a parking garage for vehicles. The solution is built with .NET 10 and includes a unit test project.
+
+More at: https://rakivojoy.github.io/ReEducation/exercise09/api/SolutionSetup.html
+
 
 ## Assignment
 
