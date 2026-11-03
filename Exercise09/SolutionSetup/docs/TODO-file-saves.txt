@@ -161,3 +161,11 @@ Step 5 - feat: add save and load to handler and console UI
   to IHandler, add menu options 9 (Save) and 10 (Load). Loading asks for
   confirmation before replacing a garage with parked vehicles. Replace
   skipped UI placeholders with fake-storage tests.
+
+Step 6 - test: add console UI save and load tests with fake storage
+
+  test: add console UI save and load tests with fake storage
+
+  Cover save and load through the menu with a fake IGarageStorage: Run
+  routing for options 9 and 10, confirmed and declined load overwrite,
+  and save without a garage. No file IO and no FileIO collection needed.

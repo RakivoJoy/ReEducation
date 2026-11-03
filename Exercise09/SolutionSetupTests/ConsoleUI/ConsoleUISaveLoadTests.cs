@@ -91,4 +91,81 @@ public class ConsoleUISaveLoadTests
         Assert.NotEmpty(handler.ListVehicles());
         Assert.Contains("Load cancelled", output.ToString());
     }
+
+    [Fact]
+    public void LoadMenuOption_ConfirmedOverwrite_ReplacesGarage()
+    {
+        // Arrange
+        var storage = new FakeStorage { LoadedGarage = new Garage<IVehicle>(7) };
+        var handler = new GarageHandler(storage);
+        handler.CreateGarage(3);
+        handler.PopulateGarage();
+        using var output = new StringWriter();
+        using var input = new StringReader("y\n");
+        var ui = new ConsoleUI(input, output, handler);
+
+        // Act
+        ui.LoadGarage();
+
+        // Assert
+        Assert.Equal(1, storage.LoadCount);
+        Assert.Empty(handler.ListVehicles());
+        Assert.Contains("fake loaded", output.ToString());
+    }
+
+    [Fact]
+    public void SaveMenuOption_WithoutGarage_PrintsErrorAndSkipsStorage()
+    {
+        // Arrange
+        var storage = new FakeStorage();
+        var handler = new GarageHandler(storage);
+        using var output = new StringWriter();
+        using var input = new StringReader("9\n\n0\n");
+        var ui = new ConsoleUI(input, output, handler);
+
+        // Act
+        ui.Run();
+
+        // Assert
+        Assert.Equal(0, storage.SaveCount);
+        Assert.Contains(ConsoleUIText.NoGaragePleaseCreate, output.ToString());
+    }
+
+    [Fact]
+    public void Run_MenuNine_SavesGarageAndExits()
+    {
+        // Arrange
+        var storage = new FakeStorage();
+        var handler = new GarageHandler(storage);
+        handler.CreateGarage(5);
+        using var output = new StringWriter();
+        using var input = new StringReader("9\n\n0\n");
+        var ui = new ConsoleUI(input, output, handler);
+
+        // Act
+        ui.Run();
+
+        // Assert
+        Assert.Equal(1, storage.SaveCount);
+        Assert.Contains("fake saved", output.ToString());
+    }
+
+    [Fact]
+    public void Run_MenuTen_LoadsGarageAndExits()
+    {
+        // Arrange
+        var storage = new FakeStorage { LoadedGarage = new Garage<IVehicle>(7) };
+        var handler = new GarageHandler(storage);
+        using var output = new StringWriter();
+        using var input = new StringReader("10\n\n0\n");
+        var ui = new ConsoleUI(input, output, handler);
+
+        // Act
+        ui.Run();
+
+        // Assert
+        Assert.Equal(1, storage.LoadCount);
+        Assert.True(handler.HasGarage);
+        Assert.Contains("fake loaded", output.ToString());
+    }
 }
