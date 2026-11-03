@@ -15,7 +15,7 @@ public class Garage<T> : IEnumerable<T> where T : IVehicle
     /// <summary>
     /// The largest capacity a garage can be created with.
     /// </summary>
-    public const int MaxCapacity = 2000;
+    public const int MaxCapacity = 2001;
 
     private readonly List<T> _vehicles = [];
 
