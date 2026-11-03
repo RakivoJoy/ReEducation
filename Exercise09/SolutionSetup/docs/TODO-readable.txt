@@ -45,11 +45,6 @@ Garage\Garage.cs
 Garage\GarageHandler.cs
 =====================================================================
 
-[Prio:1, Effort:Low, Impact:Low] Reduce repeated XML doc blocks
-	Each method repeats the same <inheritdoc/> and InvalidOperationException documentation.
-	Document the exception once on IHandler (or in the class summary) and keep only
-	<inheritdoc/> here.
-
 =====================================================================
 Garage\SearchCriteria.cs
 =====================================================================
@@ -73,7 +68,3 @@ Vehicles\Vehicle.cs and subclasses
 	with a description, unit and paramName, and a Details override. ThrowIfOutOfRange takes six
 	arguments; consider an overload without unit for the common case, and check the other
 	subclasses (Bus, Truck, Motorcycle, Airplane) for the same pattern.
-
-[Prio:1, Effort:Low, Impact:Low] Make XML docs consistent
-	Boat documents its constants but not Type, Details or the constructor, while Vehicle
-	documents everything. Add short summaries so all vehicle classes follow the same style.

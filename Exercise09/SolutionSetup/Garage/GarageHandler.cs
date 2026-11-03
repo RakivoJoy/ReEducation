@@ -31,25 +31,25 @@ public class GarageHandler : IHandler
     }
 
     /// <inheritdoc/>
-    public OperationResult PopulateGarage()
+    public OperationResult PopulateGarage() => RequireGarage().Populate(SampleData.CreateSampleVehicles());
 
     /// <inheritdoc/>
-    public OperationResult ParkVehicle(
+    public OperationResult ParkVehicle(IVehicle vehicle) => RequireGarage().AddVehicle(vehicle);
 
     /// <inheritdoc/>
-    public OperationResult RemoveVehicle(
+    public OperationResult RemoveVehicle(string registrationNumber) => RequireGarage().RemoveVehicleByRegistration(registrationNumber);
 
     /// <inheritdoc/>
-    public IReadOnlyList<IVehicle> ListVehicles()
+    public IReadOnlyList<IVehicle> ListVehicles() => RequireGarage().ListAllVehicles();
 
     /// <inheritdoc/>
-    public Dictionary<VehicleType, int> ListVehicleCounts()
+    public Dictionary<VehicleType, int> ListVehicleCounts() => RequireGarage().ListVehicleCountByType();
 
     /// <inheritdoc/>
-    public IVehicle? FindVehicle(
+    public IVehicle? FindVehicle(string registrationNumber) => RequireGarage().FindByRegistration(registrationNumber);
 
     /// <inheritdoc/>
-    public IReadOnlyList<IVehicle> SearchVehicles(
+    public IReadOnlyList<IVehicle> SearchVehicles(SearchCriteria criteria) => RequireGarage().SearchByProperties(criteria);
 
     private Garage<IVehicle> RequireGarage()
     {
