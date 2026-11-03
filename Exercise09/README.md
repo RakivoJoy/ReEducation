@@ -1,6 +1,9 @@
-# Exercise 06 - Garage 2.0
+# Exercise 09 - Garage 3.0
 
 A console application that manages a parking garage for vehicles. The solution is built with .NET 10 and includes a unit test project.
+
+More at: https://rakivojoy.github.io/ReEducation/exercise09/api/SolutionSetup.html
+
 
 ## Assignment
 
@@ -41,13 +44,13 @@ The implementation should follow these rules:
 ## Running the application
 
 ```powershell
-dotnet run --project Excercise06\SolutionSetup\SolutionSetup.csproj
+dotnet run --project Excercise09\SolutionSetup\SolutionSetup.csproj
 ```
 
 ## Running the tests
 
 ```powershell
-dotnet test Excercise06\SolutionSetupTests\SolutionSetupTests.csproj
+dotnet test Excercise09\SolutionSetupTests\SolutionSetupTests.csproj
 ```
 
 ## Saving and loading the garage
@@ -78,4 +81,5 @@ Menu option 9 saves the garage and option 10 loads it. Loading asks for confirma
 Type-specific fields: Car `fuelType`, Bus `numberOfSeats`, Airplane `numberOfEngines`, Truck `loadCapacity`, Motorcycle `cylinderVolume`, Boat `length`. Loading rebuilds each vehicle through its constructor, so invalid, duplicate, or over-capacity data is rejected with a message and the current garage is kept.
 
 ### UML Diagram
-UML Diagram available in `MERMAID-UML.md` .
+UML Diagram available in `MERMAID-UML.md` 
+https://rakivojoy.github.io/ReEducation/exercise09/uml.html
