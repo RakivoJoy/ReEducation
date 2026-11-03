@@ -1,4 +1,4 @@
-search.txt - How vehicle search works in Exercise09 (Garage 2.0)
+search.txt - How vehicle search works in Exercise09 (Garage 3.0)
 
 =====================================================================
 1. OVERVIEW

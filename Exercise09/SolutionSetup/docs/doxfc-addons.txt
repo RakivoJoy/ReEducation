@@ -1,0 +1,17 @@
+I updated the workflow so it builds every exercise's DocFX site and publishes them together under one GitHub Pages site, with an index page linking to each one. The change is committed as 1b2dd9d, not pushed.
+What changed
+•	.github/workflows/docfx.yml:
+•	Runs on changes under Exercise*/** and the index file.
+•	Finds every Exercise*/*/docfx/docfx.json and builds each one.
+•	Copies each result to site/<exercise>/, so Exercise09 is at /exercise09/.
+•	Copies docs/site-index.html to site/index.html as the landing page and adds .nojekyll.
+•	docs/site-index.html: the landing page, currently listing Exercise 09.
+Adding a new exercise (for example, Exercise10)
+1.	Copy Exercise09/SolutionSetup/docfx/ into the new project's folder, and update metadata.src and files in its docfx.json to point at the new .csproj.
+2.	Add a link to docs/site-index.html: <li><a href="exercise10/">Exercise 10</a></li>.
+The workflow picks up the new folder automatically.
+Things to check
+•	I could not validate the YAML because Python and pip aren't available here. Look at the first run in the Actions tab for syntax issues.
+•	The Exercise09 docfx.json has no _appPath/base path setting, so its internal links use root-relative paths. They may not resolve under /exercise09/. If the navigation breaks online, I can add a base-path setting.
+•	Also, the ability to build all projects depends on a new project's docfx.json having the same _site output layout.
+•	Run dotnet test Exercise09/SolutionSetupTests before merging, as noted earlier.
