@@ -50,5 +50,32 @@ dotnet run --project Excercise06\SolutionSetup\SolutionSetup.csproj
 dotnet test Excercise06\SolutionSetupTests\SolutionSetupTests.csproj
 ```
 
+## Saving and loading the garage
+
+Menu option 9 saves the garage and option 10 loads it. Loading asks for confirmation first when the current garage has parked vehicles.
+
+- **Location:** `%LOCALAPPDATA%\Garage\garage.json`
+- **Backup:** before each save, the previous file is kept as `garage.json.bak`. A save is first written to `garage.json.tmp`, then replaces `garage.json`.
+- **Format:** indented JSON with camelCase names. Enum values are strings.
+
+```json
+{
+  "version": 1,
+  "capacity": 20,
+  "vehicles": [
+    {
+      "type": "Car",
+      "registrationNumber": "ABC123",
+      "color": "Red",
+      "numberOfWheels": 4,
+      "parkingSize": 1,
+      "fuelType": "Gasoline"
+    }
+  ]
+}
+```
+
+Type-specific fields: Car `fuelType`, Bus `numberOfSeats`, Airplane `numberOfEngines`, Truck `loadCapacity`, Motorcycle `cylinderVolume`, Boat `length`. Loading rebuilds each vehicle through its constructor, so invalid, duplicate, or over-capacity data is rejected with a message and the current garage is kept.
+
 ### UML Diagram
 UML Diagram available in `MERMAID-UML.md` .

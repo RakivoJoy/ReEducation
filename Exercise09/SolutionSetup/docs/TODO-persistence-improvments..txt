@@ -1,0 +1,37 @@
+TODO-persistence-improvments.txt - Exercise09 (Garage 3.0)
+
+Suggested follow-up work for garage persistence. Not started.
+
+=====================================================================
+1. Delta journaling and merge-on-exit (from the decisions in TODO-file-saves.txt)
+=====================================================================
+- Write garage.delta.json on each change, merge it into garage.json on exit,
+  and replay it on the next start after a crash.
+- Manual Save and Load stay in the menu alongside the delta.
+
+=====================================================================
+2. Startup and exit behavior
+=====================================================================
+- Offer to load the last save at startup.
+- Offer to save on exit when the garage has unsaved changes.
+
+=====================================================================
+3. Tests
+=====================================================================
+- Add a UI test for a storage failure message (for example read-only or
+  unauthorized) using a fake storage.
+- Give the end-to-end tests a fake or temp-path storage. They currently use
+  new GarageHandler(), which points at the real %LOCALAPPDATA% save file.
+
+=====================================================================
+4. Sync-over-async bridge
+=====================================================================
+- GarageHandler calls GetAwaiter().GetResult() on the async storage. This is
+  acceptable in a console app but could be removed by making IHandler and
+  ConsoleUI async. That is a larger change.
+
+=====================================================================
+5. User feedback
+=====================================================================
+- Print the save file path in the save and load messages.
+- Warn when the garage has changed since the last save.

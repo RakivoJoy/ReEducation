@@ -34,7 +34,7 @@ Subclass-specific fields:
   Loading then re-validates via the constructors, so invalid or hand-edited
   files fail cleanly.
 - New folder Persistence/ in SolutionSetup:
-	IGarageStorage       Save(Garage<Vehicle>, path) / Load(path) -> result
+	IGarageStorage       SaveAsync(Garage<Vehicle>) / LoadAsync() -> result
 	JsonGarageStorage    implementation
 	GarageDto, VehicleDto, mapping helpers
 - Return OperationResult-style results (existing pattern) for expected
@@ -169,3 +169,11 @@ Step 6 - test: add console UI save and load tests with fake storage
   Cover save and load through the menu with a fake IGarageStorage: Run
   routing for options 9 and 10, confirmed and declined load overwrite,
   and save without a garage. No file IO and no FileIO collection needed.
+
+Step 7 - docs: document save file location and format
+
+  docs: document garage save file location and JSON format
+
+  Describe %LOCALAPPDATA%\Garage\garage.json, the JSON shape, the .tmp and
+  .bak handling, and add direct GarageHandler save and load tests with a
+  fake storage.

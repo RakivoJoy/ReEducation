@@ -1,5 +1,9 @@
 using SolutionSetup;
+using SolutionSetup.Persistence;
 using SolutionSetup.Vehicles;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using static SolutionSetupTests.TestVehicles;
 
 namespace SolutionSetupTests
@@ -205,6 +209,123 @@ namespace SolutionSetupTests
             Assert.Throws<InvalidOperationException>(() => handler.ListVehicleCounts());
             Assert.Throws<InvalidOperationException>(() => handler.FindVehicle("ABC123"));
             Assert.Throws<InvalidOperationException>(() => handler.SearchVehicles(new SearchCriteria()));
+        }
+
+        [Fact]
+        public void SaveGarage_ThrowsInvalidOperation_WhenNoGarageCreated()
+        {
+            // Arrange
+            var storage = new FakeGarageStorage();
+            var handler = new GarageHandler(storage);
+
+            // Act & Assert
+            Assert.Throws<InvalidOperationException>(() => handler.SaveGarage());
+            Assert.Equal(0, storage.SaveCount);
+        }
+
+        [Fact]
+        public void SaveGarage_PassesCurrentGarageToStorage()
+        {
+            // Arrange
+            var storage = new FakeGarageStorage();
+            var handler = new GarageHandler(storage);
+            handler.CreateGarage(4);
+            handler.ParkVehicle(CreateCar("ABC123"));
+
+            // Act
+            OperationResult result = handler.SaveGarage();
+
+            // Assert
+            Assert.True(result.Success);
+            Assert.Equal(1, storage.SaveCount);
+            Assert.Single(storage.SavedGarage!.ListAllVehicles());
+        }
+
+        [Fact]
+        public void SaveGarage_ReturnsStorageFailure()
+        {
+            // Arrange
+            var storage = new FakeGarageStorage { SaveResult = OperationResult.Fail("disk full") };
+            var handler = new GarageHandler(storage);
+            handler.CreateGarage(4);
+
+            // Act
+            OperationResult result = handler.SaveGarage();
+
+            // Assert
+            Assert.False(result.Success);
+            Assert.Equal("disk full", result.Message);
+        }
+
+        [Fact]
+        public void LoadGarage_ReplacesCurrentGarage_WhenLoadSucceeds()
+        {
+            // Arrange
+            var loaded = new Garage<IVehicle>(9);
+            loaded.AddVehicle(CreateCar("XYZ789"));
+            var storage = new FakeGarageStorage { LoadResult = GarageLoadResult.Ok(loaded, "loaded ok") };
+            var handler = new GarageHandler(storage);
+            handler.CreateGarage(2);
+
+            // Act
+            OperationResult result = handler.LoadGarage();
+
+            // Assert
+            Assert.True(result.Success);
+            Assert.Equal("loaded ok", result.Message);
+            Assert.NotNull(handler.FindVehicle("XYZ789"));
+        }
+
+        [Fact]
+        public void LoadGarage_KeepsCurrentGarage_WhenLoadFails()
+        {
+            // Arrange
+            var storage = new FakeGarageStorage { LoadResult = GarageLoadResult.Fail("file missing") };
+            var handler = new GarageHandler(storage);
+            handler.CreateGarage(2);
+            handler.ParkVehicle(CreateCar("ABC123"));
+
+            // Act
+            OperationResult result = handler.LoadGarage();
+
+            // Assert
+            Assert.False(result.Success);
+            Assert.Equal("file missing", result.Message);
+            Assert.True(handler.HasGarage);
+            Assert.NotNull(handler.FindVehicle("ABC123"));
+        }
+
+        [Fact]
+        public void LoadGarage_LeavesNoGarage_WhenLoadFailsAndNoneExisted()
+        {
+            // Arrange
+            var storage = new FakeGarageStorage { LoadResult = GarageLoadResult.Fail("invalid JSON") };
+            var handler = new GarageHandler(storage);
+
+            // Act
+            OperationResult result = handler.LoadGarage();
+
+            // Assert
+            Assert.False(result.Success);
+            Assert.False(handler.HasGarage);
+        }
+
+        private sealed class FakeGarageStorage : IGarageStorage
+        {
+            public int SaveCount { get; private set; }
+            public Garage<IVehicle>? SavedGarage { get; private set; }
+            public OperationResult SaveResult { get; init; } = OperationResult.Ok("saved");
+            public GarageLoadResult LoadResult { get; init; } = GarageLoadResult.Fail("no load configured");
+
+            public Task<OperationResult> SaveAsync(Garage<IVehicle> garage, CancellationToken cancellationToken = default)
+            {
+                SaveCount++;
+                SavedGarage = garage;
+                return Task.FromResult(SaveResult);
+            }
+
+            public Task<GarageLoadResult> LoadAsync(CancellationToken cancellationToken = default)
+                => Task.FromResult(LoadResult);
         }
     }
 }
