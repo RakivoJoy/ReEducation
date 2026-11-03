@@ -1,0 +1,62 @@
+TODO-suggestions.txt - Exercise09 (Garage 3.0)
+
+Grade : 4 = most valuable, 1 = least valuable.
+Scope: Exercise09 only.
+
+=====================================================================
+WEAKNESSES AND INCONSISTENCIES
+=====================================================================
+
+
+
+[2] Populate partial success is intended, but the result is misleading
+	Garage.Populate parks what fits and returns Fail with the failed vehicles listed, even
+	though some vehicles were parked. Keep partial success, but consider a result that carries
+	the parked count and failures separately so "Fail" does not describe a changed garage.
+
+[2] Lookup is a linear scan
+	Garage stores a List<T> and every add/find/remove scans it, and AddVehicle scans before
+	inserting. Fine for a capacity of tens of vehicles, but a Dictionary keyed by registration
+	number would give O(1) duplicate checks and lookups and make the intent explicit.
+
+[1] Garage<T> is a requirement and is only used as Garage<IVehicle>
+
+[2] Case/whitespace normalization is spread over several places
+	Registration numbers are normalized in the Vehicle constructor, trimmed again in
+	FindByRegistration, and compared with OrdinalIgnoreCase in Search. Search criteria values
+	(such as color) are not normalized through VehicleColors. Pick one place for normalizing
+	input and one comparison rule.
+
+
+
+[1] Mixed code style
+	Source uses file-scoped namespaces, tests use block-scoped ones. Folder Garage uses
+	namespace SolutionSetup rather than SolutionSetup.Garage. Pick one convention and enforce
+	it with an .editorconfig.
+
+=====================================================================
+IMPROVEMENTS
+=====================================================================
+
+[3] Enable analyzers and stricter build settings
+	Add Directory.Build.props with AnalysisLevel, EnforceCodeStyleInBuild and
+	TreatWarningsAsErrors (at least for nullable warnings), plus an .editorconfig.
+	The project currently disables ImplicitUsings and has no analyzer configuration.
+
+[3] Return richer results from the handler
+	OperationResult carries only a bool and a message. A typed error (enum or code) lets the UI
+	choose its own wording and lets tests assert on the reason without string matching.
+
+[3] Inject the console instead of defaulting to it
+	Program.Main creates ConsoleUI() with the default console and handler. Use a small
+	composition root (create IHandler, TextReader, TextWriter in Program) so the wiring is
+	visible in one place.
+
+[2] Property-based or table-driven tests for validation
+	Boundary tests are written case by case. A shared table (type, parameter, min, max)
+	used by both validation and tests would keep the ranges and the tests in sync.
+
+[2] Add a persistence option
+	The garage is lost on exit. Saving to JSON behind an interface would be a realistic
+	next feature and a good exercise in separating storage from the handler.
+
