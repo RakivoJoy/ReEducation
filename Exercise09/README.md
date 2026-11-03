@@ -81,4 +81,5 @@ Menu option 9 saves the garage and option 10 loads it. Loading asks for confirma
 Type-specific fields: Car `fuelType`, Bus `numberOfSeats`, Airplane `numberOfEngines`, Truck `loadCapacity`, Motorcycle `cylinderVolume`, Boat `length`. Loading rebuilds each vehicle through its constructor, so invalid, duplicate, or over-capacity data is rejected with a message and the current garage is kept.
 
 ### UML Diagram
-UML Diagram available in `MERMAID-UML.md` .
+UML Diagram available in `MERMAID-UML.md` 
+https://rakivojoy.github.io/ReEducation/exercise09/uml.html
