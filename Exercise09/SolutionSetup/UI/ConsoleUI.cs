@@ -8,7 +8,7 @@ namespace SolutionSetup.UI;
 /// Text-based user interface for the garage. Reads menu choices and vehicle details from the input
 /// and writes results to the output. Both streams are injectable so the UI can be tested.
 /// </summary>
-public partial class ConsoleUI
+public partial class ConsoleUI : IUI
 {
     private readonly TextReader _input;
     private readonly TextWriter _output;

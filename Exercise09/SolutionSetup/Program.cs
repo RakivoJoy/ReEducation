@@ -13,6 +13,7 @@ internal class Program
     /// </summary>
     static void Main(string[] args)
     {
-        new ConsoleUI().Run();
+        IUI ui = new ConsoleUI();
+        ui.Run();
     }
 }
