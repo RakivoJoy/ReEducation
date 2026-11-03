@@ -17,7 +17,7 @@ Proposed file shape:
   "capacity": 20,
   "vehicles": [
 	{ "type": "Car", "registrationNumber": "ABC123", "color": "Red",
-	  "numberOfWheels": 4, "parkingSize": 1, "fuelType": "Petrol" }
+	  "numberOfWheels": 4, "parkingSize": 1, "fuelType": "Gasoline" }
   ]
 }
 
@@ -113,8 +113,23 @@ Placeholder test files (to create):
 7. Update docfx docs / README with the file location and format.
 
 =====================================================================
-7. Open questions
+7. Decisions (confirmed by user)
 =====================================================================
-- Single fixed save file or user-chosen file names?
-- Auto-save on exit, or explicit only?
-- Keep a backup (.bak) of the previous save?
+- Default location: %LOCALAPPDATA%\Garage\garage.json (fixed file).
+- Delta file: %LOCALAPPDATA%\Garage\garage.delta.json, written on each
+  change. On exit the delta is merged into garage.json and removed.
+  A crash leaves the delta file, which is replayed on next start.
+- Manual Save and Load options in the menu, in addition to the delta.
+- Backup: keep one previous copy as garage.json.bak before each replace.
+- IO is async (File.*Async, System.Text.Json async methods).
+
+=====================================================================
+8. Commit messages (one per step, added when each step is done)
+=====================================================================
+Step 1 - docs: record file save decisions
+  docs: record file save decisions and update TODO-file-saves plan
+
+  Confirm fixed default location, delta file merged on exit, one .bak
+  backup, and async IO. Fix FuelType sample value to Gasoline.
+
+Step 2 - feat: add garage DTOs and mapper
