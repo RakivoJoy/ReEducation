@@ -6,6 +6,11 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+	
+<PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+</PropertyGroup>
 
   <ItemGroup>
     <InternalsVisibleTo Include="SolutionSetupTests" />
