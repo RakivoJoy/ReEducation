@@ -51,7 +51,7 @@ namespace SolutionSetupTests
             var handler = new GarageHandler();
             using var output = new StringWriter();
             using var input = new StringReader(
-                "9\n" +
+                "11\n" +
                 "1\n5\n\n" +
                 "3\n3\nAB1234\nABC123\nInvisible\nRed\n4\n10\nGasoline\n\n" +
                 "7\nABC123\n\n" +
