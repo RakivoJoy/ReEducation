@@ -4,7 +4,9 @@ on:
   push:
     branches: [ main, excercise/09-garage3 ]
     paths:
-      - 'Exercise09/SolutionSetup/**'
+      - 'Exercise*/**'
+      - 'docs/site-index.html'
+      - '.github/workflows/docfx.yml'
   workflow_dispatch:
 
 permissions:
@@ -19,9 +21,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: Exercise09/SolutionSetup/docfx
     steps:
       - uses: actions/checkout@v4
 
@@ -35,14 +34,26 @@ jobs:
       - name: Add DocFX to PATH
         run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
 
-      - name: Build documentation
-        run: docfx docfx.json
+      - name: Build documentation for all exercises
+        run: |
+          set -e
+          rm -rf site
+          mkdir -p site
+          for cfg in $(find . -path './Exercise*/*/docfx/docfx.json' | sort); do
+            dir=$(dirname "$cfg")
+            exercise=$(echo "$dir" | cut -d/ -f2)
+            (cd "$dir" && docfx docfx.json)
+            mkdir -p "site/$exercise"
+            cp -r "$dir/_site/." "site/$exercise/"
+          done
+          cp docs/site-index.html site/index.html
+          touch site/.nojekyll
 
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: Exercise09/SolutionSetup/docfx/_site
+          path: site
 
   deploy:
     needs: build
