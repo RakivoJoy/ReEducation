@@ -41,7 +41,7 @@ jobs:
           mkdir -p site
           for cfg in $(find . -path './Exercise*/*/docfx/docfx.json' | sort); do
             dir=$(dirname "$cfg")
-            exercise=$(echo "$dir" | cut -d/ -f2)
+            exercise=$(echo "$dir" | cut -d/ -f2 | tr '[:upper:]' '[:lower:]')
             (cd "$dir" && docfx docfx.json)
             mkdir -p "site/$exercise"
             cp -r "$dir/_site/." "site/$exercise/"
