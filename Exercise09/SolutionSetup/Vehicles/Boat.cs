@@ -13,10 +13,13 @@ public class Boat : Vehicle
     /// <summary>Length in meters. Set once at construction.</summary>
     public double Length { get; }
 
+    /// <summary>Always <see cref="VehicleType.Boat"/>.</summary>
     public override VehicleType Type => VehicleType.Boat;
 
+    /// <summary>Adds the length to the description shown by <see cref="Vehicle.ToString"/>.</summary>
     protected override string Details => $"Length: {Length.ToString(CultureInfo.InvariantCulture)} m";
 
+    /// <summary>Creates a boat. Throws if the length is outside the allowed range.</summary>
     public Boat(string registrationNumber, string color, int numberOfWheels, double length, int? parkingSize = null)
         : base(registrationNumber, color, numberOfWheels, parkingSize)
     {
