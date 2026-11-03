@@ -35,10 +35,13 @@ public class JsonGarageStorageSaveTests : IDisposable
     [Fact]
     public async Task Save_WritesFile()
     {
+        // Arrange
         JsonGarageStorage storage = new(FilePath);
 
+        // Act
         OperationResult result = await storage.SaveAsync(GarageWith("ABC123"));
 
+        // Assert
         Assert.True(result.Success);
         Assert.Contains("\"registrationNumber\": \"ABC123\"", await File.ReadAllTextAsync(FilePath));
     }
@@ -46,10 +49,13 @@ public class JsonGarageStorageSaveTests : IDisposable
     [Fact]
     public async Task Save_CreatesMissingDirectory()
     {
+        // Arrange
         string path = Path.Combine(_folder, "nested", "garage.json");
 
+        // Act
         OperationResult result = await new JsonGarageStorage(path).SaveAsync(GarageWith("ABC123"));
 
+        // Assert
         Assert.True(result.Success);
         Assert.True(File.Exists(path));
     }
@@ -57,11 +63,14 @@ public class JsonGarageStorageSaveTests : IDisposable
     [Fact]
     public async Task Save_OverwritesExistingFile_KeepsBackupAndLeavesNoTempFile()
     {
+        // Arrange
         JsonGarageStorage storage = new(FilePath);
         await storage.SaveAsync(GarageWith("ABC123"));
 
+        // Act
         OperationResult result = await storage.SaveAsync(GarageWith("DEF456"));
 
+        // Assert
         Assert.True(result.Success);
         Assert.Contains("DEF456", await File.ReadAllTextAsync(FilePath));
         Assert.Contains("ABC123", await File.ReadAllTextAsync(FilePath + ".bak"));
@@ -71,10 +80,13 @@ public class JsonGarageStorageSaveTests : IDisposable
     [Fact]
     public async Task Save_ReturnsFailure_WhenPathIsDirectory_AndLeavesNoTempFile()
     {
+        // Arrange
         Directory.CreateDirectory(FilePath);
 
+        // Act
         OperationResult result = await new JsonGarageStorage(FilePath).SaveAsync(GarageWith("ABC123"));
 
+        // Assert
         Assert.False(result.Success);
         Assert.False(File.Exists(FilePath + ".tmp"));
     }

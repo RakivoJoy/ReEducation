@@ -34,10 +34,13 @@ public class JsonGarageStorageLoadTests : IDisposable
     [Fact]
     public async Task Load_ValidFile_ReturnsGarage()
     {
+        // Arrange
         await WriteFileAsync(GarageJson(5, CarJson("ABC123")));
 
+        // Act
         GarageLoadResult result = await new JsonGarageStorage(FilePath).LoadAsync();
 
+        // Assert
         Assert.True(result.Success);
         Assert.Equal(5, result.Garage!.Capacity);
         Assert.Single(result.Garage);
@@ -46,8 +49,11 @@ public class JsonGarageStorageLoadTests : IDisposable
     [Fact]
     public async Task Load_MissingFile_ReturnsFailure()
     {
+        // Arrange
+        // Act
         GarageLoadResult result = await new JsonGarageStorage(FilePath).LoadAsync();
 
+        // Assert
         Assert.False(result.Success);
         Assert.Null(result.Garage);
     }
@@ -55,10 +61,13 @@ public class JsonGarageStorageLoadTests : IDisposable
     [Fact]
     public async Task Load_EmptyFile_ReturnsFailure()
     {
+        // Arrange
         await WriteFileAsync(string.Empty);
 
+        // Act
         GarageLoadResult result = await new JsonGarageStorage(FilePath).LoadAsync();
 
+        // Assert
         Assert.False(result.Success);
         Assert.Null(result.Garage);
     }
@@ -66,10 +75,13 @@ public class JsonGarageStorageLoadTests : IDisposable
     [Fact]
     public async Task Load_InvalidJson_ReturnsFailure()
     {
+        // Arrange
         await WriteFileAsync("{ not json");
 
+        // Act
         GarageLoadResult result = await new JsonGarageStorage(FilePath).LoadAsync();
 
+        // Assert
         Assert.False(result.Success);
         Assert.Null(result.Garage);
     }
@@ -77,10 +89,13 @@ public class JsonGarageStorageLoadTests : IDisposable
     [Fact]
     public async Task Load_UnknownVehicleType_ReturnsFailure()
     {
+        // Arrange
         await WriteFileAsync(GarageJson(5, CarJson("ABC123").Replace("\"Car\"", "\"Spaceship\"")));
 
+        // Act
         GarageLoadResult result = await new JsonGarageStorage(FilePath).LoadAsync();
 
+        // Assert
         Assert.False(result.Success);
         Assert.Null(result.Garage);
     }
@@ -88,10 +103,13 @@ public class JsonGarageStorageLoadTests : IDisposable
     [Fact]
     public async Task Load_InvalidVehicleData_ReturnsFailure()
     {
+        // Arrange
         await WriteFileAsync(GarageJson(5, CarJson("NOPE")));
 
+        // Act
         GarageLoadResult result = await new JsonGarageStorage(FilePath).LoadAsync();
 
+        // Assert
         Assert.False(result.Success);
         Assert.Null(result.Garage);
     }
@@ -99,10 +117,13 @@ public class JsonGarageStorageLoadTests : IDisposable
     [Fact]
     public async Task Load_MoreVehiclesThanCapacity_ReturnsFailure()
     {
+        // Arrange
         await WriteFileAsync(GarageJson(1, CarJson("ABC123"), CarJson("DEF456")));
 
+        // Act
         GarageLoadResult result = await new JsonGarageStorage(FilePath).LoadAsync();
 
+        // Assert
         Assert.False(result.Success);
         Assert.Null(result.Garage);
     }
@@ -110,11 +131,15 @@ public class JsonGarageStorageLoadTests : IDisposable
     [Fact]
     public async Task Load_DuplicateRegistrationNumbers_ReturnsFailure()
     {
+        // Arrange
         await WriteFileAsync(GarageJson(5, CarJson("ABC123"), CarJson("ABC123")));
 
+        // Act
         GarageLoadResult result = await new JsonGarageStorage(FilePath).LoadAsync();
 
+        // Assert
         Assert.False(result.Success);
         Assert.Null(result.Garage);
     }
 }
+
