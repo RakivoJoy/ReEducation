@@ -2,7 +2,7 @@ name: Build and deploy DocFX
 
 on:
   push:
-	branches: [ main ]
+	branches: [ main, excercise/09-garage3 ]
 	paths:
 	  - 'Exercise09/SolutionSetup/**'
   workflow_dispatch:
