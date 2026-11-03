@@ -145,3 +145,10 @@ Step 3 - feat: add async JSON garage storage
   Add IGarageStorage, GarageLoadResult and JsonGarageStorage with temp
   file replace, one .bak backup, and expected-failure results. Add serial
   FileIO save and load tests using temp folders.
+
+Step 4 - test: add garage save and load round-trip test
+
+  test: add garage save and load round-trip test
+
+  Verify capacity and every vehicle type, including subtype fields,
+  survive JsonGarageStorage save and load unchanged.
