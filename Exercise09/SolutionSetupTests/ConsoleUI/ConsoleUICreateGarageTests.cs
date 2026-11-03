@@ -1,5 +1,6 @@
 using SolutionSetup;
 using SolutionSetup.UI;
+using SolutionSetup.Vehicles;
 
 namespace SolutionSetupTests
 {
@@ -57,7 +58,8 @@ namespace SolutionSetupTests
         {
             // Arrange
             var handler = new GarageHandler();
-            using var input = new StringReader("2000\n");
+            int maxCapacity = Garage<IVehicle>.MaxCapacity;   
+            using var input = new StringReader($"{maxCapacity}\n");
             using var output = new StringWriter();
             var ui = new ConsoleUI(input, output, handler);
 
@@ -73,7 +75,9 @@ namespace SolutionSetupTests
         {
             // Arrange
             var handler = new GarageHandler();
-            using var input = new StringReader("2001\n");
+
+            int overCapacity = Garage<IVehicle>.MaxCapacity+1;
+            using var input = new StringReader($"{overCapacity}\n");
             using var output = new StringWriter();
             var ui = new ConsoleUI(input, output, handler);
 

@@ -28,7 +28,7 @@ namespace SolutionSetupTests
             var garage = new Garage<IVehicle>(Garage<IVehicle>.MaxCapacity);
 
             // Act & Assert
-            Assert.Equal(2000, garage.Capacity);
+            Assert.Equal(Garage<IVehicle>.MaxCapacity, garage.Capacity);
         }
 
         [Fact]
