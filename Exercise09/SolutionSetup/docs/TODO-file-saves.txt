@@ -133,3 +133,15 @@ Step 1 - docs: record file save decisions
   backup, and async IO. Fix FuelType sample value to Gasoline.
 
 Step 2 - feat: add garage DTOs and mapper
+
+  feat: add garage DTOs and mapper
+
+  Add GarageDto, VehicleDto and GarageMapper with mapping tests (no IO).
+
+Step 3 - feat: add async JSON garage storage
+
+  feat: add async JSON garage storage
+
+  Add IGarageStorage, GarageLoadResult and JsonGarageStorage with temp
+  file replace, one .bak backup, and expected-failure results. Add serial
+  FileIO save and load tests using temp folders.

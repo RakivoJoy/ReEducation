@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
+using SolutionSetup.Persistence;
 using Xunit;
 
 namespace SolutionSetupTests;
@@ -19,24 +21,100 @@ public class JsonGarageStorageLoadTests : IDisposable
         }
     }
 
-    [Fact(Skip = "Placeholder: JsonGarageStorage not implemented yet.")]
-    public void Load_MissingFile_ReturnsFailure() { }
+    private string FilePath => Path.Combine(_folder, "garage.json");
 
-    [Fact(Skip = "Placeholder: JsonGarageStorage not implemented yet.")]
-    public void Load_EmptyFile_ReturnsFailure() { }
+    private static string CarJson(string registrationNumber) =>
+        $$"""{"type":"Car","registrationNumber":"{{registrationNumber}}","color":"Black","numberOfWheels":4,"parkingSize":5,"fuelType":"Gasoline"}""";
 
-    [Fact(Skip = "Placeholder: JsonGarageStorage not implemented yet.")]
-    public void Load_InvalidJson_ReturnsFailure() { }
+    private static string GarageJson(int capacity, params string[] vehicles) =>
+        $$"""{"version":1,"capacity":{{capacity}},"vehicles":[{{string.Join(",", vehicles)}}]}""";
 
-    [Fact(Skip = "Placeholder: JsonGarageStorage not implemented yet.")]
-    public void Load_UnknownVehicleType_ReturnsFailure() { }
+    private async Task WriteFileAsync(string content) => await File.WriteAllTextAsync(FilePath, content);
 
-    [Fact(Skip = "Placeholder: JsonGarageStorage not implemented yet.")]
-    public void Load_InvalidVehicleData_ReturnsFailure() { }
+    [Fact]
+    public async Task Load_ValidFile_ReturnsGarage()
+    {
+        await WriteFileAsync(GarageJson(5, CarJson("ABC123")));
 
-    [Fact(Skip = "Placeholder: JsonGarageStorage not implemented yet.")]
-    public void Load_MoreVehiclesThanCapacity_ReturnsFailure() { }
+        GarageLoadResult result = await new JsonGarageStorage(FilePath).LoadAsync();
 
-    [Fact(Skip = "Placeholder: JsonGarageStorage not implemented yet.")]
-    public void Load_DuplicateRegistrationNumbers_ReturnsFailure() { }
+        Assert.True(result.Success);
+        Assert.Equal(5, result.Garage!.Capacity);
+        Assert.Single(result.Garage);
+    }
+
+    [Fact]
+    public async Task Load_MissingFile_ReturnsFailure()
+    {
+        GarageLoadResult result = await new JsonGarageStorage(FilePath).LoadAsync();
+
+        Assert.False(result.Success);
+        Assert.Null(result.Garage);
+    }
+
+    [Fact]
+    public async Task Load_EmptyFile_ReturnsFailure()
+    {
+        await WriteFileAsync(string.Empty);
+
+        GarageLoadResult result = await new JsonGarageStorage(FilePath).LoadAsync();
+
+        Assert.False(result.Success);
+        Assert.Null(result.Garage);
+    }
+
+    [Fact]
+    public async Task Load_InvalidJson_ReturnsFailure()
+    {
+        await WriteFileAsync("{ not json");
+
+        GarageLoadResult result = await new JsonGarageStorage(FilePath).LoadAsync();
+
+        Assert.False(result.Success);
+        Assert.Null(result.Garage);
+    }
+
+    [Fact]
+    public async Task Load_UnknownVehicleType_ReturnsFailure()
+    {
+        await WriteFileAsync(GarageJson(5, CarJson("ABC123").Replace("\"Car\"", "\"Spaceship\"")));
+
+        GarageLoadResult result = await new JsonGarageStorage(FilePath).LoadAsync();
+
+        Assert.False(result.Success);
+        Assert.Null(result.Garage);
+    }
+
+    [Fact]
+    public async Task Load_InvalidVehicleData_ReturnsFailure()
+    {
+        await WriteFileAsync(GarageJson(5, CarJson("NOPE")));
+
+        GarageLoadResult result = await new JsonGarageStorage(FilePath).LoadAsync();
+
+        Assert.False(result.Success);
+        Assert.Null(result.Garage);
+    }
+
+    [Fact]
+    public async Task Load_MoreVehiclesThanCapacity_ReturnsFailure()
+    {
+        await WriteFileAsync(GarageJson(1, CarJson("ABC123"), CarJson("DEF456")));
+
+        GarageLoadResult result = await new JsonGarageStorage(FilePath).LoadAsync();
+
+        Assert.False(result.Success);
+        Assert.Null(result.Garage);
+    }
+
+    [Fact]
+    public async Task Load_DuplicateRegistrationNumbers_ReturnsFailure()
+    {
+        await WriteFileAsync(GarageJson(5, CarJson("ABC123"), CarJson("ABC123")));
+
+        GarageLoadResult result = await new JsonGarageStorage(FilePath).LoadAsync();
+
+        Assert.False(result.Success);
+        Assert.Null(result.Garage);
+    }
 }
