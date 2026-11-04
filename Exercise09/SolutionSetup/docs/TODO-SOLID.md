@@ -115,8 +115,10 @@ Suggestion: only split if a consumer appears that needs one side; otherwise leav
 
 ### Default constructors create concrete dependencies[Prio:High, Effort:S, Impact:M]
 
-`Program` creates `new ConsoleUI()`, which creates `new GarageHandler()`, which creates `new JsonGarageStorage(DefaultFilePath)`. The default handler constructor also makes end-to-end tests write to the real `%LOCALAPPDATA%` file (see TODO-persistence-improvments.md).
-Suggestion: build the object graph in `Program` (composition root) and remove or reduce the default constructors. See "Inject the console instead of defaulting to it" in TODO-suggestions.md.
+Status: Done. `Program` is the composition root and builds `JsonGarageStorage`, `GarageHandler` and `ConsoleUI` explicitly. No default constructors remain, and tests do not touch `DefaultFilePath`.
+
+Previous problem: `Program` created `new ConsoleUI()`, which created `new GarageHandler()`, which created `new JsonGarageStorage(DefaultFilePath)`. The default handler constructor also made end-to-end tests write to the real `%LOCALAPPDATA%` file (see TODO-persistence-improvments.md).
+Suggestion:
 
 ### Handler and storage depend on the concrete Garage<IVehicle>[Prio:Medium, Effort:M, Impact:M]
 
@@ -125,8 +127,8 @@ Suggestion: introduce an `IGarage` abstraction for the operations that consumers
 
 ### Static dependencies cannot be replaced[Prio:Medium, Effort:S, Impact:M]
 
-`SampleData`, `GarageMapper`, `ParkingSizeLimits`, `VehicleColors` and `Garage<T>.MaxCapacity` are static. `GarageHandler.PopulateGarage` always uses `SampleData.CreateSampleVehicles()`, so tests cannot supply their own sample set.
-Suggestion: wrap the ones that vary behind small interfaces (for example `ISampleDataProvider`) and inject them. Leave pure constant tables static.
+Status: Partly done. `GarageHandler` receives an `ISampleDataProvider`, so tests can supply their own sample set. `SampleData`, `GarageMapper`, `ParkingSizeLimits`, `VehicleColors` and `Garage<T>.MaxCapacity` are still static. Pure constant tables can stay static.
+Suggestion: wrap the ones that vary behind small interfaces and inject them. Leave pure constant tables static.
 
 ### UI builds domain objects and depends on concrete vehicle classes[Prio:Medium, Effort:L, Impact:M]
 
