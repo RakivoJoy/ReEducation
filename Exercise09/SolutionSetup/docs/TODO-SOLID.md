@@ -122,8 +122,8 @@ Suggestion:
 
 ### Handler and storage depend on the concrete Garage<IVehicle>[Prio:Medium, Effort:M, Impact:M]
 
-`GarageHandler`, `IGarageStorage`, `JsonGarageStorage` and `GarageMapper` all use the concrete `Garage<IVehicle>` class, so the storage contract is tied to one implementation.
-Suggestion: introduce an `IGarage` abstraction for the operations that consumers need, or have storage work on a snapshot (`GarageDto`) instead of the live garage.
+Status: Partly done. `IGarageStorage`, `JsonGarageStorage`, `GarageMapper` and `GarageHandler`'s field all work through `IGarage<IVehicle>`. Only `GarageHandler` still creates the concrete `Garage<IVehicle>`.
+Suggestion: move that creation behind a factory, or accept the garage from the composition root if a second implementation appears.
 
 ### Static dependencies cannot be replaced[Prio:Medium, Effort:S, Impact:M]
 
