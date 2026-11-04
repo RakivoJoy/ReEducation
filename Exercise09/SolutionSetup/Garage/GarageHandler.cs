@@ -16,14 +16,6 @@ public class GarageHandler : IHandler
     private readonly IGarageStorage _storage;
 
     /// <summary>
-    /// Creates a handler that saves and loads the garage at <see cref="JsonGarageStorage.DefaultFilePath"/>.
-    /// </summary>
-    public GarageHandler()
-        : this(new JsonGarageStorage(JsonGarageStorage.DefaultFilePath))
-    {
-    }
-
-    /// <summary>
     /// Creates a handler that saves and loads the garage through the given storage.
     /// </summary>
     /// <param name="storage">Storage used for menu options 9 and 10.</param>

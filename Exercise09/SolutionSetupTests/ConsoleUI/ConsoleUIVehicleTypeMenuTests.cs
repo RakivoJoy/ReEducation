@@ -1,3 +1,4 @@
+using SolutionSetup;
 using SolutionSetup.UI;
 using SolutionSetup.Vehicles;
 
@@ -11,7 +12,7 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader("5\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
             ui.CreateGarage();
 
             // Act
@@ -30,7 +31,7 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader("5\n\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
             ui.CreateGarage();
 
             // Act
@@ -55,7 +56,7 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader("5\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
             ui.CreateGarage();
 
             // Act

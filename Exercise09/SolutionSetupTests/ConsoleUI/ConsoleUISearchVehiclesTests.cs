@@ -1,3 +1,4 @@
+using SolutionSetup;
 using SolutionSetup.UI;
 
 namespace SolutionSetupTests
@@ -14,7 +15,7 @@ namespace SolutionSetupTests
                 "3\nABC123\nBlack\n4\n10\nGasoline\n" +
                 "3\nDEF456\nRed\n4\n10\nDiesel\n" +
                 "color=Black\n\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
             ui.CreateGarage();
             ui.ParkVehicle();
             ui.ParkVehicle();
@@ -39,7 +40,7 @@ namespace SolutionSetupTests
                 "3\nABC123\nBlack\n4\n10\nGasoline\n" +
                 "3\nDEF456\nBlack\n4\n10\nDiesel\n" +
                 "color=Black wheels=4 type=Car\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
             ui.CreateGarage();
             ui.ParkVehicle();
             ui.ParkVehicle();
@@ -59,7 +60,7 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader("5\ncolor=Green\n\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
             ui.CreateGarage();
 
             // Act
@@ -75,7 +76,7 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader("5\nwheels=notanumber\n\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
             ui.CreateGarage();
 
             // Act
@@ -91,7 +92,7 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader("5\ntype=Spaceship\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
             ui.CreateGarage();
 
             // Act
@@ -107,7 +108,7 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader("8\n\n0\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
 
             // Act
             ui.Run();

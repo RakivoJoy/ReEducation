@@ -156,7 +156,7 @@ namespace SolutionSetupTests
         public void ParkVehicle_PromptsForSizeWithTypeLimits_AndRetriesOutOfRange()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage());
             using var output = new StringWriter();
             using var input = new StringReader("5\n3\nABC123\nBlack\n4\n99\n12\nGasoline\n");
             var ui = new ConsoleUI(input, output, handler);
@@ -176,7 +176,7 @@ namespace SolutionSetupTests
         public void SearchVehicles_FindsBySizeRange()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage());
             using var output = new StringWriter();
             using var input = new StringReader(
                 "5\n" +

@@ -1,3 +1,4 @@
+using SolutionSetup;
 using SolutionSetup.UI;
 
 namespace SolutionSetupTests
@@ -10,7 +11,7 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader("5\n9\n1\nABC123\nBlack\n2\n5\n600\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
             ui.CreateGarage();
 
             // Act
@@ -28,7 +29,7 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader("abc\n5\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
 
             // Act
             ui.CreateGarage();
@@ -43,7 +44,7 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader("10000000000\n5\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
 
             // Act
             ui.CreateGarage();
@@ -58,7 +59,7 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader("5\n3\nABC123\nBlack\nfour\n4\n10\nGasoline\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
             ui.CreateGarage();
 
             // Act
@@ -74,7 +75,7 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader("10\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
             ui.CreateGarage();
             ui.PopulateGarage();
 
@@ -91,7 +92,7 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader("5\n0\n");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
 
             // Act
             ui.Run();
@@ -106,7 +107,7 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader("");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
 
             // Act
             ui.Run();
@@ -121,7 +122,7 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader("abc");
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
 
             // Act
             ui.CreateGarage();

@@ -1,3 +1,4 @@
+using SolutionSetup;
 using SolutionSetup.UI;
 
 namespace SolutionSetupTests
@@ -10,7 +11,7 @@ namespace SolutionSetupTests
             // Arrange
             using var input = new StringReader("0\n");
             using var output = new StringWriter();
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
 
             // Act
             ui.Run();
@@ -27,7 +28,7 @@ namespace SolutionSetupTests
             // Arrange
             using var input = new StringReader("99\n0\n");
             using var output = new StringWriter();
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
 
             // Act
             ui.Run();
@@ -43,7 +44,7 @@ namespace SolutionSetupTests
             // Arrange
             using var input = new StringReader("abc\n0\n");
             using var output = new StringWriter();
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
 
             // Act
             ui.Run();

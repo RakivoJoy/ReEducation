@@ -22,24 +22,6 @@ public partial class ConsoleUI : IUI
     private sealed record MenuItem(string Key, string Text, Action? Action, bool PauseAfter = true, bool RequiresGarage = true);
 
     /// <summary>
-    /// Creates a console UI that reads from <see cref="Console.In"/> and writes to <see cref="Console.Out"/>.
-    /// </summary>
-    public ConsoleUI()
-        : this(Console.In, Console.Out, new GarageHandler())
-    {
-    }
-
-    /// <summary>
-    /// Creates a console UI that uses the given input and output streams and a new <see cref="GarageHandler"/>.
-    /// </summary>
-    /// <param name="input">Source of user input.</param>
-    /// <param name="output">Destination for menu text and messages.</param>
-    internal ConsoleUI(TextReader input, TextWriter output)
-        : this(input, output, new GarageHandler())
-    {
-    }
-
-    /// <summary>
     /// Creates a console UI that uses the given input, output and handler.
     /// </summary>
     /// <param name="input">Source of user input.</param>

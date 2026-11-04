@@ -9,7 +9,7 @@ namespace SolutionSetupTests
         public void Run_CreatesGarageAndParksCar_ThenExits()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage());
             using var output = new StringWriter();
             using var input = new StringReader("1\n5\n\n3\n3\nABC123\nBlack\n4\n10\nGasoline\n\n0\n");
             var ui = new ConsoleUI(input, output, handler);
@@ -26,7 +26,7 @@ namespace SolutionSetupTests
         public void Run_ParksRemovesAndSearches_InOneSession()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage());
             using var output = new StringWriter();
             using var input = new StringReader(
                 "1\n5\n\n" +
@@ -48,7 +48,7 @@ namespace SolutionSetupTests
         public void Run_RecoversFromInvalidChoicesAndFieldErrors_ThenParksAndExits()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage());
             using var output = new StringWriter();
             using var input = new StringReader(
                 "11\n" +

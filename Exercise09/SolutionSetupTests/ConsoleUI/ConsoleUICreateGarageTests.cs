@@ -10,7 +10,7 @@ namespace SolutionSetupTests
         public void CreateGarage_CreatesGarage_WithValidCapacity()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage());
             using var input = new StringReader("5\n");
             using var output = new StringWriter();
             var ui = new ConsoleUI(input, output, handler);
@@ -28,7 +28,7 @@ namespace SolutionSetupTests
             // Arrange
             using var input = new StringReader("abc\n");
             using var output = new StringWriter();
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
 
             // Act
             ui.CreateGarage();
@@ -41,7 +41,7 @@ namespace SolutionSetupTests
         public void CreateGarage_DoesNotCreateGarage_ForNonPositiveCapacity()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage());
             using var input = new StringReader("0\n");
             using var output = new StringWriter();
             var ui = new ConsoleUI(input, output, handler);
@@ -57,7 +57,7 @@ namespace SolutionSetupTests
         public void CreateGarage_AcceptsMaximumCapacity()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage());
             int maxCapacity = Garage<IVehicle>.MaxCapacity;   
             using var input = new StringReader($"{maxCapacity}\n");
             using var output = new StringWriter();
@@ -74,7 +74,7 @@ namespace SolutionSetupTests
         public void CreateGarage_RePromptsForCapacityAboveMaximum()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage());
 
             int overCapacity = Garage<IVehicle>.MaxCapacity+1;
             using var input = new StringReader($"{overCapacity}\n");
@@ -92,7 +92,7 @@ namespace SolutionSetupTests
         public void CreateGarage_AllowsRecreatingGarage()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage());
             using var input = new StringReader("3\n7\n");
             using var output = new StringWriter();
             var ui = new ConsoleUI(input, output, handler);

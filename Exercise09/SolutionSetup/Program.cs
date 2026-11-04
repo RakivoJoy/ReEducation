@@ -1,4 +1,6 @@
-﻿using SolutionSetup.UI;
+﻿using SolutionSetup.Persistence;
+using SolutionSetup.UI;
+using System;
 
 namespace SolutionSetup;
 
@@ -13,7 +15,9 @@ internal class Program
     /// </summary>
     static void Main(string[] args)
     {
-        IUI ui = new ConsoleUI();
+        IGarageStorage storage = new JsonGarageStorage(JsonGarageStorage.DefaultFilePath);
+        IHandler handler = new GarageHandler(storage);
+        IUI ui = new ConsoleUI(Console.In, Console.Out, handler);
         ui.Run();
     }
 }
