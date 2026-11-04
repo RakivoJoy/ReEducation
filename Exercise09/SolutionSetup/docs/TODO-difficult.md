@@ -1,0 +1,137 @@
+# TODO-difficult - Exercise09 (Garage 3.0)
+
+Parts of the code a mid-level engineer (C# Unity3D, Java, C++ background) will find hardest to understand.
+Items are grouped by file or area and ordered by difficulty.
+
+Rating legend: see [TODO-template.md](TODO-template.md).
+
+Each item uses the format `### [Prio:X, Effort:Y, Impact:Z] Title`, where Prio 4 = explain or simplify first.
+
+---
+
+## Garage\SearchCriteria.cs
+
+### [Prio:4, Effort:Medium, Impact:High] Definitions table, object boxing and lambdas
+
+Each entry is a positional record with four lambdas. `Parse` returns `object?` and `null` means "invalid", so values are boxed and later unboxed with casts (`(int)value`, `(IntRange)value`).
+A cast mismatch only fails at runtime (`InvalidCastException`). Java and C++ developers may know generics but not this "untyped table + cast" pattern.
+Idea: a generic `Definition<T>` that hides the casts. Also add a comment that `Parse` returning `null` is the "invalid" signal.
+
+### [Prio:4, Effort:Low, Impact:High] Nullable value types vs nullable reference types
+
+`int? NumberOfWheels` is `Nullable<int>` (a struct), while `string? Color` is only an annotation.
+`text => int.TryParse(text, out int wheels) ? wheels : null` relies on a target-typed conditional (`int` and `null` become `int?`, then boxed to `object?`). This is a C# 9 feature with no direct Java or C++ equivalent. Unity projects often use older language versions.
+
+### [Prio:3, Effort:Low, Impact:Medium] Two Get overloads with `where T : struct`
+
+`Get<T>` (structs) and `Get` (string) differ only by the generic constraint. The constraint is what makes `T?` mean `Nullable<T>`. Rename to `GetValue<T>` / `GetText`, as already noted in TODO-readable.md.
+
+### [Prio:2, Effort:Low, Impact:Medium] Property setters that remove entries
+
+Setting a property to `null` removes the filter (`Set`). Properties are therefore views over the `_filters` dictionary, not plain fields. `Matches` uses `Find(filter.Key)!` (null-forgiving operator).
+
+---
+
+## Persistence\JsonGarageStorage.cs
+
+### [Prio:4, Effort:Medium, Impact:High] async/await, await using, CancellationToken
+
+`SaveAsync` and `LoadAsync` use `await using` (async disposal of `FileStream`), `FileOptions.Asynchronous`, and a `CancellationToken` with a default value. Unity developers usually know coroutines or UniTask rather than Task-based async. Explain what the await resumes on and why the stream is disposed before `File.Move`.
+
+### [Prio:3, Effort:Medium, Impact:Medium] Safe save sequence (temp file, .bak, move)
+
+Write temp, copy old save to `.bak`, move temp over save, delete temp in `finally`. The reasons (no half-written save file) are not stated step by step. The `finally` block deletes the temp file only if the move did not already consume it.
+
+### [Prio:3, Effort:Low, Impact:Medium] Exception filters with pattern matching
+
+`catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)` combines an exception filter (`when`) with the `or` pattern (C# 9). This is different from Java multi-catch.
+
+### [Prio:2, Effort:Low, Impact:Low] Static JsonSerializerOptions and collection initializer
+
+`Converters = { new JsonStringEnumConverter() }` is a collection initializer on a property that is already created. It calls `Add`; it does not assign.
+
+---
+
+## Garage\GarageHandler.cs
+
+### [Prio:4, Effort:Low, Impact:High] Sync-over-async: `.GetAwaiter().GetResult()`
+
+`SaveGarage` and `LoadGarage` block on async methods because `IHandler` is synchronous. This is correct here (console app, no `SynchronizationContext`) but is a known deadlock risk in UI frameworks. It needs a comment explaining why it is acceptable, or `IHandler` should become async.
+
+### [Prio:2, Effort:Low, Impact:Medium] Expression-bodied members and `?? throw`
+
+`RequireGarage` uses `_garage ?? throw new ...`. Many one-line `=>` members hide the `InvalidOperationException` contract; it is only visible in the class summary.
+
+---
+
+## Garage\Garage.cs
+
+### [Prio:3, Effort:Medium, Impact:Medium] Generic class with constraint and explicit interface implementation
+
+`Garage<T> : IEnumerable<T> where T : IVehicle` needs two `GetEnumerator` methods: one public generic and one explicit non-generic (`IEnumerable.GetEnumerator`). Java developers lack explicit interface implementation; C++ developers may expect templates without constraints.
+Also, `T?` on a type constrained only to an interface (`FindByRegistration`) is a nullable annotation, not `Nullable<T>`.
+
+### [Prio:2, Effort:Low, Impact:Medium] Collection expressions and related syntax
+
+`List<T> _vehicles = [];` and `List<string> failures = [];` use C# 12 collection expressions. The file also uses `is not null` and `static readonly int MaxCapacity` (not `const`, so it is not baked into callers at compile time).
+
+### [Prio:2, Effort:Low, Impact:Low] LINQ GroupBy/ToDictionary
+
+`ListVehicleCountByType` is a LINQ pipeline with deferred execution that is forced by `ToDictionary`.
+
+---
+
+## Persistence\GarageMapper.cs
+
+### [Prio:3, Effort:Medium, Impact:Medium] Switch expressions with type patterns
+
+`ToDto(IVehicle)` uses `vehicle switch { Car car => ..., _ => throw ... }`. Type patterns that declare variables and `throw` as an expression are new to Java and C++ developers. The order of arms matters if inheritance is added (more specific types first).
+
+### [Prio:3, Effort:Medium, Impact:Medium] Named arguments with optional record parameters
+
+`new VehicleDto(..., FuelType: car.FuelType)` skips the other optional parameters. Reading this requires knowing positional records and optional parameters (see `VehicleDto.cs`).
+
+### [Prio:2, Effort:Low, Impact:Medium] Required<T> helper
+
+`where T : struct` and `T?` make `Required<T>(int?)` return `int`. It unwraps `Nullable<T>` or throws.
+
+---
+
+## UI\ConsoleUI.Helpers.cs
+
+### [Prio:3, Effort:Medium, Impact:Medium] Custom delegate with out parameter, generic ReadValidated
+
+`TryParser<T>` exists because `Func<>` cannot have out parameters. Lambdas like `(string text, out int value) => int.TryParse(text, out value)` need explicit parameter types.
+`ReadValidated<T>` takes a prompt, a `Func` for the error text and a delegate; it is hard to follow at call sites. The `while (true)` loop exits only through `return` or an exception.
+
+### [Prio:2, Effort:Low, Impact:Medium] TryParseFuelType
+
+Mixes a ternary, a null-coalescing `?? line`, `Enum.GetNames<T>()` (generic, .NET 5+) and `Enum.IsDefined`. Split into named steps.
+
+### [Prio:2, Effort:Low, Impact:Low] EndOfStreamException as control flow
+
+`ReadValidated` throws when input ends; `ReadLineOrEmpty` returns `""`. These are two different behaviours for end of input. Document where the exception is caught.
+
+---
+
+## UI\ConsoleUI*.cs (partial class)
+
+### [Prio:3, Effort:Low, Impact:Medium] Partial class split over five files
+
+`ConsoleUI` is one class spread over `ConsoleUI.cs`, `.Garage.cs`, `.Helpers.cs`, `.Search.cs` and `.Vehicles.cs`. Unity developers know `partial` only from generated code. Add a short note in `ConsoleUI.cs` listing what each file holds, so readers do not hunt for private fields.
+
+### [Prio:2, Effort:Low, Impact:Low] Range and index operators
+
+`pair[..separatorIndex]` and `pair[(separatorIndex + 1)..]` in `ConsoleUI.Search.cs` are C# 8 slicing; they replace `Substring`.
+
+---
+
+## Vehicles\Vehicle.cs and subclasses, Garage\IntRange.cs
+
+### [Prio:2, Effort:Medium, Impact:Medium] ThrowIfOutOfRange with six arguments
+
+Validation helper called from every subclass constructor; argument order is easy to mix up (see TODO-readable.md). Check how it interacts with the base constructor call chain.
+
+### [Prio:2, Effort:Low, Impact:Medium] IntRange.TryParse and `out IntRange?`
+
+Used from a lambda in `SearchCriteria`. Range text such as `10-30` is parsed there; negative numbers and a single value (`size-size`) need explanation.
