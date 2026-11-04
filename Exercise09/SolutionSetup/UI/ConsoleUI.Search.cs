@@ -39,7 +39,7 @@ public partial class ConsoleUI
                 return false;
             }
 
-            if (!criteria.TrySetFilter(pair[..separatorIndex], pair[(separatorIndex + 1)..], out string error))
+            if (!SearchCriteriaParser.TrySetFilter(criteria, pair[..separatorIndex], pair[(separatorIndex + 1)..], out string error))
             {
                 _output.WriteLine(error);
                 return false;
