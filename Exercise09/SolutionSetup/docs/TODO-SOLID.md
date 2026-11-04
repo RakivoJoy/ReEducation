@@ -21,6 +21,8 @@ Rating legend: see [TODO-template.md](TODO-template.md).
 
 ### ConsoleUI does menu, input parsing, vehicle construction and output[Prio:High, Effort:M, Impact:M]
 
+Status: Partly done in db184d9. Vehicle construction moved to `VehicleFactory`; the per-type prompts still live in ConsoleUI.
+
 `ConsoleUI` (five partial files) owns the menu loop, reading and validating input, the per-type prompts and factories (`BuildVehicleTypes` creates `Motorcycle`, `Car`, ... and prompts for their extra fields), search-expression parsing, and printing. Splitting it into partial files hides the size but it is still one class with one set of private fields.
 Suggestion: extract an input reader (prompt + validate + parse), a vehicle-creation component (type list and factories), and keep `ConsoleUI` as menu loop plus dispatch.
 
@@ -30,6 +32,8 @@ Suggestion: extract an input reader (prompt + validate + parse), a vehicle-creat
 Suggestion: have `Garage` return a typed result or reason (see the richer results item in TODO-suggestions.md) and let the UI or handler turn it into text. Consider moving `Populate` and the per-type counting to the handler or a query helper.
 
 ### SearchCriteria is a filter, a text parser and an error-message source[Prio:Medium, Effort:M, Impact:M]
+
+Status: Done in 60350b4. Parsing and messages moved to `SearchCriteriaParser`; `SearchCriteria` keeps typed filters and `Matches`.
 
 `SearchCriteria` stores filters, parses console text (`TrySetFilter`, `Parse` lambdas), owns user-facing error messages and implements the match rules. Parsing and messages are UI concerns; matching is a domain concern.
 Suggestion: keep `SearchCriteria` as typed values plus `Matches`, and move text parsing and messages to the UI layer (for example a `SearchCriteriaParser`).
@@ -60,6 +64,8 @@ Suggestion: describe each type once (a descriptor or registry holding limits, DT
 
 ### ParkingSizeLimits is a switch over the enum[Prio:Medium, Effort:S, Impact:M]
 
+Status: Partly done in c88e29a. The switch is now a lookup table; limits are still defined centrally, not on each vehicle type.
+
 Limits per type are kept in a central switch instead of next to the type they describe. A new `VehicleType` falls through to the `throw`.
 Suggestion: let each vehicle type expose its limits (static abstract member or a descriptor entry) so the table extends without modification.
 
@@ -83,6 +89,8 @@ Suggestion: part of the polymorphic DTO suggestion above.
 Suggestion: either restrict the garage to `Vehicle`, or make the mapper extensible so each implementation supplies its own DTO mapping.
 
 ### Vehicle constructor reads the abstract Type property[Prio:Medium, Effort:S, Impact:S]
+
+Status: Done in 0404620. `VehicleType` is passed to the base constructor.
 
 `ValidateParkingSize` in the base constructor calls `ParkingSizeLimits.For(Type)`, where `Type` is an abstract member overridden by a subclass that has not been constructed yet. It works only while every override returns a constant.
 Suggestion: pass the type (or its limits) to the base constructor, or document and test the constant-only contract.
