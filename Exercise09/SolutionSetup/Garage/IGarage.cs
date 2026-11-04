@@ -16,17 +16,17 @@ public interface IGarage<T> : IEnumerable<T> where T : IVehicle
     /// <summary>
     /// Parks a vehicle in the garage.
     /// </summary>
-    OperationResult AddVehicle(T vehicle);
+    ParkResult AddVehicle(T vehicle);
 
     /// <summary>
     /// Removes the vehicle with the given registration number and frees its space.
     /// </summary>
-    OperationResult RemoveVehicleByRegistration(string registrationNumber);
+    RemoveResult RemoveVehicleByRegistration(string registrationNumber);
 
     /// <summary>
     /// Tries to park every vehicle in the list and reports the outcome.
     /// </summary>
-    OperationResult Populate(IEnumerable<T> vehicles);
+    PopulateResult Populate(IEnumerable<T> vehicles);
 
     /// <summary>
     /// Returns a read-only snapshot of the parked vehicles.

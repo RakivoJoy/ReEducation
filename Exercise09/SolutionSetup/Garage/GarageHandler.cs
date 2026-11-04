@@ -2,6 +2,7 @@ using SolutionSetup.Persistence;
 using SolutionSetup.Vehicles;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SolutionSetup;
 
@@ -48,13 +49,13 @@ public class GarageHandler : IHandler
     }
 
     /// <inheritdoc/>
-    public OperationResult PopulateGarage() => RequireGarage().Populate(_sampleData.CreateSampleVehicles());
+    public OperationResult PopulateGarage() => ToOperationResult(RequireGarage().Populate(_sampleData.CreateSampleVehicles()));
 
     /// <inheritdoc/>
-    public OperationResult ParkVehicle(IVehicle vehicle) => RequireGarage().AddVehicle(vehicle);
+    public OperationResult ParkVehicle(IVehicle vehicle) => ToOperationResult(RequireGarage().AddVehicle(vehicle), vehicle.RegistrationNumber);
 
     /// <inheritdoc/>
-    public OperationResult RemoveVehicle(string registrationNumber) => RequireGarage().RemoveVehicleByRegistration(registrationNumber);
+    public OperationResult RemoveVehicle(string registrationNumber) => ToOperationResult(RequireGarage().RemoveVehicleByRegistration(registrationNumber));
 
     /// <inheritdoc/>
     public IReadOnlyList<IVehicle> ListVehicles() => RequireGarage().ListAllVehicles();
@@ -88,4 +89,31 @@ public class GarageHandler : IHandler
     {
         return _garage ?? throw new InvalidOperationException("No garage has been created yet.");
     }
+
+    private static OperationResult ToOperationResult(ParkResult result, string registrationNumber) =>
+        result.Parked
+            ? OperationResult.Ok($"Vehicle {registrationNumber} parked.")
+            : OperationResult.Fail(ParkFailureMessage(result.Reason!.Value, registrationNumber));
+
+    private static OperationResult ToOperationResult(RemoveResult result) =>
+        result.Removed
+            ? OperationResult.Ok($"Vehicle {result.RegistrationNumber} removed.")
+            : OperationResult.Fail($"No vehicle with registration number {result.RegistrationNumber} was found.");
+
+    private static OperationResult ToOperationResult(PopulateResult result)
+    {
+        string message = $"Parked {result.Parked} of {result.Total} vehicles.";
+        if (result.Failures.Count == 0)
+        {
+            return OperationResult.Ok(message);
+        }
+
+        IEnumerable<string> lines = result.Failures.Select(failure => $"{failure.RegistrationNumber}: {ParkFailureMessage(failure.Reason, failure.RegistrationNumber)}");
+        return OperationResult.Fail(message + Environment.NewLine + string.Join(Environment.NewLine, lines));
+    }
+
+    private static string ParkFailureMessage(ParkFailureReason reason, string registrationNumber) =>
+        reason == ParkFailureReason.Duplicate
+            ? $"A vehicle with registration number {registrationNumber} is already parked."
+            : "The garage is full.";
 }

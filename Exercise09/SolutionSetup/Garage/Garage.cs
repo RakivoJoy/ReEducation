@@ -42,81 +42,70 @@ public class Garage<T> : IGarage<T> where T : IVehicle
     /// <summary>
     /// Parks a vehicle in the garage.
     /// </summary>
-    /// <returns>A failed result if the registration number is already parked or the garage is full; otherwise a success result.</returns>
+    /// <returns>A failed result with the reason if the registration number is already parked or the garage is full; otherwise a success result.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="vehicle"/> is null.</exception>
-    public OperationResult AddVehicle(T vehicle)
+    public ParkResult AddVehicle(T vehicle)
     {
         ArgumentNullException.ThrowIfNull(vehicle);
 
         if (FindByRegistration(vehicle.RegistrationNumber) is not null)
         {
-            return OperationResult.Fail($"A vehicle with registration number {vehicle.RegistrationNumber} is already parked.");
+            return ParkResult.Failure(ParkFailureReason.Duplicate);
         }
 
         if (_vehicles.Count >= Capacity)
         {
-            return OperationResult.Fail("The garage is full.");
+            return ParkResult.Failure(ParkFailureReason.Full);
         }
 
         _vehicles.Add(vehicle);
-        return OperationResult.Ok($"Vehicle {vehicle.RegistrationNumber} parked.");
+        return ParkResult.Success();
     }
-
-    /// <summary>
-    /// Returns the message reported when no parked vehicle has the given registration number.
-    /// </summary>
-    public static string NotFoundMessage(string registrationNumber) => $"No vehicle with registration number {registrationNumber} was found.";
 
     /// <summary>
     /// Removes the vehicle with the given registration number (case-insensitive) and frees its space.
     /// </summary>
-    /// <returns>A failed result if no such vehicle is parked; otherwise a success result.</returns>
-    public OperationResult RemoveVehicleByRegistration(string registrationNumber)
+    /// <returns>A result that reports whether a vehicle was removed.</returns>
+    public RemoveResult RemoveVehicleByRegistration(string registrationNumber)
     {
         T? vehicle = FindByRegistration(registrationNumber);
         if (vehicle is null)
         {
-            return OperationResult.Fail(NotFoundMessage(registrationNumber));
+            return new RemoveResult(false, registrationNumber);
         }
 
         _vehicles.Remove(vehicle);
-        return OperationResult.Ok($"Vehicle {registrationNumber} removed.");
+        return new RemoveResult(true, registrationNumber);
     }
 
     /// <summary>
     /// Tries to park every vehicle in the list. Vehicles that cannot be parked (duplicate or no space) are skipped.
     /// </summary>
-    /// <returns>A success result if all vehicles were parked; otherwise a failed result. The message states how many were parked and why each remaining vehicle was not.</returns>
+    /// <returns>The number of vehicles attempted and parked, and the failures with their reasons.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="vehicles"/> is null.</exception>
-    public OperationResult Populate(IEnumerable<T> vehicles)
+    public PopulateResult Populate(IEnumerable<T> vehicles)
     {
         ArgumentNullException.ThrowIfNull(vehicles);
 
         int total = 0;
         int parked = 0;
-        List<string> failures = [];
+        List<(string RegistrationNumber, ParkFailureReason Reason)> failures = [];
 
         foreach (T vehicle in vehicles)
         {
             total++;
-            OperationResult result = AddVehicle(vehicle);
-            if (result.Success)
+            ParkResult result = AddVehicle(vehicle);
+            if (result.Parked)
             {
                 parked++;
             }
             else
             {
-                failures.Add($"{vehicle.RegistrationNumber}: {result.Message}");
+                failures.Add((vehicle.RegistrationNumber, result.Reason!.Value));
             }
         }
 
-        string message = $"Parked {parked} of {total} vehicles.";
-        if (failures.Count == 0)
-        {
-            return OperationResult.Ok(message);
-        }
-
-        return OperationResult.Fail(message + Environment.NewLine + string.Join(Environment.NewLine, failures));
+        return new PopulateResult(total, parked, failures);
     }
 
     /// <summary>

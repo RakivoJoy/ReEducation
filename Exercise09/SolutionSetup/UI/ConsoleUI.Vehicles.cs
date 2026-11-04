@@ -150,7 +150,7 @@ public partial class ConsoleUI
         IVehicle? vehicle = _handler.FindVehicle(registrationNumber);
         if (vehicle is null)
         {
-            _output.WriteLine(Garage<IVehicle>.NotFoundMessage(registrationNumber));
+            _output.WriteLine(ConsoleUIText.VehicleNotFound(registrationNumber));
             return;
         }
 

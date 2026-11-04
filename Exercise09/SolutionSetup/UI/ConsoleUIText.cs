@@ -20,6 +20,8 @@ public static class ConsoleUIText
     public const string EnterRegistrationNumber = "Enter registration number:";
     public const string EnterRegistrationNumberToRemove = "Enter registration number to remove:";
     public const string EnterRegistrationNumberToFind = "Enter registration number to find:";
+
+    public static string VehicleNotFound(string registrationNumber) => $"No vehicle with registration number {registrationNumber} was found.";
     public const string EnterColor = "Enter color:";
     public const string EnterNumberOfWheels = "Enter number of wheels:";
     public const string InvalidNumberOfWheels = "Invalid number of wheels. Please enter a whole number.";

@@ -53,7 +53,7 @@ namespace SolutionSetupTests
             var added = garage.AddVehicle(new Car("ABC123", "Black", 4, FuelType.Gasoline));
 
             // Assert
-            Assert.True(added.Success);
+            Assert.True(added.Parked);
             Assert.All(garage.ListAllVehicles(), vehicle => Assert.IsType<Car>(vehicle));
         }
 
@@ -69,9 +69,9 @@ namespace SolutionSetupTests
             var boat = garage.AddVehicle(new Boat("ABC127", "White", 0, 12.5));
 
             // Assert
-            Assert.True(car.Success);
-            Assert.True(motorcycle.Success);
-            Assert.True(boat.Success);
+            Assert.True(car.Parked);
+            Assert.True(motorcycle.Parked);
+            Assert.True(boat.Parked);
             Assert.Equal(3, garage.ListAllVehicles().Count);
         }
 
@@ -87,9 +87,9 @@ namespace SolutionSetupTests
             var full = garage.AddVehicle(new Motorcycle("ABC124", "Pink", 3, 600));
 
             // Assert
-            Assert.True(first.Success);
-            Assert.False(duplicate.Success);
-            Assert.False(full.Success);
+            Assert.True(first.Parked);
+            Assert.False(duplicate.Parked);
+            Assert.False(full.Parked);
             Assert.Single(garage.ListAllVehicles());
         }
 
@@ -139,7 +139,7 @@ namespace SolutionSetupTests
             var result = garage.Populate(Generate());
 
             // Assert
-            Assert.True(result.Success);
+            Assert.Empty(result.Failures);
             Assert.Equal(2, garage.ListAllVehicles().Count);
         }
 
@@ -153,8 +153,9 @@ namespace SolutionSetupTests
             var result = garage.Populate(Array.Empty<IVehicle>());
 
             // Assert
-            Assert.True(result.Success);
-            Assert.Equal("Parked 0 of 0 vehicles.", result.Message);
+            Assert.Equal(0, result.Total);
+            Assert.Equal(0, result.Parked);
+            Assert.Empty(result.Failures);
             Assert.Empty(garage.ListAllVehicles());
         }
 
@@ -291,8 +292,8 @@ namespace SolutionSetupTests
             var removed = garage.RemoveVehicleByRegistration("abc123");
 
             // Assert
-            Assert.True(removed.Success);
-            Assert.True(garage.AddVehicle(new Car("DEF456", "Red", 4, FuelType.Diesel)).Success);
+            Assert.True(removed.Removed);
+            Assert.True(garage.AddVehicle(new Car("DEF456", "Red", 4, FuelType.Diesel)).Parked);
         }
 
         [Fact]
@@ -302,7 +303,7 @@ namespace SolutionSetupTests
             var garage = MixedGarage();
 
             // Act & Assert
-            Assert.False(garage.RemoveVehicleByRegistration("ZZZ999").Success);
+            Assert.False(garage.RemoveVehicleByRegistration("ZZZ999").Removed);
             Assert.Equal(4, garage.ListAllVehicles().Count);
         }
 
@@ -347,8 +348,8 @@ namespace SolutionSetupTests
             });
 
             // Assert
-            Assert.False(result.Success);
-            Assert.StartsWith("Parked 2 of 4 vehicles.", result.Message);
+            Assert.Equal(2, result.Parked);
+            Assert.Equal(4, result.Total);
         }
 
         [Fact]

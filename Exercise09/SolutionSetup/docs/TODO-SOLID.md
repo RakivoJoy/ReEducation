@@ -28,8 +28,8 @@ Suggestion: extract an input reader (prompt + validate + parse), a vehicle-creat
 
 ### Garage mixes storage, rules, user messages and reporting[Prio:High, Effort:M, Impact:M]
 
-`Garage<T>` holds the list, enforces capacity and uniqueness, builds user-facing message strings (`"The garage is full."`, `NotFoundMessage`), runs batch `Populate`, and does reporting (`ListVehicleCountByType`) and searching. The UI calls the static `Garage<IVehicle>.NotFoundMessage`, so presentation text lives in the domain.
-Suggestion: have `Garage` return a typed result or reason (see the richer results item in TODO-suggestions.md) and let the UI or handler turn it into text. Consider moving `Populate` and the per-type counting to the handler or a query helper.
+Status: Done. `Garage<T>` now returns typed results (`ParkResult`, `RemoveResult`, `PopulateResult` in `GarageResults.cs`) with no user-facing text. `GarageHandler` maps them to `OperationResult` messages, and the UI owns the not-found text in `ConsoleUIText.VehicleNotFound`.
+Remaining: `Populate` and the per-type counting (`ListVehicleCountByType`) still live in `Garage<T>`; they could move to the handler or a query helper later.
 
 ### SearchCriteria is a filter, a text parser and an error-message source[Prio:Medium, Effort:M, Impact:M]
 

@@ -49,10 +49,14 @@ public static class GarageMapper
         Garage<IVehicle> garage = new(dto.Capacity);
         foreach (VehicleDto vehicleDto in dto.Vehicles)
         {
-            OperationResult result = garage.AddVehicle(ToVehicle(vehicleDto));
-            if (!result.Success)
+            IVehicle vehicle = ToVehicle(vehicleDto);
+            ParkResult result = garage.AddVehicle(vehicle);
+            if (!result.Parked)
             {
-                throw new InvalidDataException(result.Message);
+                string reason = result.Reason == ParkFailureReason.Duplicate
+                    ? $"A vehicle with registration number {vehicle.RegistrationNumber} is already parked."
+                    : "The garage is full.";
+                throw new InvalidDataException(reason);
             }
         }
 
