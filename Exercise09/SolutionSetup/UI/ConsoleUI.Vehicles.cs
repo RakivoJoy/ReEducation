@@ -95,13 +95,15 @@ public partial class ConsoleUI
 
     private VehicleTypeInfo[] BuildVehicleTypes() =>
     [
-        new(VehicleType.Motorcycle, (reg, color, wheels, size) => new Motorcycle(reg, color, wheels, ReadIntPrompt("Enter cylinder volume (cc):"), size)),
-        new(VehicleType.Airplane, (reg, color, wheels, size) => new Airplane(reg, color, wheels, ReadIntPrompt("Enter number of engines:"), size)),
-        new(VehicleType.Car, (reg, color, wheels, size) => new Car(reg, color, wheels, ReadFuelTypePrompt(), size)),
-        new(VehicleType.Bus, (reg, color, wheels, size) => new Bus(reg, color, wheels, ReadIntPrompt("Enter number of seats:"), size)),
-        new(VehicleType.Boat, (reg, color, wheels, size) => new Boat(reg, color, wheels, ReadDoublePrompt("Enter length (m):"), size)),
-        new(VehicleType.Truck, (reg, color, wheels, size) => new Truck(reg, color, wheels, ReadIntPrompt("Enter load capacity (kg):"), size))
+        new(VehicleType.Motorcycle, (reg, color, wheels, size) => VehicleFactory.Create(VehicleType.Motorcycle, reg, color, wheels, size, Details(VehicleFactory.CylinderVolumeKey, ReadIntPrompt("Enter cylinder volume (cc):")))),
+        new(VehicleType.Airplane, (reg, color, wheels, size) => VehicleFactory.Create(VehicleType.Airplane, reg, color, wheels, size, Details(VehicleFactory.NumberOfEnginesKey, ReadIntPrompt("Enter number of engines:")))),
+        new(VehicleType.Car, (reg, color, wheels, size) => VehicleFactory.Create(VehicleType.Car, reg, color, wheels, size, Details(VehicleFactory.FuelTypeKey, ReadFuelTypePrompt()))),
+        new(VehicleType.Bus, (reg, color, wheels, size) => VehicleFactory.Create(VehicleType.Bus, reg, color, wheels, size, Details(VehicleFactory.NumberOfSeatsKey, ReadIntPrompt("Enter number of seats:")))),
+        new(VehicleType.Boat, (reg, color, wheels, size) => VehicleFactory.Create(VehicleType.Boat, reg, color, wheels, size, Details(VehicleFactory.LengthKey, ReadDoublePrompt("Enter length (m):")))),
+        new(VehicleType.Truck, (reg, color, wheels, size) => VehicleFactory.Create(VehicleType.Truck, reg, color, wheels, size, Details(VehicleFactory.LoadCapacityKey, ReadIntPrompt("Enter load capacity (kg):"))))
     ];
+
+    private static Dictionary<string, object> Details(string key, object value) => new() { [key] = value };
 
     /// <summary>
     /// Menu option 4. Asks for a registration number and removes the matching vehicle.
