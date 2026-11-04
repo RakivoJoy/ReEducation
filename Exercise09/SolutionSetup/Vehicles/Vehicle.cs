@@ -1,6 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.RegularExpressions;
 
 namespace SolutionSetup.Vehicles;
 
@@ -9,10 +7,6 @@ namespace SolutionSetup.Vehicles;
 /// </summary>
 public abstract class Vehicle : IVehicle
 {
-    private static readonly Regex RegistrationNumberPattern = new("^[A-HJ-PR-UW-Z]{3}[0-9]{2}[0-9A-HJ-PR-UW-Z]{1}$");
-
-    public const string RegistrationNumberRule = "three letters (excluding I, Q, V) followed by 3 numbers or 2 numbers and 1 letter. ABC123 or ABC12D. ";
-
     /// <summary>Unique registration number in ABC123 or ABC12D. Excluding I, Q, V. Set once and stored trimmed and uppercase.</summary>
     public string RegistrationNumber { get; }
 
@@ -46,7 +40,7 @@ public abstract class Vehicle : IVehicle
 
         Type = type;
         int size = ValidateParkingSize(parkingSize);
-        RegistrationNumber = NormalizeRegistrationNumberOrThrow(registrationNumber);
+        RegistrationNumber = SolutionSetup.Vehicles.RegistrationNumber.NormalizeOrThrow(registrationNumber);
         Color = VehicleColors.Normalize(color);
         NumberOfWheels = numberOfWheels;
         ParkingSize = size;
@@ -58,32 +52,6 @@ public abstract class Vehicle : IVehicle
         int size = parkingSize ?? minSize;
         ThrowIfOutOfRange(size, minSize, maxSize, "Parking size", string.Empty, nameof(parkingSize));
         return size;
-    }
-
-    private static string NormalizeRegistrationNumberOrThrow(string registrationNumber)
-    {
-        if (!TryNormalizeRegistrationNumber(registrationNumber, out string? normalizedRegistrationNumber))
-        {
-            throw new ArgumentException($"Registration number '{registrationNumber}' must be {RegistrationNumberRule}.", nameof(registrationNumber));
-        }
-
-        return normalizedRegistrationNumber;
-    }
-
-    /// <summary>
-    /// Tries to normalize a registration number (trimmed and uppercase) that matches the ABC123 or ABC12D format.
-    /// </summary>
-    public static bool TryNormalizeRegistrationNumber(string? registrationNumber, [NotNullWhen(true)] out string? normalized)
-    {
-        string candidate = registrationNumber?.Trim().ToUpperInvariant() ?? string.Empty;
-        if (RegistrationNumberPattern.IsMatch(candidate))
-        {
-            normalized = candidate;
-            return true;
-        }
-
-        normalized = null;
-        return false;
     }
 
     /// <summary>

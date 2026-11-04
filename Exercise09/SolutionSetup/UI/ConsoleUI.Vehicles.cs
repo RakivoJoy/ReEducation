@@ -61,8 +61,8 @@ public partial class ConsoleUI
     {
         return ReadValidated<string>(
             ConsoleUIText.EnterRegistrationNumber,
-            line => $"Invalid registration number '{line}'. Use {Vehicle.RegistrationNumberRule}.",
-            (string text, out string value) => Vehicle.TryNormalizeRegistrationNumber(text, out value));
+            line => $"Invalid registration number '{line}'. Use {RegistrationNumber.Rule}.",
+            (string text, out string value) => RegistrationNumber.TryNormalize(text, out value));
     }
 
     private string ReadColor()

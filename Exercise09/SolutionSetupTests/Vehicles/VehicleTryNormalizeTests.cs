@@ -10,7 +10,7 @@ namespace SolutionSetupTests.Vehicles
         public void TryNormalizeRegistrationNumber_ReturnsTrue_ForValidFormat(string input, string expected)
         {
             // Arrange & Act
-            bool result = Vehicle.TryNormalizeRegistrationNumber(input, out string? normalized);
+            bool result = RegistrationNumber.TryNormalize(input, out string? normalized);
 
             // Assert
             Assert.True(result);
@@ -26,7 +26,7 @@ namespace SolutionSetupTests.Vehicles
         public void TryNormalizeRegistrationNumber_ReturnsFalse_ForInvalidFormat(string? input)
         {
             // Arrange & Act
-            bool result = Vehicle.TryNormalizeRegistrationNumber(input, out string? normalized);
+            bool result = RegistrationNumber.TryNormalize(input, out string? normalized);
 
             // Assert
             Assert.False(result);

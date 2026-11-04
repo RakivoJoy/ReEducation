@@ -48,10 +48,10 @@ Suggestion: keep it as a facade, and move sample data behind an interface (see t
 One class does JSON options, directory creation, temp file, `.bak` copy, move, cleanup, and error-to-result mapping.
 Suggestion: if more formats or locations are added, separate "how to serialize" from "how to write a file safely".
 
-### Vehicle validates registration, color, size and formats its own description[Prio:Low, Effort:M, Impact:S]
+### Vehicle validates registration, color, size and formats its own description[Prio:Low, Effort:M, Impact:S] - Partly done
 
-`Vehicle` contains the registration regex and normalization, parking size validation, a range-check helper and the `ToString` format. Display formatting and validation rules are separate reasons to change.
-Suggestion: move registration rules to a small `RegistrationNumber` helper or value type, and leave formatting to a presenter if more output formats appear.
+Registration rules (regex, normalization, error text) moved to the static `RegistrationNumber` helper in `Vehicles/RegistrationNumber.cs`. `Vehicle` keeps parking-size validation, color validation, the range helper and the `ToString` format.
+Suggestion: leave formatting to a presenter if more output formats appear.
 
 ---
 
