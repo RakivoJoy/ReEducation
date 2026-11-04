@@ -6,13 +6,13 @@
 
 | Field  | Values | Meaning |
 |--------|--------|---------|
-| Prio   | 1-4    | Priority. 4 = do first (or most valuable, explain first). 1 = least. |
-| Effort | Low / Medium / High | Estimated work to complete the item. |
-| Impact | Low / Medium / High | Effect on the code, the user, or future work. |
+| Prio   | Low / Medium / High / Critical | Priority. Critical = do first (or most valuable, explain first). Low = least. |
+| Effort | S / M / L | Estimated work to complete the item (S = small, M = medium, L = large). |
+| Impact | S / M / L | Effect on the code, the user, or future work (S = small, M = medium, L = large). |
 
 Each item heading uses the format:
 
-`### [Prio:X, Effort:Y, Impact:Z] Short title`
+`### Short title[Prio:X, Effort:Y, Impact:Z]`
 
 Items without a rating (for example decisions or context sections) are marked as such in their heading.
 
@@ -20,13 +20,13 @@ Items without a rating (for example decisions or context sections) are marked as
 
 ## <Area or file group>
 
-### [Prio:4, Effort:Low, Impact:High] <Short title of the item>
+### <Short title of the item>[Prio:Critical, Effort:S, Impact:L]
 
 <What the problem or idea is, and where it occurs (file, class, method).>
 
 <Why it matters, or the proposed direction. Keep it to a few sentences.>
 
-### [Prio:2, Effort:Medium, Impact:Medium] <Another item title>
+### <Another item title>[Prio:Medium, Effort:M, Impact:M]
 
 <Description.>
 
@@ -34,6 +34,6 @@ Items without a rating (for example decisions or context sections) are marked as
 
 ## <Next area or file group>
 
-### [Prio:1, Effort:Low, Impact:Low] <Item title>
+### <Item title>[Prio:Low, Effort:S, Impact:S]
 
 <Description.>

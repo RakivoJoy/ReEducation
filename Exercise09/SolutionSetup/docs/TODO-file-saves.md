@@ -31,7 +31,7 @@ Subclass-specific fields: Car `FuelType`, Bus `NumberOfSeats`, Airplane `NumberO
 
 ## 2. Design
 
-### [Prio:4, Effort:Medium, Impact:High] DTOs, storage interface and result handling
+### DTOs, storage interface and result handling[Prio:Critical, Effort:M, Impact:L]
 
 - Vehicles are immutable with validating constructors, so do NOT deserialize straight into `Vehicle`. Use DTO records (`GarageDto`, `VehicleDto` with a `type` discriminator) and map to and from domain types. Loading then re-validates via the constructors, so invalid or hand-edited files fail cleanly.
 - New folder `Persistence/` in `SolutionSetup`:
@@ -48,7 +48,7 @@ Subclass-specific fields: Car `FuelType`, Bus `NumberOfSeats`, Airplane `NumberO
 
 ## 3. Safe writing
 
-### [Prio:3, Effort:Low, Impact:High] Write to a temp file and replace atomically
+### Write to a temp file and replace atomically[Prio:High, Effort:S, Impact:L]
 
 - Write to `<file>.tmp`, then `File.Move(overwrite: true)`, so a crash does not corrupt the existing save.
 - Create the directory if missing.
@@ -59,7 +59,7 @@ Subclass-specific fields: Car `FuelType`, Bus `NumberOfSeats`, Airplane `NumberO
 
 ## 4. UI integration
 
-### [Prio:2, Effort:Medium, Impact:Medium] Save and load menu options
+### Save and load menu options[Prio:Medium, Effort:M, Impact:M]
 
 - Menu options: Save garage, Load garage.
 - Optional: offer to load the last save at startup, and to save on exit.
@@ -71,7 +71,7 @@ Subclass-specific fields: Car `FuelType`, Bus `NumberOfSeats`, Airplane `NumberO
 
 ## 5. Tests (xUnit)
 
-### [Prio:4, Effort:Medium, Impact:High] Serial file IO tests and placeholder test files
+### Serial file IO tests and placeholder test files[Prio:Critical, Effort:M, Impact:L]
 
 Project: `SolutionSetupTests`, new folder `Persistence/`.
 

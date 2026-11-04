@@ -9,11 +9,11 @@ Rating legend: see [TODO-template.md](TODO-template.md).
 
 ## Garage\Garage.cs
 
-### [Prio:2, Effort:Low, Impact:Medium] Simplify Populate
+### Simplify Populate[Prio:Medium, Effort:S, Impact:M]
 
 `Populate` keeps three accumulators (total, parked, failures) and builds the message at the end. Collect the `OperationResult` per vehicle in a list, then derive the counts with `Count()`. Fewer mutable variables to follow.
 
-### [Prio:1, Effort:Low, Impact:Low] Use shorter collection expressions
+### Use shorter collection expressions[Prio:Low, Effort:S, Impact:S]
 
 `ListAllVehicles` uses `new List<T>(_vehicles).AsReadOnly()`; `[.. _vehicles]` is shorter. The explicit `IEnumerable.GetEnumerator` forwarders can use expression bodies like the rest of the file.
 
@@ -21,11 +21,11 @@ Rating legend: see [TODO-template.md](TODO-template.md).
 
 ## Garage\SearchCriteria.cs
 
-### [Prio:2, Effort:Medium, Impact:Medium] Make the Definitions table easier to read
+### Make the Definitions table easier to read[Prio:Medium, Effort:M, Impact:M]
 
 Each entry uses four lambdas with object casts (`(string)value`, `(int)value`). Consider a small generic `Definition<T>` (or a helper that builds an entry from a parser and a match function) so casts are in one place and each row is shorter.
 
-### [Prio:1, Effort:Low, Impact:Low] Rename the two Get overloads
+### Rename the two Get overloads[Prio:Low, Effort:S, Impact:S]
 
 `Get<T>` (structs) and `Get` (string) differ only by type constraint. Names like `GetValue<T>` and `GetText` make call sites easier to understand.
 
@@ -33,6 +33,6 @@ Each entry uses four lambdas with object casts (`(string)value`, `(int)value`). 
 
 ## Vehicles\Vehicle.cs and subclasses
 
-### [Prio:2, Effort:Medium, Impact:Medium] Remove repeated subclass boilerplate
+### Remove repeated subclass boilerplate[Prio:Medium, Effort:M, Impact:M]
 
 Subclasses such as `Boat` repeat the same shape: Min/Max constants, a `ThrowIfOutOfRange` call with a description, unit and `paramName`, and a `Details` override. `ThrowIfOutOfRange` takes six arguments; consider an overload without unit for the common case, and check the other subclasses (`Bus`, `Truck`, `Motorcycle`, `Airplane`) for the same pattern.
