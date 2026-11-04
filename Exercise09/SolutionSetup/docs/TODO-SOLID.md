@@ -130,10 +130,9 @@ Suggestion: move that creation behind a factory, or accept the garage from the c
 Status: Partly done. `GarageHandler` receives an `ISampleDataProvider`, so tests can supply their own sample set. `SampleData`, `GarageMapper`, `ParkingSizeLimits`, `VehicleColors` and `Garage<T>.MaxCapacity` are still static. Pure constant tables can stay static.
 Suggestion: wrap the ones that vary behind small interfaces and inject them. Leave pure constant tables static.
 
-### UI builds domain objects and depends on concrete vehicle classes[Prio:Medium, Effort:L, Impact:M]
+### UI builds domain objects and depends on concrete vehicle classes[Prio:Medium, Effort:L, Impact:M] - Done
 
-`ConsoleUI` constructs `Car`, `Bus`, `Boat`, ... directly and hands an `IVehicle` to `IHandler.ParkVehicle`. The UI therefore knows every domain subclass and its constructor rules.
-Suggestion: pass a request object (type, registration, color, wheels, size, type-specific values) to the handler and let a domain-side factory create the vehicle. The UI then depends only on abstractions.
+`ConsoleUI` now builds a `VehicleRequest` (type, registration, color, wheels, size, type-specific details) and passes it to `IVehicleOperations.ParkVehicle`. `GarageHandler` creates the concrete vehicle through `VehicleFactory`, so the UI no longer references concrete vehicle subclasses or constructors.
 
 ---
 

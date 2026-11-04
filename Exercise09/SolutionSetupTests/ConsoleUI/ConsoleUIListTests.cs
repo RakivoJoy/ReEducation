@@ -13,7 +13,7 @@ namespace SolutionSetupTests
             using var output = new StringWriter();
             var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             handler.CreateGarage(5);
-            handler.ParkVehicle(new Car("ABC123", "Black", 4, FuelType.Gasoline));
+            handler.ParkVehicle(TestVehicles.CarRequest("ABC123"));
             var ui = new ConsoleUI(new StringReader(""), output, handler);
 
             // Act
@@ -62,7 +62,7 @@ namespace SolutionSetupTests
             using var output = new StringWriter();
             var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             handler.CreateGarage(5);
-            handler.ParkVehicle(new Car("ABC123", "Black", 4, FuelType.Gasoline));
+            handler.ParkVehicle(TestVehicles.CarRequest("ABC123"));
             var ui = new ConsoleUI(new StringReader(""), output, handler);
 
             // Act

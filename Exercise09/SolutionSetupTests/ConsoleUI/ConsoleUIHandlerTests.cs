@@ -18,7 +18,7 @@ namespace SolutionSetupTests
             }
 
             public OperationResult PopulateGarage() => OperationResult.Ok("fake populated");
-            public OperationResult ParkVehicle(IVehicle vehicle) => OperationResult.Ok($"fake parked {vehicle.RegistrationNumber}");
+            public OperationResult ParkVehicle(VehicleRequest request) => OperationResult.Ok($"fake parked {request.RegistrationNumber}");
             public OperationResult RemoveVehicle(string registrationNumber) => OperationResult.Ok("fake removed");
             public IReadOnlyList<IVehicle> ListVehicles() => [];
             public Dictionary<VehicleType, int> ListVehicleCounts() => [];

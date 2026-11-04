@@ -52,7 +52,11 @@ public class GarageHandler : IHandler
     public OperationResult PopulateGarage() => ToOperationResult(RequireGarage().Populate(_sampleData.CreateSampleVehicles()));
 
     /// <inheritdoc/>
-    public OperationResult ParkVehicle(IVehicle vehicle) => ToOperationResult(RequireGarage().AddVehicle(vehicle), vehicle.RegistrationNumber);
+    public OperationResult ParkVehicle(VehicleRequest request)
+    {
+        Vehicle vehicle = VehicleFactory.Create(request.Type, request.RegistrationNumber, request.Color, request.NumberOfWheels, request.ParkingSize, request.Details);
+        return ToOperationResult(RequireGarage().AddVehicle(vehicle), vehicle.RegistrationNumber);
+    }
 
     /// <inheritdoc/>
     public OperationResult RemoveVehicle(string registrationNumber) => ToOperationResult(RequireGarage().RemoveVehicleByRegistration(registrationNumber));

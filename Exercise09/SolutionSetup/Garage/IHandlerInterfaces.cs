@@ -23,8 +23,8 @@ public interface IGarageLifecycle
 /// </summary>
 public interface IVehicleOperations
 {
-    /// <summary>Menu option 3. Parks the given vehicle.</summary>
-    OperationResult ParkVehicle(IVehicle vehicle);
+    /// <summary>Menu option 3. Creates a vehicle from the request and parks it.</summary>
+    OperationResult ParkVehicle(VehicleRequest request);
 
     /// <summary>Menu option 4. Removes the vehicle with the given registration number.</summary>
     OperationResult RemoveVehicle(string registrationNumber);

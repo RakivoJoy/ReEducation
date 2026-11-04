@@ -19,7 +19,7 @@ public class IHandlerInterfaceSegregationTests
 
         // Act
         OperationResult created = lifecycle.CreateGarage(3);
-        OperationResult parked = operations.ParkVehicle(TestVehicles.CreateCar("XYZ111"));
+        OperationResult parked = operations.ParkVehicle(TestVehicles.CarRequest("XYZ111"));
         IReadOnlyList<IVehicle> vehicles = queries.ListVehicles();
         OperationResult saved = persistence.SaveGarage();
 

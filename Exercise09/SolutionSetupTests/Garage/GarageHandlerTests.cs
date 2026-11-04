@@ -60,7 +60,7 @@ namespace SolutionSetupTests
             // Arrange
             var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             handler.CreateGarage(3);
-            handler.ParkVehicle(CreateCar("ABC123"));
+            handler.ParkVehicle(CarRequest("ABC123"));
 
             // Act
             handler.CreateGarage(3);
@@ -77,7 +77,7 @@ namespace SolutionSetupTests
             handler.CreateGarage(2);
 
             // Act
-            var result = handler.ParkVehicle(CreateCar("ABC123"));
+            var result = handler.ParkVehicle(CarRequest("ABC123"));
             var found = handler.FindVehicle("abc123");
 
             // Assert
@@ -91,10 +91,10 @@ namespace SolutionSetupTests
             // Arrange
             var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             handler.CreateGarage(1);
-            handler.ParkVehicle(CreateCar("ABC123"));
+            handler.ParkVehicle(CarRequest("ABC123"));
 
             // Act
-            var result = handler.ParkVehicle(CreateCar("ABC124"));
+            var result = handler.ParkVehicle(CarRequest("ABC124"));
 
             // Assert
             Assert.False(result.Success);
@@ -107,7 +107,7 @@ namespace SolutionSetupTests
             // Arrange
             var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             handler.CreateGarage(2);
-            handler.ParkVehicle(CreateCar("ABC123"));
+            handler.ParkVehicle(CarRequest("ABC123"));
 
             // Act
             var result = handler.RemoveVehicle("ABC123");
@@ -155,8 +155,8 @@ namespace SolutionSetupTests
             // Arrange
             var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             handler.CreateGarage(3);
-            handler.ParkVehicle(CreateCar("ABC123"));
-            handler.ParkVehicle(CreateCar("ABC124"));
+            handler.ParkVehicle(CarRequest("ABC123"));
+            handler.ParkVehicle(CarRequest("ABC124"));
 
             // Act
             var counts = handler.ListVehicleCounts();
@@ -171,8 +171,8 @@ namespace SolutionSetupTests
             // Arrange
             var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             handler.CreateGarage(3);
-            handler.ParkVehicle(new Truck("TRK001", "Blue", 6, 9000));
-            handler.ParkVehicle(CreateCar("ABC123"));
+            handler.ParkVehicle(TruckRequest("TRK001", "Blue", 6, 9000));
+            handler.ParkVehicle(CarRequest("ABC123"));
 
             // Act
             var results = handler.SearchVehicles(new SearchCriteria { Type = VehicleType.Truck });
@@ -203,7 +203,7 @@ namespace SolutionSetupTests
 
             // Act & Assert
             Assert.Throws<InvalidOperationException>(() => handler.PopulateGarage());
-            Assert.Throws<InvalidOperationException>(() => handler.ParkVehicle(CreateCar("ABC123")));
+            Assert.Throws<InvalidOperationException>(() => handler.ParkVehicle(CarRequest("ABC123")));
             Assert.Throws<InvalidOperationException>(() => handler.RemoveVehicle("ABC123"));
             Assert.Throws<InvalidOperationException>(() => handler.ListVehicles());
             Assert.Throws<InvalidOperationException>(() => handler.ListVehicleCounts());
@@ -230,7 +230,7 @@ namespace SolutionSetupTests
             var storage = new FakeGarageStorage();
             var handler = new GarageHandler(storage, new SampleDataProvider());
             handler.CreateGarage(4);
-            handler.ParkVehicle(CreateCar("ABC123"));
+            handler.ParkVehicle(CarRequest("ABC123"));
 
             // Act
             OperationResult result = handler.SaveGarage();
@@ -283,7 +283,7 @@ namespace SolutionSetupTests
             var storage = new FakeGarageStorage { LoadResult = GarageLoadResult.Fail("file missing") };
             var handler = new GarageHandler(storage, new SampleDataProvider());
             handler.CreateGarage(2);
-            handler.ParkVehicle(CreateCar("ABC123"));
+            handler.ParkVehicle(CarRequest("ABC123"));
 
             // Act
             OperationResult result = handler.LoadGarage();
