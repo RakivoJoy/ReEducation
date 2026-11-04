@@ -313,11 +313,11 @@ namespace SolutionSetupTests
         private sealed class FakeGarageStorage : IGarageStorage
         {
             public int SaveCount { get; private set; }
-            public Garage<IVehicle>? SavedGarage { get; private set; }
+            public IGarage<IVehicle>? SavedGarage { get; private set; }
             public OperationResult SaveResult { get; init; } = OperationResult.Ok("saved");
             public GarageLoadResult LoadResult { get; init; } = GarageLoadResult.Fail("no load configured");
 
-            public Task<OperationResult> SaveAsync(Garage<IVehicle> garage, CancellationToken cancellationToken = default)
+            public Task<OperationResult> SaveAsync(IGarage<IVehicle> garage, CancellationToken cancellationToken = default)
             {
                 SaveCount++;
                 SavedGarage = garage;

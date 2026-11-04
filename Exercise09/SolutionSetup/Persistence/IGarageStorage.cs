@@ -12,7 +12,7 @@ public interface IGarageStorage
     /// <summary>
     /// Saves the garage, replacing any previous save.
     /// </summary>
-    Task<OperationResult> SaveAsync(Garage<IVehicle> garage, CancellationToken cancellationToken = default);
+    Task<OperationResult> SaveAsync(IGarage<IVehicle> garage, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Loads the saved garage.

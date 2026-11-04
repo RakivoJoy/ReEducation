@@ -8,9 +8,9 @@ namespace SolutionSetupTests;
 
 internal sealed class InMemoryGarageStorage : IGarageStorage
 {
-    private Garage<IVehicle>? _saved;
+    private IGarage<IVehicle>? _saved;
 
-    public Task<OperationResult> SaveAsync(Garage<IVehicle> garage, CancellationToken cancellationToken = default)
+    public Task<OperationResult> SaveAsync(IGarage<IVehicle> garage, CancellationToken cancellationToken = default)
     {
         _saved = garage;
         return Task.FromResult(OperationResult.Ok("saved in memory"));

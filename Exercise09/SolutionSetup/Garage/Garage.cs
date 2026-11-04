@@ -10,7 +10,7 @@ namespace SolutionSetup;
 /// A garage that parks vehicles in a fixed number of spaces. Parked vehicles are stored in a list
 /// whose size never exceeds the capacity. Registration numbers are unique and compared ignoring case.
 /// </summary>
-public class Garage<T> : IEnumerable<T> where T : IVehicle
+public class Garage<T> : IGarage<T> where T : IVehicle
 {
     /// <summary>
     /// The largest capacity a garage can be created with.

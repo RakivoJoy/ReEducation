@@ -16,9 +16,9 @@ public class ConsoleUISaveLoadTests
     {
         public int SaveCount { get; private set; }
         public int LoadCount { get; private set; }
-        public Garage<IVehicle>? LoadedGarage { get; set; }
+        public IGarage<IVehicle>? LoadedGarage { get; set; }
 
-        public Task<OperationResult> SaveAsync(Garage<IVehicle> garage, CancellationToken cancellationToken = default)
+        public Task<OperationResult> SaveAsync(IGarage<IVehicle> garage, CancellationToken cancellationToken = default)
         {
             SaveCount++;
             return Task.FromResult(OperationResult.Ok("fake saved"));

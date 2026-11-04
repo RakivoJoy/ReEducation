@@ -18,7 +18,7 @@ public static class GarageMapper
     /// <summary>
     /// Creates a DTO holding the capacity and every parked vehicle.
     /// </summary>
-    public static GarageDto ToDto(Garage<IVehicle> garage)
+    public static GarageDto ToDto(IGarage<IVehicle> garage)
     {
         ArgumentNullException.ThrowIfNull(garage);
 
@@ -37,7 +37,7 @@ public static class GarageMapper
     /// </summary>
     /// <exception cref="InvalidDataException">Thrown when the version is unsupported or a vehicle cannot be added.</exception>
     /// <exception cref="ArgumentException">Thrown when a vehicle DTO is missing a required field or has invalid data.</exception>
-    public static Garage<IVehicle> ToGarage(GarageDto dto)
+    public static IGarage<IVehicle> ToGarage(GarageDto dto)
     {
         ArgumentNullException.ThrowIfNull(dto);
 

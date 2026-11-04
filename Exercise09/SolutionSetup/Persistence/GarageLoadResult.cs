@@ -5,12 +5,12 @@ namespace SolutionSetup.Persistence;
 /// <summary>
 /// Outcome of loading a garage: the loaded garage on success, or null with the reason on failure.
 /// </summary>
-public sealed record GarageLoadResult(bool Success, string Message, Garage<IVehicle>? Garage)
+public sealed record GarageLoadResult(bool Success, string Message, IGarage<IVehicle>? Garage)
 {
     /// <summary>
     /// Creates a successful result holding the loaded garage.
     /// </summary>
-    public static GarageLoadResult Ok(Garage<IVehicle> garage, string message) => new(true, message, garage);
+    public static GarageLoadResult Ok(IGarage<IVehicle> garage, string message) => new(true, message, garage);
 
     /// <summary>
     /// Creates a failed result with the given reason.

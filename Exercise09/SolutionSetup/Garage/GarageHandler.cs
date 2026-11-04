@@ -12,7 +12,7 @@ namespace SolutionSetup;
 public class GarageHandler : IHandler
 {
     // The garage is null until one is created (menu option 1).
-    private Garage<IVehicle>? _garage;
+    private IGarage<IVehicle>? _garage;
     private readonly IGarageStorage _storage;
     private readonly ISampleDataProvider _sampleData;
 
@@ -84,7 +84,7 @@ public class GarageHandler : IHandler
     /// <inheritdoc/>
     public IReadOnlyList<IVehicle> SearchVehicles(SearchCriteria criteria) => RequireGarage().SearchByProperties(criteria);
 
-    private Garage<IVehicle> RequireGarage()
+    private IGarage<IVehicle> RequireGarage()
     {
         return _garage ?? throw new InvalidOperationException("No garage has been created yet.");
     }

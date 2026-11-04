@@ -37,7 +37,7 @@ public class GarageDtoMappingTests
     {
         GarageDto original = GarageMapper.ToDto(CreateGarageWithOneOfEachType());
 
-        Garage<IVehicle> restored = GarageMapper.ToGarage(original);
+        IGarage<IVehicle> restored = GarageMapper.ToGarage(original);
         GarageDto restoredDto = GarageMapper.ToDto(restored);
 
         Assert.Equal(original.Capacity, restoredDto.Capacity);
