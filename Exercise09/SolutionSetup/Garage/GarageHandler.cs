@@ -14,16 +14,20 @@ public class GarageHandler : IHandler
     // The garage is null until one is created (menu option 1).
     private Garage<IVehicle>? _garage;
     private readonly IGarageStorage _storage;
+    private readonly ISampleDataProvider _sampleData;
 
     /// <summary>
-    /// Creates a handler that saves and loads the garage through the given storage.
+    /// Creates a handler that saves and loads the garage through the given storage and populates it from the given sample data.
     /// </summary>
     /// <param name="storage">Storage used for menu options 9 and 10.</param>
-    public GarageHandler(IGarageStorage storage)
+    /// <param name="sampleData">Source of the vehicles used for menu option 2.</param>
+    public GarageHandler(IGarageStorage storage, ISampleDataProvider sampleData)
     {
         ArgumentNullException.ThrowIfNull(storage);
+        ArgumentNullException.ThrowIfNull(sampleData);
 
         _storage = storage;
+        _sampleData = sampleData;
     }
 
     /// <inheritdoc/>
@@ -44,7 +48,7 @@ public class GarageHandler : IHandler
     }
 
     /// <inheritdoc/>
-    public OperationResult PopulateGarage() => RequireGarage().Populate(SampleData.CreateSampleVehicles());
+    public OperationResult PopulateGarage() => RequireGarage().Populate(_sampleData.CreateSampleVehicles());
 
     /// <inheritdoc/>
     public OperationResult ParkVehicle(IVehicle vehicle) => RequireGarage().AddVehicle(vehicle);

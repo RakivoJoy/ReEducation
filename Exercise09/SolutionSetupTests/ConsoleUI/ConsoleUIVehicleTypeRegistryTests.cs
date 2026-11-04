@@ -10,7 +10,7 @@ namespace SolutionSetupTests
         public void VehicleTypes_HasExactlyOneEntryPerEnumValue()
         {
             // Arrange
-            var ui = new ConsoleUI(new StringReader(""), new StringWriter(), new GarageHandler(new InMemoryGarageStorage()));
+            var ui = new ConsoleUI(new StringReader(""), new StringWriter(), new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider()));
 
             // Act
             var registered = ui.VehicleTypes.Select(info => info.Type).ToList();
@@ -31,7 +31,7 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader(detailInput);
-            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider()));
             var info = ui.VehicleTypes.Single(i => i.Type == type);
 
             // Act

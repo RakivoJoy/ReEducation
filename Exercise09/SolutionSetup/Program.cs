@@ -16,7 +16,7 @@ internal class Program
     static void Main(string[] args)
     {
         IGarageStorage storage = new JsonGarageStorage(JsonGarageStorage.DefaultFilePath);
-        IHandler handler = new GarageHandler(storage);
+        IHandler handler = new GarageHandler(storage, new SampleDataProvider());
         IUI ui = new ConsoleUI(Console.In, Console.Out, handler);
         ui.Run();
     }

@@ -38,7 +38,7 @@ public class ConsoleUISaveLoadTests
     {
         // Arrange
         var storage = new FakeStorage();
-        var handler = new GarageHandler(storage);
+        var handler = new GarageHandler(storage, new SampleDataProvider());
         handler.CreateGarage(5);
         using var output = new StringWriter();
         using var input = new StringReader(string.Empty);
@@ -57,7 +57,7 @@ public class ConsoleUISaveLoadTests
     {
         // Arrange
         var storage = new FakeStorage { LoadedGarage = new Garage<IVehicle>(7) };
-        var handler = new GarageHandler(storage);
+        var handler = new GarageHandler(storage, new SampleDataProvider());
         using var output = new StringWriter();
         using var input = new StringReader(string.Empty);
         var ui = new ConsoleUI(input, output, handler);
@@ -76,7 +76,7 @@ public class ConsoleUISaveLoadTests
     {
         // Arrange
         var storage = new FakeStorage { LoadedGarage = new Garage<IVehicle>(7) };
-        var handler = new GarageHandler(storage);
+        var handler = new GarageHandler(storage, new SampleDataProvider());
         handler.CreateGarage(3);
         handler.PopulateGarage();
         using var output = new StringWriter();
@@ -97,7 +97,7 @@ public class ConsoleUISaveLoadTests
     {
         // Arrange
         var storage = new FakeStorage { LoadedGarage = new Garage<IVehicle>(7) };
-        var handler = new GarageHandler(storage);
+        var handler = new GarageHandler(storage, new SampleDataProvider());
         handler.CreateGarage(3);
         handler.PopulateGarage();
         using var output = new StringWriter();
@@ -118,7 +118,7 @@ public class ConsoleUISaveLoadTests
     {
         // Arrange
         var storage = new FakeStorage();
-        var handler = new GarageHandler(storage);
+        var handler = new GarageHandler(storage, new SampleDataProvider());
         using var output = new StringWriter();
         using var input = new StringReader("9\n\n0\n");
         var ui = new ConsoleUI(input, output, handler);
@@ -136,7 +136,7 @@ public class ConsoleUISaveLoadTests
     {
         // Arrange
         var storage = new FakeStorage();
-        var handler = new GarageHandler(storage);
+        var handler = new GarageHandler(storage, new SampleDataProvider());
         handler.CreateGarage(5);
         using var output = new StringWriter();
         using var input = new StringReader("9\n\n0\n");
@@ -155,7 +155,7 @@ public class ConsoleUISaveLoadTests
     {
         // Arrange
         var storage = new FakeStorage { LoadedGarage = new Garage<IVehicle>(7) };
-        var handler = new GarageHandler(storage);
+        var handler = new GarageHandler(storage, new SampleDataProvider());
         using var output = new StringWriter();
         using var input = new StringReader("10\n\n0\n");
         var ui = new ConsoleUI(input, output, handler);

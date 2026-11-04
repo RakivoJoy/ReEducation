@@ -10,7 +10,7 @@ namespace SolutionSetupTests
         public void ParkVehicle_RepromptsRegistration_WhenRegistrationInvalid()
         {
             // Arrange
-            var handler = new GarageHandler(new InMemoryGarageStorage());
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             using var output = new StringWriter();
             using var input = new StringReader("5\n3\nAB1234\nABC123\nBlack\n4\n10\nGasoline\n");
             var ui = new ConsoleUI(input, output, handler);
@@ -28,7 +28,7 @@ namespace SolutionSetupTests
         public void ParkVehicle_RepromptsColor_WhenColorInvalid()
         {
             // Arrange
-            var handler = new GarageHandler(new InMemoryGarageStorage());
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             using var output = new StringWriter();
             using var input = new StringReader("5\n3\nABC123\nInvisible\nBlack\n4\n10\nGasoline\n");
             var ui = new ConsoleUI(input, output, handler);
@@ -46,7 +46,7 @@ namespace SolutionSetupTests
         public void ParkVehicle_DoesNotRepromptRegistration_WhenOnlyColorInvalid()
         {
             // Arrange
-            var handler = new GarageHandler(new InMemoryGarageStorage());
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             using var output = new StringWriter();
             using var input = new StringReader("5\n3\nXYZ999\nInvisible\nRed\n4\n10\nGasoline\n");
             var ui = new ConsoleUI(input, output, handler);
@@ -64,7 +64,7 @@ namespace SolutionSetupTests
         public void ParkVehicle_EndsInput_WhenRegistrationNeverValid()
         {
             // Arrange
-            var handler = new GarageHandler(new InMemoryGarageStorage());
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             using var output = new StringWriter();
             using var input = new StringReader("5\n3\nAB1234\n");
             var ui = new ConsoleUI(input, output, handler);

@@ -11,7 +11,7 @@ namespace SolutionSetupTests
         {
             // Arrange
             using var output = new StringWriter();
-            var handler = new GarageHandler(new InMemoryGarageStorage());
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             handler.CreateGarage(5);
             handler.ParkVehicle(new Car("ABC123", "Black", 4, FuelType.Gasoline));
             var ui = new ConsoleUI(new StringReader(""), output, handler);
@@ -30,7 +30,7 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader("5\n");
-            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider()));
             ui.CreateGarage();
 
             // Act
@@ -46,7 +46,7 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader("5\n\n0\n");
-            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider()));
 
             // Act
             ui.Run();
@@ -60,7 +60,7 @@ namespace SolutionSetupTests
         {
             // Arrange
             using var output = new StringWriter();
-            var handler = new GarageHandler(new InMemoryGarageStorage());
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             handler.CreateGarage(5);
             handler.ParkVehicle(new Car("ABC123", "Black", 4, FuelType.Gasoline));
             var ui = new ConsoleUI(new StringReader(""), output, handler);
@@ -78,7 +78,7 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader("5\n");
-            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider()));
             ui.CreateGarage();
 
             // Act
@@ -94,7 +94,7 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader("6\n\n0\n");
-            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage()));
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider()));
 
             // Act
             ui.Run();
