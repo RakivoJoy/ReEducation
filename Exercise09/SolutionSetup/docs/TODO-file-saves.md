@@ -1,0 +1,185 @@
+# TODO-file-saves - Exercise09 (Garage 3.0)
+
+Plan for file handling and persisting the garage.
+
+Rating legend: see [TODO-template.md](TODO-template.md). Sections without a rating are decisions or reference material.
+
+---
+
+## 1. Decision: JSON via System.Text.Json (agreed, suitable)
+
+Why: built into .NET 10 (no new package), human readable, easy to diff, handles the polymorphic vehicle hierarchy with `[JsonPolymorphic]`.
+
+Alternatives rejected: CSV (subclass-specific fields are awkward), XML (verbose), binary (not inspectable).
+
+Proposed file shape:
+
+```json
+{
+  "version": 1,
+  "capacity": 20,
+  "vehicles": [
+	{ "type": "Car", "registrationNumber": "ABC123", "color": "Red",
+	  "numberOfWheels": 4, "parkingSize": 1, "fuelType": "Gasoline" }
+  ]
+}
+```
+
+Subclass-specific fields: Car `FuelType`, Bus `NumberOfSeats`, Airplane `NumberOfEngines`, Truck `LoadCapacity`, Motorcycle `CylinderVolume`, Boat `Length`.
+
+---
+
+## 2. Design
+
+### DTOs, storage interface and result handling[Prio:Critical, Effort:M, Impact:L]
+
+- Vehicles are immutable with validating constructors, so do NOT deserialize straight into `Vehicle`. Use DTO records (`GarageDto`, `VehicleDto` with a `type` discriminator) and map to and from domain types. Loading then re-validates via the constructors, so invalid or hand-edited files fail cleanly.
+- New folder `Persistence/` in `SolutionSetup`:
+  - `IGarageStorage`: `SaveAsync(Garage<Vehicle>)` / `LoadAsync()` returning a result
+  - `JsonGarageStorage`: implementation
+  - `GarageDto`, `VehicleDto`, mapping helpers
+- Return `OperationResult`-style results (existing pattern) for expected failures: missing file, invalid JSON, unknown type, invalid vehicle, more vehicles than capacity, duplicate registration numbers.
+- Do not throw for expected IO problems; catch `IOException`, `UnauthorizedAccessException`, `JsonException`.
+- Garage needs a way to be rebuilt: use `new Garage(capacity)` plus `AddVehicle`, so existing capacity and duplicate rules are reused.
+- Enums (`FuelType`, `VehicleType`) serialized as strings (`JsonStringEnumConverter`).
+- Include `version` for future migrations; reject unknown newer versions.
+
+---
+
+## 3. Safe writing
+
+### Write to a temp file and replace atomically[Prio:High, Effort:S, Impact:L]
+
+- Write to `<file>.tmp`, then `File.Move(overwrite: true)`, so a crash does not corrupt the existing save.
+- Create the directory if missing.
+- Default location: `Path.Combine(Environment.GetFolderPath(SpecialFolder.LocalApplicationData), "Garage", "garage.json")`. Allow override by path (needed for tests).
+- Async API (`File.WriteAllTextAsync` / `ReadAllTextAsync`) only if the UI becomes async; start synchronous to match the current console UI.
+
+---
+
+## 4. UI integration
+
+### Save and load menu options[Prio:Medium, Effort:M, Impact:M]
+
+- Menu options: Save garage, Load garage.
+- Optional: offer to load the last save at startup, and to save on exit.
+- Confirm before load overwrites a garage with parked vehicles.
+- Texts go in `UI\ConsoleUIText.cs`; code in a new `ConsoleUI.Persistence.cs` partial.
+- `IHandler` / `GarageHandler`: add save and load through the storage interface so the UI can be tested with a fake storage.
+
+---
+
+## 5. Tests (xUnit)
+
+### Serial file IO tests and placeholder test files[Prio:Critical, Effort:M, Impact:L]
+
+Project: `SolutionSetupTests`, new folder `Persistence/`.
+
+Serial execution for file IO:
+
+- Put every test class that touches the file system in `[Collection("FileIO")]` (define one collection definition class with `[CollectionDefinition("FileIO", DisableParallelization = true)]`). Classes in the same collection run serially; `DisableParallelization` also stops other collections running at the same time.
+- Alternative (global): `xunit.runner.json` with `"parallelizeTestCollections": false`. Not preferred; slows all tests.
+- Isolation: each test uses a unique temp folder (`Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString())`), created in the constructor and deleted in `Dispose` (`IDisposable`).
+- Tests using a fake or in-memory storage do not need the collection.
+
+Placeholder test files (to create):
+
+- `Persistence\FileIOCollection.cs`: collection definition
+- `Persistence\JsonGarageStorageSaveTests.cs`: writes file, creates directory, overwrites, no `.tmp` left behind
+- `Persistence\JsonGarageStorageLoadTests.cs`: missing file, empty file, invalid JSON, unknown type, invalid vehicle data, too many vehicles, duplicates
+- `Persistence\GarageRoundTripTests.cs`: every vehicle type survives save and load unchanged
+- `Persistence\GarageDtoMappingTests.cs`: mapping only, no IO
+- `ConsoleUI\ConsoleUISaveLoadTests.cs`: UI with fake storage, no IO
+
+---
+
+## 6. Steps
+
+1. Create DTOs and mapping (with tests, no IO).
+2. Create `JsonGarageStorage` with save and load plus result handling.
+3. Add FileIO collection and storage tests (temp folder per test).
+4. Add round-trip tests for all vehicle types.
+5. Extend `IHandler` / `GarageHandler` and `ConsoleUI` with save and load.
+6. Add UI tests using a fake storage.
+7. Update docfx docs and README with the file location and format.
+
+---
+
+## 7. Decisions (confirmed by user)
+
+- Default location: `%LOCALAPPDATA%\Garage\garage.json` (fixed file).
+- Delta file: `%LOCALAPPDATA%\Garage\garage.delta.json`, written on each change. On exit the delta is merged into `garage.json` and removed. A crash leaves the delta file, which is replayed on next start.
+- Manual Save and Load options in the menu, in addition to the delta.
+- Backup: keep one previous copy as `garage.json.bak` before each replace.
+- IO is async (`File.*Async`, System.Text.Json async methods).
+
+---
+
+## 8. Commit messages (one per step, added when each step is done)
+
+**Step 1 - docs: record file save decisions**
+
+```text
+docs: record file save decisions and update TODO-file-saves plan
+
+Confirm fixed default location, delta file merged on exit, one .bak
+backup, and async IO. Fix FuelType sample value to Gasoline.
+```
+
+**Step 2 - feat: add garage DTOs and mapper**
+
+```text
+feat: add garage DTOs and mapper
+
+Add GarageDto, VehicleDto and GarageMapper with mapping tests (no IO).
+```
+
+**Step 3 - feat: add async JSON garage storage**
+
+```text
+feat: add async JSON garage storage
+
+Add IGarageStorage, GarageLoadResult and JsonGarageStorage with temp
+file replace, one .bak backup, and expected-failure results. Add serial
+FileIO save and load tests using temp folders.
+```
+
+**Step 4 - test: add garage save and load round-trip test**
+
+```text
+test: add garage save and load round-trip test
+
+Verify capacity and every vehicle type, including subtype fields,
+survive JsonGarageStorage save and load unchanged.
+```
+
+**Step 5 - feat: add save and load to handler and console UI**
+
+```text
+feat: add save and load to garage handler and console UI
+
+Inject IGarageStorage into GarageHandler, add SaveGarage and LoadGarage
+to IHandler, add menu options 9 (Save) and 10 (Load). Loading asks for
+confirmation before replacing a garage with parked vehicles. Replace
+skipped UI placeholders with fake-storage tests.
+```
+
+**Step 6 - test: add console UI save and load tests with fake storage**
+
+```text
+test: add console UI save and load tests with fake storage
+
+Cover save and load through the menu with a fake IGarageStorage: Run
+routing for options 9 and 10, confirmed and declined load overwrite,
+and save without a garage. No file IO and no FileIO collection needed.
+```
+
+**Step 7 - docs: document save file location and format**
+
+```text
+docs: document garage save file location and JSON format
+
+Describe %LOCALAPPDATA%\Garage\garage.json, the JSON shape, the .tmp and
+.bak handling, and add direct GarageHandler save and load tests with a
+fake storage.
+```
