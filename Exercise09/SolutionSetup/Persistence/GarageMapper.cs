@@ -65,26 +65,23 @@ public static class GarageMapper
 
     private static VehicleDto ToDto(IVehicle vehicle) => vehicle switch
     {
-        Car car => new VehicleDto(car.Type, car.RegistrationNumber, car.Color, car.NumberOfWheels, car.ParkingSize, FuelType: car.FuelType),
-        Bus bus => new VehicleDto(bus.Type, bus.RegistrationNumber, bus.Color, bus.NumberOfWheels, bus.ParkingSize, NumberOfSeats: bus.NumberOfSeats),
-        Airplane airplane => new VehicleDto(airplane.Type, airplane.RegistrationNumber, airplane.Color, airplane.NumberOfWheels, airplane.ParkingSize, NumberOfEngines: airplane.NumberOfEngines),
-        Truck truck => new VehicleDto(truck.Type, truck.RegistrationNumber, truck.Color, truck.NumberOfWheels, truck.ParkingSize, LoadCapacity: truck.LoadCapacity),
-        Motorcycle motorcycle => new VehicleDto(motorcycle.Type, motorcycle.RegistrationNumber, motorcycle.Color, motorcycle.NumberOfWheels, motorcycle.ParkingSize, CylinderVolume: motorcycle.CylinderVolume),
-        Boat boat => new VehicleDto(boat.Type, boat.RegistrationNumber, boat.Color, boat.NumberOfWheels, boat.ParkingSize, Length: boat.Length),
+        Car car => new CarDto(car.RegistrationNumber, car.Color, car.NumberOfWheels, car.ParkingSize, car.FuelType),
+        Bus bus => new BusDto(bus.RegistrationNumber, bus.Color, bus.NumberOfWheels, bus.ParkingSize, bus.NumberOfSeats),
+        Airplane airplane => new AirplaneDto(airplane.RegistrationNumber, airplane.Color, airplane.NumberOfWheels, airplane.ParkingSize, airplane.NumberOfEngines),
+        Truck truck => new TruckDto(truck.RegistrationNumber, truck.Color, truck.NumberOfWheels, truck.ParkingSize, truck.LoadCapacity),
+        Motorcycle motorcycle => new MotorcycleDto(motorcycle.RegistrationNumber, motorcycle.Color, motorcycle.NumberOfWheels, motorcycle.ParkingSize, motorcycle.CylinderVolume),
+        Boat boat => new BoatDto(boat.RegistrationNumber, boat.Color, boat.NumberOfWheels, boat.ParkingSize, boat.Length),
         _ => throw new NotSupportedException($"Vehicle type {vehicle.GetType().Name} cannot be saved.")
     };
 
-    private static IVehicle ToVehicle(VehicleDto dto) => dto.Type switch
+    private static IVehicle ToVehicle(VehicleDto dto) => dto switch
     {
-        VehicleType.Car => new Car(dto.RegistrationNumber, dto.Color, dto.NumberOfWheels, Required(dto.FuelType, nameof(dto.FuelType)), dto.ParkingSize),
-        VehicleType.Bus => new Bus(dto.RegistrationNumber, dto.Color, dto.NumberOfWheels, Required(dto.NumberOfSeats, nameof(dto.NumberOfSeats)), dto.ParkingSize),
-        VehicleType.Airplane => new Airplane(dto.RegistrationNumber, dto.Color, dto.NumberOfWheels, Required(dto.NumberOfEngines, nameof(dto.NumberOfEngines)), dto.ParkingSize),
-        VehicleType.Truck => new Truck(dto.RegistrationNumber, dto.Color, dto.NumberOfWheels, Required(dto.LoadCapacity, nameof(dto.LoadCapacity)), dto.ParkingSize),
-        VehicleType.Motorcycle => new Motorcycle(dto.RegistrationNumber, dto.Color, dto.NumberOfWheels, Required(dto.CylinderVolume, nameof(dto.CylinderVolume)), dto.ParkingSize),
-        VehicleType.Boat => new Boat(dto.RegistrationNumber, dto.Color, dto.NumberOfWheels, Required(dto.Length, nameof(dto.Length)), dto.ParkingSize),
-        _ => throw new ArgumentException($"Unknown vehicle type {dto.Type}.", nameof(dto))
+        CarDto car => new Car(car.RegistrationNumber, car.Color, car.NumberOfWheels, car.FuelType, car.ParkingSize),
+        BusDto bus => new Bus(bus.RegistrationNumber, bus.Color, bus.NumberOfWheels, bus.NumberOfSeats, bus.ParkingSize),
+        AirplaneDto airplane => new Airplane(airplane.RegistrationNumber, airplane.Color, airplane.NumberOfWheels, airplane.NumberOfEngines, airplane.ParkingSize),
+        TruckDto truck => new Truck(truck.RegistrationNumber, truck.Color, truck.NumberOfWheels, truck.LoadCapacity, truck.ParkingSize),
+        MotorcycleDto motorcycle => new Motorcycle(motorcycle.RegistrationNumber, motorcycle.Color, motorcycle.NumberOfWheels, motorcycle.CylinderVolume, motorcycle.ParkingSize),
+        BoatDto boat => new Boat(boat.RegistrationNumber, boat.Color, boat.NumberOfWheels, boat.Length, boat.ParkingSize),
+        _ => throw new ArgumentException($"Unknown vehicle DTO {dto.GetType().Name}.", nameof(dto))
     };
-
-    private static T Required<T>(T? value, string fieldName) where T : struct =>
-        value ?? throw new ArgumentException($"Missing required field {fieldName}.", fieldName);
 }

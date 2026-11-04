@@ -74,10 +74,9 @@ Suggestion: let each vehicle type expose its limits (static abstract member or a
 The fuel definition uses `v is Car car`, so the search code depends on `Car`. A second fuel-capable type would need an edit.
 Suggestion: introduce a small interface such as `IFuelVehicle` or move type-specific filters next to the type.
 
-### Wide flat VehicleDto grows with every type[Prio:Medium, Effort:M, Impact:M]
+### Wide flat VehicleDto grows with every type[Prio:Medium, Effort:M, Impact:M] - Done
 
-`VehicleDto` has one nullable field per subclass-specific property. Every new type adds a field and mapper branches.
-Suggestion: part of the polymorphic DTO suggestion above.
+`VehicleDto` is now an abstract polymorphic base (`kind` discriminator) with one concrete DTO per vehicle type (`CarDto`, `BusDto`, `AirplaneDto`, `TruckDto`, `MotorcycleDto`, `BoatDto`). Each carries only its own fields, and `GarageMapper` maps by concrete DTO type. Old save files are not compatible.
 
 ---
 

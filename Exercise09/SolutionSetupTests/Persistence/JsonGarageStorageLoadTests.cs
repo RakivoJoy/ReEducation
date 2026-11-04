@@ -24,7 +24,7 @@ public class JsonGarageStorageLoadTests : IDisposable
     private string FilePath => Path.Combine(_folder, "garage.json");
 
     private static string CarJson(string registrationNumber) =>
-        $$"""{"type":"Car","registrationNumber":"{{registrationNumber}}","color":"Black","numberOfWheels":4,"parkingSize":5,"fuelType":"Gasoline"}""";
+        $$"""{"kind":"Car","registrationNumber":"{{registrationNumber}}","color":"Black","numberOfWheels":4,"parkingSize":5,"fuelType":"Gasoline"}""";
 
     private static string GarageJson(int capacity, params string[] vehicles) =>
         $$"""{"version":1,"capacity":{{capacity}},"vehicles":[{{string.Join(",", vehicles)}}]}""";
