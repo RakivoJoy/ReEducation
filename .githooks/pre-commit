@@ -1,0 +1,15 @@
+#!/bin/sh
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+if [ "$branch" != "main" ]; then
+  exit 0
+fi
+
+blocked=$(git diff --cached --name-only --diff-filter=ACMR | grep -Ev '\.(md|txt)$')
+if [ -n "$blocked" ]; then
+  echo "Commit blocked: code changes cannot be committed to main. Create a feature branch."
+  echo "$blocked"
+  exit 1
+fi
+
+exit 0
