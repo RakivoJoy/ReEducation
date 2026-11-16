@@ -1,3 +1,4 @@
+```mermaid
 flowchart TD
     Start([What is your primary workload?]) --> Q1{Need strict ACID &<br/>complex joins?}
     
