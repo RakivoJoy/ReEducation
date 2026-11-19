@@ -1,26 +1,32 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using StorageApi.DTOs;
 
 [Route("api/[controller]")]
 [ApiController]
 public class ProductsController : ControllerBase
 {
     private readonly StorageApiContext _context;
-    public ProductsController(StorageApiContext context)
+    private readonly IMapper _mapper;
+
+    public ProductsController(StorageApiContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     // GET: api/Product
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Product>>> GetProduct()
+    public async Task<ActionResult<IEnumerable<ProductDto>>> GetProduct()
     {
-        return await _context.Product.ToListAsync();
+        var products = await _context.Product.ToListAsync();
+        return _mapper.Map<IEnumerable<ProductDto>>(products).ToList();
     }
 
     // GET: api/Product/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<Product>> GetProduct(int id)
+    public async Task<ActionResult<ProductDto>> GetProduct(int id)
     {
         var product = await _context.Product.FindAsync(id);
 
@@ -29,19 +35,25 @@ public class ProductsController : ControllerBase
             return NotFound();
         }
 
-        return product;
+        return _mapper.Map<ProductDto>(product);
     }
 
     // PUT: api/Product/5
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutProduct(int? id, Product product)
+    public async Task<IActionResult> PutProduct(int? id, CreateProductDto createProductDto)
     {
-        if (id != product.Id)
+        if (id == null || id <= 0)
         {
             return BadRequest();
         }
 
+        var product = await _context.Product.FindAsync(id);
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        _mapper.Map(createProductDto, product);
         _context.Entry(product).State = EntityState.Modified;
 
         try
@@ -64,14 +76,14 @@ public class ProductsController : ControllerBase
     }
 
     // POST: api/Product
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<Product>> PostProduct(Product product)
+    public async Task<ActionResult<ProductDto>> PostProduct(CreateProductDto createProductDto)
     {
+        var product = _mapper.Map<Product>(createProductDto);
         _context.Product.Add(product);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+        return CreatedAtAction("GetProduct", new { id = product.Id }, _mapper.Map<ProductDto>(product));
     }
 
     // DELETE: api/Product/5

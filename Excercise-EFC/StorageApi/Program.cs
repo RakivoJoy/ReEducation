@@ -11,6 +11,9 @@ namespace StorageApi
 
             builder.Services.AddDbContext<StorageApiContext>(options => options.UseSqlServer(connectionString));
 
+            // Add AutoMapper
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             // Add services to the container.
 
             builder.Services.AddControllers();
