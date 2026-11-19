@@ -16,15 +16,49 @@ public class ProductsController : ControllerBase
         _mapper = mapper;
     }
 
-    // GET: api/Product
+    // GET: api/products
+    // Optional querystring: ?category=CategoryName
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ProductDto>>> GetProduct()
+    public async Task<ActionResult<IEnumerable<ProductDto>>> GetProduct([FromQuery] string category = null)
     {
-        var products = await _context.Product.ToListAsync();
+        IQueryable<Product> query = _context.Product;
+
+        if (!string.IsNullOrWhiteSpace(category))
+        {
+            query = query.Where(p => p.Category == category);
+        }
+
+        var products = await query.ToListAsync();
         return _mapper.Map<IEnumerable<ProductDto>>(products).ToList();
     }
 
-    // GET: api/Product/5
+    // GET: api/products/stats
+    [HttpGet("stats")]
+    public async Task<ActionResult<ProductStatsDto>> GetProductStats()
+    {
+        var products = await _context.Product.ToListAsync();
+
+        if (products.Count == 0)
+        {
+            return new ProductStatsDto
+            {
+                TotalProductCount = 0,
+                TotalInventoryValue = 0,
+                AveragePrice = 0
+            };
+        }
+
+        var stats = new ProductStatsDto
+        {
+            TotalProductCount = products.Count,
+            TotalInventoryValue = products.Sum(p => p.Price * p.Count),
+            AveragePrice = (decimal)products.Average(p => p.Price)
+        };
+
+        return stats;
+    }
+
+    // GET: api/products/5
     [HttpGet("{id}")]
     public async Task<ActionResult<ProductDto>> GetProduct(int id)
     {
@@ -38,7 +72,7 @@ public class ProductsController : ControllerBase
         return _mapper.Map<ProductDto>(product);
     }
 
-    // PUT: api/Product/5
+    // PUT: api/products/5
     [HttpPut("{id}")]
     public async Task<IActionResult> PutProduct(int? id, CreateProductDto createProductDto)
     {
@@ -75,7 +109,7 @@ public class ProductsController : ControllerBase
         return NoContent();
     }
 
-    // POST: api/Product
+    // POST: api/products
     [HttpPost]
     public async Task<ActionResult<ProductDto>> PostProduct(CreateProductDto createProductDto)
     {
@@ -86,7 +120,7 @@ public class ProductsController : ControllerBase
         return CreatedAtAction("GetProduct", new { id = product.Id }, _mapper.Map<ProductDto>(product));
     }
 
-    // DELETE: api/Product/5
+    // DELETE: api/products/5
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProduct(int? id)
     {
