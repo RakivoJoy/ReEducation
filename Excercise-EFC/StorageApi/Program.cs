@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace StorageApi
 {
@@ -11,8 +12,8 @@ namespace StorageApi
 
             builder.Services.AddDbContext<StorageApiContext>(options => options.UseSqlServer(connectionString));
 
-            // Add AutoMapper
-            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            // Add AutoMapper - only scan this assembly to avoid loading incompatible types
+            builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
             // Add services to the container.
 
@@ -26,12 +27,16 @@ namespace StorageApi
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/openapi/v1.json", "Storage API v1");
+                    options.RoutePrefix = "swagger";
+                });
             }
 
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
