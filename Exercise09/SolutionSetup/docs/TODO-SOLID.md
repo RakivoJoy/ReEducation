@@ -21,15 +21,19 @@ Rating legend: see [TODO-template.md](TODO-template.md).
 
 ### ConsoleUI does menu, input parsing, vehicle construction and output[Prio:High, Effort:M, Impact:M]
 
+Status: Partly done in db184d9. Vehicle construction moved to `VehicleFactory`; the per-type prompts still live in ConsoleUI.
+
 `ConsoleUI` (five partial files) owns the menu loop, reading and validating input, the per-type prompts and factories (`BuildVehicleTypes` creates `Motorcycle`, `Car`, ... and prompts for their extra fields), search-expression parsing, and printing. Splitting it into partial files hides the size but it is still one class with one set of private fields.
 Suggestion: extract an input reader (prompt + validate + parse), a vehicle-creation component (type list and factories), and keep `ConsoleUI` as menu loop plus dispatch.
 
 ### Garage mixes storage, rules, user messages and reporting[Prio:High, Effort:M, Impact:M]
 
-`Garage<T>` holds the list, enforces capacity and uniqueness, builds user-facing message strings (`"The garage is full."`, `NotFoundMessage`), runs batch `Populate`, and does reporting (`ListVehicleCountByType`) and searching. The UI calls the static `Garage<IVehicle>.NotFoundMessage`, so presentation text lives in the domain.
-Suggestion: have `Garage` return a typed result or reason (see the richer results item in TODO-suggestions.md) and let the UI or handler turn it into text. Consider moving `Populate` and the per-type counting to the handler or a query helper.
+Status: Done. `Garage<T>` now returns typed results (`ParkResult`, `RemoveResult`, `PopulateResult` in `GarageResults.cs`) with no user-facing text. `GarageHandler` maps them to `OperationResult` messages, and the UI owns the not-found text in `ConsoleUIText.VehicleNotFound`.
+Remaining: `Populate` and the per-type counting (`ListVehicleCountByType`) still live in `Garage<T>`; they could move to the handler or a query helper later.
 
 ### SearchCriteria is a filter, a text parser and an error-message source[Prio:Medium, Effort:M, Impact:M]
+
+Status: Done in 60350b4. Parsing and messages moved to `SearchCriteriaParser`; `SearchCriteria` keeps typed filters and `Matches`.
 
 `SearchCriteria` stores filters, parses console text (`TrySetFilter`, `Parse` lambdas), owns user-facing error messages and implements the match rules. Parsing and messages are UI concerns; matching is a domain concern.
 Suggestion: keep `SearchCriteria` as typed values plus `Matches`, and move text parsing and messages to the UI layer (for example a `SearchCriteriaParser`).
@@ -44,10 +48,10 @@ Suggestion: keep it as a facade, and move sample data behind an interface (see t
 One class does JSON options, directory creation, temp file, `.bak` copy, move, cleanup, and error-to-result mapping.
 Suggestion: if more formats or locations are added, separate "how to serialize" from "how to write a file safely".
 
-### Vehicle validates registration, color, size and formats its own description[Prio:Low, Effort:M, Impact:S]
+### Vehicle validates registration, color, size and formats its own description[Prio:Low, Effort:M, Impact:S] - Partly done
 
-`Vehicle` contains the registration regex and normalization, parking size validation, a range-check helper and the `ToString` format. Display formatting and validation rules are separate reasons to change.
-Suggestion: move registration rules to a small `RegistrationNumber` helper or value type, and leave formatting to a presenter if more output formats appear.
+Registration rules (regex, normalization, error text) moved to the static `RegistrationNumber` helper in `Vehicles/RegistrationNumber.cs`. `Vehicle` keeps parking-size validation, color validation, the range helper and the `ToString` format.
+Suggestion: leave formatting to a presenter if more output formats appear.
 
 ---
 
@@ -60,6 +64,8 @@ Suggestion: describe each type once (a descriptor or registry holding limits, DT
 
 ### ParkingSizeLimits is a switch over the enum[Prio:Medium, Effort:S, Impact:M]
 
+Status: Partly done in c88e29a. The switch is now a lookup table; limits are still defined centrally, not on each vehicle type.
+
 Limits per type are kept in a central switch instead of next to the type they describe. A new `VehicleType` falls through to the `throw`.
 Suggestion: let each vehicle type expose its limits (static abstract member or a descriptor entry) so the table extends without modification.
 
@@ -68,10 +74,9 @@ Suggestion: let each vehicle type expose its limits (static abstract member or a
 The fuel definition uses `v is Car car`, so the search code depends on `Car`. A second fuel-capable type would need an edit.
 Suggestion: introduce a small interface such as `IFuelVehicle` or move type-specific filters next to the type.
 
-### Wide flat VehicleDto grows with every type[Prio:Medium, Effort:M, Impact:M]
+### Wide flat VehicleDto grows with every type[Prio:Medium, Effort:M, Impact:M] - Done
 
-`VehicleDto` has one nullable field per subclass-specific property. Every new type adds a field and mapper branches.
-Suggestion: part of the polymorphic DTO suggestion above.
+`VehicleDto` is now an abstract polymorphic base (`kind` discriminator) with one concrete DTO per vehicle type (`CarDto`, `BusDto`, `AirplaneDto`, `TruckDto`, `MotorcycleDto`, `BoatDto`). Each carries only its own fields, and `GarageMapper` maps by concrete DTO type. Old save files are not compatible.
 
 ---
 
@@ -83,6 +88,8 @@ Suggestion: part of the polymorphic DTO suggestion above.
 Suggestion: either restrict the garage to `Vehicle`, or make the mapper extensible so each implementation supplies its own DTO mapping.
 
 ### Vehicle constructor reads the abstract Type property[Prio:Medium, Effort:S, Impact:S]
+
+Status: Done in 0404620. `VehicleType` is passed to the base constructor.
 
 `ValidateParkingSize` in the base constructor calls `ParkingSizeLimits.For(Type)`, where `Type` is an abstract member overridden by a subclass that has not been constructed yet. It works only while every override returns a constant.
 Suggestion: pass the type (or its limits) to the base constructor, or document and test the constant-only contract.
@@ -107,23 +114,24 @@ Suggestion: only split if a consumer appears that needs one side; otherwise leav
 
 ### Default constructors create concrete dependencies[Prio:High, Effort:S, Impact:M]
 
-`Program` creates `new ConsoleUI()`, which creates `new GarageHandler()`, which creates `new JsonGarageStorage(DefaultFilePath)`. The default handler constructor also makes end-to-end tests write to the real `%LOCALAPPDATA%` file (see TODO-persistence-improvments.md).
-Suggestion: build the object graph in `Program` (composition root) and remove or reduce the default constructors. See "Inject the console instead of defaulting to it" in TODO-suggestions.md.
+Status: Done. `Program` is the composition root and builds `JsonGarageStorage`, `GarageHandler` and `ConsoleUI` explicitly. No default constructors remain, and tests do not touch `DefaultFilePath`.
+
+Previous problem: `Program` created `new ConsoleUI()`, which created `new GarageHandler()`, which created `new JsonGarageStorage(DefaultFilePath)`. The default handler constructor also made end-to-end tests write to the real `%LOCALAPPDATA%` file (see TODO-persistence-improvments.md).
+Suggestion:
 
 ### Handler and storage depend on the concrete Garage<IVehicle>[Prio:Medium, Effort:M, Impact:M]
 
-`GarageHandler`, `IGarageStorage`, `JsonGarageStorage` and `GarageMapper` all use the concrete `Garage<IVehicle>` class, so the storage contract is tied to one implementation.
-Suggestion: introduce an `IGarage` abstraction for the operations that consumers need, or have storage work on a snapshot (`GarageDto`) instead of the live garage.
+Status: Partly done. `IGarageStorage`, `JsonGarageStorage`, `GarageMapper` and `GarageHandler`'s field all work through `IGarage<IVehicle>`. Only `GarageHandler` still creates the concrete `Garage<IVehicle>`.
+Suggestion: move that creation behind a factory, or accept the garage from the composition root if a second implementation appears.
 
 ### Static dependencies cannot be replaced[Prio:Medium, Effort:S, Impact:M]
 
-`SampleData`, `GarageMapper`, `ParkingSizeLimits`, `VehicleColors` and `Garage<T>.MaxCapacity` are static. `GarageHandler.PopulateGarage` always uses `SampleData.CreateSampleVehicles()`, so tests cannot supply their own sample set.
-Suggestion: wrap the ones that vary behind small interfaces (for example `ISampleDataProvider`) and inject them. Leave pure constant tables static.
+Status: Partly done. `GarageHandler` receives an `ISampleDataProvider`, so tests can supply their own sample set. `SampleData`, `GarageMapper`, `ParkingSizeLimits`, `VehicleColors` and `Garage<T>.MaxCapacity` are still static. Pure constant tables can stay static.
+Suggestion: wrap the ones that vary behind small interfaces and inject them. Leave pure constant tables static.
 
-### UI builds domain objects and depends on concrete vehicle classes[Prio:Medium, Effort:L, Impact:M]
+### UI builds domain objects and depends on concrete vehicle classes[Prio:Medium, Effort:L, Impact:M] - Done
 
-`ConsoleUI` constructs `Car`, `Bus`, `Boat`, ... directly and hands an `IVehicle` to `IHandler.ParkVehicle`. The UI therefore knows every domain subclass and its constructor rules.
-Suggestion: pass a request object (type, registration, color, wheels, size, type-specific values) to the handler and let a domain-side factory create the vehicle. The UI then depends only on abstractions.
+`ConsoleUI` now builds a `VehicleRequest` (type, registration, color, wheels, size, type-specific details) and passes it to `IVehicleOperations.ParkVehicle`. `GarageHandler` creates the concrete vehicle through `VehicleFactory`, so the UI no longer references concrete vehicle subclasses or constructors.
 
 ---
 

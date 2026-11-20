@@ -2,6 +2,7 @@ using SolutionSetup.Persistence;
 using SolutionSetup.Vehicles;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SolutionSetup;
 
@@ -12,26 +13,22 @@ namespace SolutionSetup;
 public class GarageHandler : IHandler
 {
     // The garage is null until one is created (menu option 1).
-    private Garage<IVehicle>? _garage;
+    private IGarage<IVehicle>? _garage;
     private readonly IGarageStorage _storage;
+    private readonly ISampleDataProvider _sampleData;
 
     /// <summary>
-    /// Creates a handler that saves and loads the garage at <see cref="JsonGarageStorage.DefaultFilePath"/>.
-    /// </summary>
-    public GarageHandler()
-        : this(new JsonGarageStorage(JsonGarageStorage.DefaultFilePath))
-    {
-    }
-
-    /// <summary>
-    /// Creates a handler that saves and loads the garage through the given storage.
+    /// Creates a handler that saves and loads the garage through the given storage and populates it from the given sample data.
     /// </summary>
     /// <param name="storage">Storage used for menu options 9 and 10.</param>
-    public GarageHandler(IGarageStorage storage)
+    /// <param name="sampleData">Source of the vehicles used for menu option 2.</param>
+    public GarageHandler(IGarageStorage storage, ISampleDataProvider sampleData)
     {
         ArgumentNullException.ThrowIfNull(storage);
+        ArgumentNullException.ThrowIfNull(sampleData);
 
         _storage = storage;
+        _sampleData = sampleData;
     }
 
     /// <inheritdoc/>
@@ -52,13 +49,17 @@ public class GarageHandler : IHandler
     }
 
     /// <inheritdoc/>
-    public OperationResult PopulateGarage() => RequireGarage().Populate(SampleData.CreateSampleVehicles());
+    public OperationResult PopulateGarage() => ToOperationResult(RequireGarage().Populate(_sampleData.CreateSampleVehicles()));
 
     /// <inheritdoc/>
-    public OperationResult ParkVehicle(IVehicle vehicle) => RequireGarage().AddVehicle(vehicle);
+    public OperationResult ParkVehicle(VehicleRequest request)
+    {
+        Vehicle vehicle = VehicleFactory.Create(request.Type, request.RegistrationNumber, request.Color, request.NumberOfWheels, request.ParkingSize, request.Details);
+        return ToOperationResult(RequireGarage().AddVehicle(vehicle), vehicle.RegistrationNumber);
+    }
 
     /// <inheritdoc/>
-    public OperationResult RemoveVehicle(string registrationNumber) => RequireGarage().RemoveVehicleByRegistration(registrationNumber);
+    public OperationResult RemoveVehicle(string registrationNumber) => ToOperationResult(RequireGarage().RemoveVehicleByRegistration(registrationNumber));
 
     /// <inheritdoc/>
     public IReadOnlyList<IVehicle> ListVehicles() => RequireGarage().ListAllVehicles();
@@ -88,8 +89,35 @@ public class GarageHandler : IHandler
     /// <inheritdoc/>
     public IReadOnlyList<IVehicle> SearchVehicles(SearchCriteria criteria) => RequireGarage().SearchByProperties(criteria);
 
-    private Garage<IVehicle> RequireGarage()
+    private IGarage<IVehicle> RequireGarage()
     {
         return _garage ?? throw new InvalidOperationException("No garage has been created yet.");
     }
+
+    private static OperationResult ToOperationResult(ParkResult result, string registrationNumber) =>
+        result.Parked
+            ? OperationResult.Ok($"Vehicle {registrationNumber} parked.")
+            : OperationResult.Fail(ParkFailureMessage(result.Reason!.Value, registrationNumber));
+
+    private static OperationResult ToOperationResult(RemoveResult result) =>
+        result.Removed
+            ? OperationResult.Ok($"Vehicle {result.RegistrationNumber} removed.")
+            : OperationResult.Fail($"No vehicle with registration number {result.RegistrationNumber} was found.");
+
+    private static OperationResult ToOperationResult(PopulateResult result)
+    {
+        string message = $"Parked {result.Parked} of {result.Total} vehicles.";
+        if (result.Failures.Count == 0)
+        {
+            return OperationResult.Ok(message);
+        }
+
+        IEnumerable<string> lines = result.Failures.Select(failure => $"{failure.RegistrationNumber}: {ParkFailureMessage(failure.Reason, failure.RegistrationNumber)}");
+        return OperationResult.Fail(message + Environment.NewLine + string.Join(Environment.NewLine, lines));
+    }
+
+    private static string ParkFailureMessage(ParkFailureReason reason, string registrationNumber) =>
+        reason == ParkFailureReason.Duplicate
+            ? $"A vehicle with registration number {registrationNumber} is already parked."
+            : "The garage is full.";
 }

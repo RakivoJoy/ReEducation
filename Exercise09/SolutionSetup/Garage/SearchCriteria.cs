@@ -15,14 +15,9 @@ namespace SolutionSetup;
 public class SearchCriteria
 {
     /// <summary>
-    /// How one property is searched: its name, how to parse user text into a typed value (null when invalid),
-    /// how to match a vehicle against that value, and the error shown for invalid text.
+    /// How one property is matched: its name and a match rule against a typed value.
     /// </summary>
-    private sealed record Definition(
-        string Name,
-        Func<string, object?> Parse,
-        Func<IVehicle, object, bool> Matches,
-        Func<string, string> InvalidMessage);
+    private sealed record Definition(string Name, Func<IVehicle, object, bool> Matches);
 
     private const string RegistrationKey = "registration";
     private const string ColorKey = "color";
@@ -33,30 +28,12 @@ public class SearchCriteria
 
     private static readonly Definition[] Definitions =
     [
-        new(RegistrationKey,
-            text => text.Trim(),
-            (v, value) => string.Equals(v.RegistrationNumber, (string)value, StringComparison.OrdinalIgnoreCase),
-            text => $"Invalid registration '{text}'."),
-        new(ColorKey,
-            text => text,
-            (v, value) => string.Equals(v.Color, (string)value, StringComparison.OrdinalIgnoreCase),
-            text => $"Invalid color '{text}'."),
-        new(WheelsKey,
-            text => int.TryParse(text, out int wheels) ? wheels : null,
-            (v, value) => v.NumberOfWheels == (int)value,
-            text => $"Invalid number of wheels '{text}'. Please enter a whole number."),
-        new(TypeKey,
-            text => Enum.TryParse(text, true, out VehicleType type) && Enum.IsDefined(type) ? type : null,
-            (v, value) => v.Type == (VehicleType)value,
-            text => $"Invalid vehicle type '{text}'."),
-        new(FuelKey,
-            text => Enum.TryParse(text, true, out FuelType fuel) && Enum.IsDefined(fuel) ? fuel : null,
-            (v, value) => v is Car car && car.FuelType == (FuelType)value,
-            text => $"Invalid fuel type '{text}'. Valid fuel types: {string.Join(", ", Enum.GetNames<FuelType>())}."),
-        new(SizeKey,
-            text => IntRange.TryParse(text, out IntRange? range) ? range : null,
-            (v, value) => ((IntRange)value).Contains(v.ParkingSize),
-            text => $"Invalid parking size '{text}'. Use a whole number or a range such as 10-30."),
+        new(RegistrationKey, (v, value) => string.Equals(v.RegistrationNumber, (string)value, StringComparison.OrdinalIgnoreCase)),
+        new(ColorKey, (v, value) => string.Equals(v.Color, (string)value, StringComparison.OrdinalIgnoreCase)),
+        new(WheelsKey, (v, value) => v.NumberOfWheels == (int)value),
+        new(TypeKey, (v, value) => v.Type == (VehicleType)value),
+        new(FuelKey, (v, value) => v is Car car && car.FuelType == (FuelType)value),
+        new(SizeKey, (v, value) => ((IntRange)value).Contains(v.ParkingSize)),
     ];
 
     private readonly Dictionary<string, object> _filters = new(StringComparer.OrdinalIgnoreCase);
@@ -104,31 +81,6 @@ public class SearchCriteria
     {
         get => Get<IntRange>(SizeKey);
         set => Set(SizeKey, value);
-    }
-
-    /// <summary>
-    /// Parses <paramref name="text"/> for the named property
-    /// <paramref name="error"/> when the property is unknown or the text is invalid.
-    /// </summary>
-    public bool TrySetFilter(string property, string text, out string error)
-    {
-        Definition? definition = Find(property);
-        if (definition is null)
-        {
-            error = $"Unknown search property '{property}'. Valid properties: {string.Join(", ", PropertyNames)}.";
-            return false;
-        }
-
-        object? parsed = definition.Parse(text);
-        if (parsed is null)
-        {
-            error = definition.InvalidMessage(text);
-            return false;
-        }
-
-        _filters[definition.Name] = parsed;
-        error = string.Empty;
-        return true;
     }
 
     /// <summary>Returns true when the vehicle satisfies every filter that is set.</summary>

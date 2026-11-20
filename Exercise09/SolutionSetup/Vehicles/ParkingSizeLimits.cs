@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace SolutionSetup.Vehicles;
 
@@ -16,14 +17,18 @@ public static class ParkingSizeLimits
     public const int Max = 400;
 
     /// <summary>Returns the inclusive parking size range allowed for the vehicle type.</summary>
-    public static (int Min, int Max) For(VehicleType type) => type switch
+    public static (int Min, int Max) For(VehicleType type) =>
+        Limits.TryGetValue(type, out (int Min, int Max) range)
+            ? range
+            : throw new ArgumentOutOfRangeException(nameof(type), type, "Unknown vehicle type.");
+
+    private static readonly Dictionary<VehicleType, (int Min, int Max)> Limits = new()
     {
-        VehicleType.Motorcycle => (1, 10),
-        VehicleType.Car => (5, 30),
-        VehicleType.Bus => (20, 100),
-        VehicleType.Truck => (15, 80),
-        VehicleType.Boat => (10, Max),
-        VehicleType.Airplane => (50, Max),
-        _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Unknown vehicle type.")
+        [VehicleType.Motorcycle] = (1, 10),
+        [VehicleType.Car] = (5, 30),
+        [VehicleType.Bus] = (20, 100),
+        [VehicleType.Truck] = (15, 80),
+        [VehicleType.Boat] = (10, Max),
+        [VehicleType.Airplane] = (50, Max),
     };
 }

@@ -51,8 +51,8 @@ namespace SolutionSetupTests
             var result = garage.AddVehicle(CreateCar("ABC123"));
 
             // Assert
-            Assert.True(result.Success);
-            Assert.Contains("ABC123", result.Message);
+            Assert.True(result.Parked);
+            Assert.Null(result.Reason);
         }
 
         [Fact]
@@ -66,8 +66,8 @@ namespace SolutionSetupTests
             var result = garage.AddVehicle(CreateCar("DEF456"));
 
             // Assert
-            Assert.False(result.Success);
-            Assert.Contains("full", result.Message);
+            Assert.False(result.Parked);
+            Assert.Equal(ParkFailureReason.Full, result.Reason);
         }
 
         [Fact]
@@ -81,8 +81,8 @@ namespace SolutionSetupTests
             var result = garage.AddVehicle(CreateCar("abc123"));
 
             // Assert
-            Assert.False(result.Success);
-            Assert.Contains("already", result.Message);
+            Assert.False(result.Parked);
+            Assert.Equal(ParkFailureReason.Duplicate, result.Reason);
         }
 
         [Fact]
@@ -106,8 +106,8 @@ namespace SolutionSetupTests
             var result = garage.RemoveVehicleByRegistration("ABC123");
 
             // Assert
-            Assert.True(result.Success);
-            Assert.True(garage.AddVehicle(CreateCar("DEF456")).Success);
+            Assert.True(result.Removed);
+            Assert.True(garage.AddVehicle(CreateCar("DEF456")).Parked);
         }
 
         [Fact]
@@ -120,8 +120,8 @@ namespace SolutionSetupTests
             var result = garage.RemoveVehicleByRegistration("ABC123");
 
             // Assert
-            Assert.False(result.Success);
-            Assert.Contains("ABC123", result.Message);
+            Assert.False(result.Removed);
+            Assert.Equal("ABC123", result.RegistrationNumber);
         }
     }
 }

@@ -24,9 +24,9 @@ public partial class ConsoleUI
             int numberOfWheels = ReadIntPrompt(ConsoleUIText.EnterNumberOfWheels, ConsoleUIText.InvalidNumberOfWheels);
             int parkingSize = ReadParkingSize(typeInfo.Type);
 
-            Vehicle vehicle = typeInfo.Create(registrationNumber, color, numberOfWheels, parkingSize);
+            VehicleRequest request = typeInfo.Create(registrationNumber, color, numberOfWheels, parkingSize);
 
-            OperationResult result = _handler.ParkVehicle(vehicle);
+            OperationResult result = _handler.ParkVehicle(request);
             _output.WriteLine(result.Message);
         }
         catch (EndOfStreamException)
@@ -61,8 +61,8 @@ public partial class ConsoleUI
     {
         return ReadValidated<string>(
             ConsoleUIText.EnterRegistrationNumber,
-            line => $"Invalid registration number '{line}'. Use {Vehicle.RegistrationNumberRule}.",
-            (string text, out string value) => Vehicle.TryNormalizeRegistrationNumber(text, out value));
+            line => $"Invalid registration number '{line}'. Use {RegistrationNumber.Rule}.",
+            (string text, out string value) => RegistrationNumber.TryNormalize(text, out value));
     }
 
     private string ReadColor()
@@ -88,20 +88,22 @@ public partial class ConsoleUI
     /// </summary>
     /// <param name="Type">The vehicle type this entry creates.</param>
     /// <param name="Create">
-    /// Builds the vehicle from the registration number, color, number of wheels and parking size. It also prompts for any
+    /// Builds the request from the registration number, color, number of wheels and parking size. It also prompts for any
     /// type-specific detail, such as fuel type or seat count.
     /// </param>
-    internal sealed record VehicleTypeInfo(VehicleType Type, Func<string, string, int, int, Vehicle> Create);
+    internal sealed record VehicleTypeInfo(VehicleType Type, Func<string, string, int, int, VehicleRequest> Create);
 
     private VehicleTypeInfo[] BuildVehicleTypes() =>
     [
-        new(VehicleType.Motorcycle, (reg, color, wheels, size) => new Motorcycle(reg, color, wheels, ReadIntPrompt("Enter cylinder volume (cc):"), size)),
-        new(VehicleType.Airplane, (reg, color, wheels, size) => new Airplane(reg, color, wheels, ReadIntPrompt("Enter number of engines:"), size)),
-        new(VehicleType.Car, (reg, color, wheels, size) => new Car(reg, color, wheels, ReadFuelTypePrompt(), size)),
-        new(VehicleType.Bus, (reg, color, wheels, size) => new Bus(reg, color, wheels, ReadIntPrompt("Enter number of seats:"), size)),
-        new(VehicleType.Boat, (reg, color, wheels, size) => new Boat(reg, color, wheels, ReadDoublePrompt("Enter length (m):"), size)),
-        new(VehicleType.Truck, (reg, color, wheels, size) => new Truck(reg, color, wheels, ReadIntPrompt("Enter load capacity (kg):"), size))
+        new(VehicleType.Motorcycle, (reg, color, wheels, size) => new(VehicleType.Motorcycle, reg, color, wheels, size, Details(VehicleFactory.CylinderVolumeKey, ReadIntPrompt("Enter cylinder volume (cc):")))),
+        new(VehicleType.Airplane, (reg, color, wheels, size) => new(VehicleType.Airplane, reg, color, wheels, size, Details(VehicleFactory.NumberOfEnginesKey, ReadIntPrompt("Enter number of engines:")))),
+        new(VehicleType.Car, (reg, color, wheels, size) => new(VehicleType.Car, reg, color, wheels, size, Details(VehicleFactory.FuelTypeKey, ReadFuelTypePrompt()))),
+        new(VehicleType.Bus, (reg, color, wheels, size) => new(VehicleType.Bus, reg, color, wheels, size, Details(VehicleFactory.NumberOfSeatsKey, ReadIntPrompt("Enter number of seats:")))),
+        new(VehicleType.Boat, (reg, color, wheels, size) => new(VehicleType.Boat, reg, color, wheels, size, Details(VehicleFactory.LengthKey, ReadDoublePrompt("Enter length (m):")))),
+        new(VehicleType.Truck, (reg, color, wheels, size) => new(VehicleType.Truck, reg, color, wheels, size, Details(VehicleFactory.LoadCapacityKey, ReadIntPrompt("Enter load capacity (kg):"))))
     ];
+
+    private static IReadOnlyDictionary<string, object> Details(string key, object value) => new Dictionary<string, object> { [key] = value };
 
     /// <summary>
     /// Menu option 4. Asks for a registration number and removes the matching vehicle.
@@ -148,7 +150,7 @@ public partial class ConsoleUI
         IVehicle? vehicle = _handler.FindVehicle(registrationNumber);
         if (vehicle is null)
         {
-            _output.WriteLine(Garage<IVehicle>.NotFoundMessage(registrationNumber));
+            _output.WriteLine(ConsoleUIText.VehicleNotFound(registrationNumber));
             return;
         }
 

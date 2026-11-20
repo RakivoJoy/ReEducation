@@ -46,7 +46,7 @@ public class GarageRoundTripTests : IDisposable
         Assert.True(saveResult.Success);
         Assert.True(loadResult.Success);
         Assert.NotNull(loadResult.Garage);
-        Garage<IVehicle> loaded = loadResult.Garage!;
+        IGarage<IVehicle> loaded = loadResult.Garage!;
         Assert.Equal(original.Capacity, loaded.Capacity);
         Assert.Equal(original.ListAllVehicles().Count, loaded.ListAllVehicles().Count);
 

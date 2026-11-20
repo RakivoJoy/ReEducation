@@ -1,6 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.RegularExpressions;
 
 namespace SolutionSetup.Vehicles;
 
@@ -9,10 +7,6 @@ namespace SolutionSetup.Vehicles;
 /// </summary>
 public abstract class Vehicle : IVehicle
 {
-    private static readonly Regex RegistrationNumberPattern = new("^[A-HJ-PR-UW-Z]{3}[0-9]{2}[0-9A-HJ-PR-UW-Z]{1}$");
-
-    public const string RegistrationNumberRule = "three letters (excluding I, Q, V) followed by 3 numbers or 2 numbers and 1 letter. ABC123 or ABC12D. ";
-
     /// <summary>Unique registration number in ABC123 or ABC12D. Excluding I, Q, V. Set once and stored trimmed and uppercase.</summary>
     public string RegistrationNumber { get; }
 
@@ -24,8 +18,8 @@ public abstract class Vehicle : IVehicle
     /// <summary>Number of wheels on the vehicle. Cannot be negative. Set once at construction.</summary>
     public int NumberOfWheels { get; }
 
-    /// <summary>The vehicle type, implemented by each subclass.</summary>
-    public abstract VehicleType Type { get; }
+    /// <summary>The vehicle type, set by each subclass through the base constructor.</summary>
+    public VehicleType Type { get; }
 
     /// <summary>Parking size, validated against <see cref="ParkingSizeLimits.For"/> for the vehicle type. Set once at construction.</summary>
     public int ParkingSize { get; }
@@ -39,13 +33,14 @@ public abstract class Vehicle : IVehicle
     /// <param name="parkingSize">Parking size within the limits for the vehicle type. When null, the smallest size allowed for the type is used.</param>
     /// <exception cref="ArgumentException">Thrown when the registration number is null, empty or whitespace or not in the format ABC123, or when the color is not an allowed color.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="numberOfWheels"/> is negative or <paramref name="parkingSize"/> is outside the limits for the type.</exception>
-    protected Vehicle(string registrationNumber, string color, int numberOfWheels, int? parkingSize = null)
+    protected Vehicle(VehicleType type, string registrationNumber, string color, int numberOfWheels, int? parkingSize = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(registrationNumber);
         ArgumentOutOfRangeException.ThrowIfNegative(numberOfWheels);
 
+        Type = type;
         int size = ValidateParkingSize(parkingSize);
-        RegistrationNumber = NormalizeRegistrationNumberOrThrow(registrationNumber);
+        RegistrationNumber = SolutionSetup.Vehicles.RegistrationNumber.NormalizeOrThrow(registrationNumber);
         Color = VehicleColors.Normalize(color);
         NumberOfWheels = numberOfWheels;
         ParkingSize = size;
@@ -57,32 +52,6 @@ public abstract class Vehicle : IVehicle
         int size = parkingSize ?? minSize;
         ThrowIfOutOfRange(size, minSize, maxSize, "Parking size", string.Empty, nameof(parkingSize));
         return size;
-    }
-
-    private static string NormalizeRegistrationNumberOrThrow(string registrationNumber)
-    {
-        if (!TryNormalizeRegistrationNumber(registrationNumber, out string? normalizedRegistrationNumber))
-        {
-            throw new ArgumentException($"Registration number '{registrationNumber}' must be {RegistrationNumberRule}.", nameof(registrationNumber));
-        }
-
-        return normalizedRegistrationNumber;
-    }
-
-    /// <summary>
-    /// Tries to normalize a registration number (trimmed and uppercase) that matches the ABC123 or ABC12D format.
-    /// </summary>
-    public static bool TryNormalizeRegistrationNumber(string? registrationNumber, [NotNullWhen(true)] out string? normalized)
-    {
-        string candidate = registrationNumber?.Trim().ToUpperInvariant() ?? string.Empty;
-        if (RegistrationNumberPattern.IsMatch(candidate))
-        {
-            normalized = candidate;
-            return true;
-        }
-
-        normalized = null;
-        return false;
     }
 
     /// <summary>

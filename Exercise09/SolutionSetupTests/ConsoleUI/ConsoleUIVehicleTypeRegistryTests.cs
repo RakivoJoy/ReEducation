@@ -1,3 +1,4 @@
+using SolutionSetup;
 using SolutionSetup.UI;
 using SolutionSetup.Vehicles;
 
@@ -9,7 +10,7 @@ namespace SolutionSetupTests
         public void VehicleTypes_HasExactlyOneEntryPerEnumValue()
         {
             // Arrange
-            var ui = new ConsoleUI(new StringReader(""), new StringWriter());
+            var ui = new ConsoleUI(new StringReader(""), new StringWriter(), new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider()));
 
             // Act
             var registered = ui.VehicleTypes.Select(info => info.Type).ToList();
@@ -30,14 +31,14 @@ namespace SolutionSetupTests
             // Arrange
             using var output = new StringWriter();
             using var input = new StringReader(detailInput);
-            var ui = new ConsoleUI(input, output);
+            var ui = new ConsoleUI(input, output, new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider()));
             var info = ui.VehicleTypes.Single(i => i.Type == type);
 
             // Act
-            Vehicle vehicle = info.Create("ABC123", "Black", 4, ParkingSizeLimits.For(type).Min);
+            VehicleRequest request = info.Create("ABC123", "Black", 4, ParkingSizeLimits.For(type).Min);
 
             // Assert
-            Assert.Equal(type, vehicle.Type);
+            Assert.Equal(type, request.Type);
         }
     }
 }

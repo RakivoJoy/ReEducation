@@ -40,7 +40,7 @@ public sealed class JsonGarageStorage : IGarageStorage
     }
 
     /// <inheritdoc />
-    public async Task<OperationResult> SaveAsync(Garage<IVehicle> garage, CancellationToken cancellationToken = default)
+    public async Task<OperationResult> SaveAsync(IGarage<IVehicle> garage, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(garage);
 

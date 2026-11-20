@@ -14,7 +14,7 @@ namespace SolutionSetupTests
         public void HasGarage_IsFalse_BeforeGarageCreated()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
 
             // Act
             var hasGarage = handler.HasGarage;
@@ -27,7 +27,7 @@ namespace SolutionSetupTests
         public void CreateGarage_CreatesGarage_WhenCapacityValid()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
 
             // Act
             var result = handler.CreateGarage(3);
@@ -44,7 +44,7 @@ namespace SolutionSetupTests
         public void CreateGarage_Fails_WhenCapacityNotPositive(int capacity)
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
 
             // Act
             var result = handler.CreateGarage(capacity);
@@ -58,9 +58,9 @@ namespace SolutionSetupTests
         public void CreateGarage_ReplacesExistingGarage()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             handler.CreateGarage(3);
-            handler.ParkVehicle(CreateCar("ABC123"));
+            handler.ParkVehicle(CarRequest("ABC123"));
 
             // Act
             handler.CreateGarage(3);
@@ -73,11 +73,11 @@ namespace SolutionSetupTests
         public void ParkVehicle_ParksVehicle_AndFindVehicleReturnsIt()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             handler.CreateGarage(2);
 
             // Act
-            var result = handler.ParkVehicle(CreateCar("ABC123"));
+            var result = handler.ParkVehicle(CarRequest("ABC123"));
             var found = handler.FindVehicle("abc123");
 
             // Assert
@@ -89,12 +89,12 @@ namespace SolutionSetupTests
         public void ParkVehicle_Fails_WhenGarageIsFull()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             handler.CreateGarage(1);
-            handler.ParkVehicle(CreateCar("ABC123"));
+            handler.ParkVehicle(CarRequest("ABC123"));
 
             // Act
-            var result = handler.ParkVehicle(CreateCar("ABC124"));
+            var result = handler.ParkVehicle(CarRequest("ABC124"));
 
             // Assert
             Assert.False(result.Success);
@@ -105,9 +105,9 @@ namespace SolutionSetupTests
         public void RemoveVehicle_RemovesParkedVehicle()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             handler.CreateGarage(2);
-            handler.ParkVehicle(CreateCar("ABC123"));
+            handler.ParkVehicle(CarRequest("ABC123"));
 
             // Act
             var result = handler.RemoveVehicle("ABC123");
@@ -121,7 +121,7 @@ namespace SolutionSetupTests
         public void PopulateGarage_ParksSampleVehicles()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             handler.CreateGarage(3);
 
             // Act
@@ -136,7 +136,7 @@ namespace SolutionSetupTests
         public void PopulateGarage_ReportsReasons_WhenUsedTwice()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             handler.CreateGarage(10);
             handler.PopulateGarage();
 
@@ -153,10 +153,10 @@ namespace SolutionSetupTests
         public void ListVehicleCounts_CountsVehiclesPerType()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             handler.CreateGarage(3);
-            handler.ParkVehicle(CreateCar("ABC123"));
-            handler.ParkVehicle(CreateCar("ABC124"));
+            handler.ParkVehicle(CarRequest("ABC123"));
+            handler.ParkVehicle(CarRequest("ABC124"));
 
             // Act
             var counts = handler.ListVehicleCounts();
@@ -169,10 +169,10 @@ namespace SolutionSetupTests
         public void SearchVehicles_ReturnsMatchingVehicles()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             handler.CreateGarage(3);
-            handler.ParkVehicle(new Truck("TRK001", "Blue", 6, 9000));
-            handler.ParkVehicle(CreateCar("ABC123"));
+            handler.ParkVehicle(TruckRequest("TRK001", "Blue", 6, 9000));
+            handler.ParkVehicle(CarRequest("ABC123"));
 
             // Act
             var results = handler.SearchVehicles(new SearchCriteria { Type = VehicleType.Truck });
@@ -185,7 +185,7 @@ namespace SolutionSetupTests
         public void FindVehicle_ReturnsNull_WhenNotParked()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             handler.CreateGarage(1);
 
             // Act
@@ -199,11 +199,11 @@ namespace SolutionSetupTests
         public void Operations_Throw_WhenNoGarageCreated()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
 
             // Act & Assert
             Assert.Throws<InvalidOperationException>(() => handler.PopulateGarage());
-            Assert.Throws<InvalidOperationException>(() => handler.ParkVehicle(CreateCar("ABC123")));
+            Assert.Throws<InvalidOperationException>(() => handler.ParkVehicle(CarRequest("ABC123")));
             Assert.Throws<InvalidOperationException>(() => handler.RemoveVehicle("ABC123"));
             Assert.Throws<InvalidOperationException>(() => handler.ListVehicles());
             Assert.Throws<InvalidOperationException>(() => handler.ListVehicleCounts());
@@ -216,7 +216,7 @@ namespace SolutionSetupTests
         {
             // Arrange
             var storage = new FakeGarageStorage();
-            var handler = new GarageHandler(storage);
+            var handler = new GarageHandler(storage, new SampleDataProvider());
 
             // Act & Assert
             Assert.Throws<InvalidOperationException>(() => handler.SaveGarage());
@@ -228,9 +228,9 @@ namespace SolutionSetupTests
         {
             // Arrange
             var storage = new FakeGarageStorage();
-            var handler = new GarageHandler(storage);
+            var handler = new GarageHandler(storage, new SampleDataProvider());
             handler.CreateGarage(4);
-            handler.ParkVehicle(CreateCar("ABC123"));
+            handler.ParkVehicle(CarRequest("ABC123"));
 
             // Act
             OperationResult result = handler.SaveGarage();
@@ -246,7 +246,7 @@ namespace SolutionSetupTests
         {
             // Arrange
             var storage = new FakeGarageStorage { SaveResult = OperationResult.Fail("disk full") };
-            var handler = new GarageHandler(storage);
+            var handler = new GarageHandler(storage, new SampleDataProvider());
             handler.CreateGarage(4);
 
             // Act
@@ -264,7 +264,7 @@ namespace SolutionSetupTests
             var loaded = new Garage<IVehicle>(9);
             loaded.AddVehicle(CreateCar("XYZ789"));
             var storage = new FakeGarageStorage { LoadResult = GarageLoadResult.Ok(loaded, "loaded ok") };
-            var handler = new GarageHandler(storage);
+            var handler = new GarageHandler(storage, new SampleDataProvider());
             handler.CreateGarage(2);
 
             // Act
@@ -281,9 +281,9 @@ namespace SolutionSetupTests
         {
             // Arrange
             var storage = new FakeGarageStorage { LoadResult = GarageLoadResult.Fail("file missing") };
-            var handler = new GarageHandler(storage);
+            var handler = new GarageHandler(storage, new SampleDataProvider());
             handler.CreateGarage(2);
-            handler.ParkVehicle(CreateCar("ABC123"));
+            handler.ParkVehicle(CarRequest("ABC123"));
 
             // Act
             OperationResult result = handler.LoadGarage();
@@ -300,7 +300,7 @@ namespace SolutionSetupTests
         {
             // Arrange
             var storage = new FakeGarageStorage { LoadResult = GarageLoadResult.Fail("invalid JSON") };
-            var handler = new GarageHandler(storage);
+            var handler = new GarageHandler(storage, new SampleDataProvider());
 
             // Act
             OperationResult result = handler.LoadGarage();
@@ -313,11 +313,11 @@ namespace SolutionSetupTests
         private sealed class FakeGarageStorage : IGarageStorage
         {
             public int SaveCount { get; private set; }
-            public Garage<IVehicle>? SavedGarage { get; private set; }
+            public IGarage<IVehicle>? SavedGarage { get; private set; }
             public OperationResult SaveResult { get; init; } = OperationResult.Ok("saved");
             public GarageLoadResult LoadResult { get; init; } = GarageLoadResult.Fail("no load configured");
 
-            public Task<OperationResult> SaveAsync(Garage<IVehicle> garage, CancellationToken cancellationToken = default)
+            public Task<OperationResult> SaveAsync(IGarage<IVehicle> garage, CancellationToken cancellationToken = default)
             {
                 SaveCount++;
                 SavedGarage = garage;

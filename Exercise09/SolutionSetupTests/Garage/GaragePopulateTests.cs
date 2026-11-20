@@ -17,7 +17,7 @@ namespace SolutionSetupTests
             var result = garage.Populate(SampleData.CreateSampleVehicles());
 
             // Assert
-            Assert.True(result.Success);
+            Assert.Empty(result.Failures);
             Assert.Equal(3, garage.ListAllVehicles().Count);
         }
 
@@ -31,8 +31,9 @@ namespace SolutionSetupTests
             var result = garage.Populate(SampleData.CreateSampleVehicles());
 
             // Assert
-            Assert.False(result.Success);
-            Assert.Contains("Parked 2 of 3", result.Message);
+            Assert.Equal(3, result.Total);
+            Assert.Equal(2, result.Parked);
+            Assert.Single(result.Failures);
             Assert.Equal(2, garage.ListAllVehicles().Count);
         }
 
@@ -50,8 +51,9 @@ namespace SolutionSetupTests
             var result = garage.Populate(vehicles);
 
             // Assert
-            Assert.False(result.Success);
-            Assert.Contains("Parked 1 of 2", result.Message);
+            Assert.Equal(2, result.Total);
+            Assert.Equal(1, result.Parked);
+            Assert.Equal(ParkFailureReason.Duplicate, result.Failures[0].Reason);
         }
 
         [Fact]

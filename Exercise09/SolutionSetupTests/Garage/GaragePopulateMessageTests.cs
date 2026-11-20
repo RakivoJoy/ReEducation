@@ -1,5 +1,7 @@
 using SolutionSetup;
 using SolutionSetup.Vehicles;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SolutionSetupTests
 {
@@ -20,9 +22,9 @@ namespace SolutionSetupTests
             var result = garage.Populate(vehicles);
 
             // Assert
-            Assert.False(result.Success);
-            Assert.Contains("ABC124", result.Message);
-            Assert.Contains("The garage is full.", result.Message);
+            Assert.Single(result.Failures);
+            Assert.Equal("ABC124", result.Failures[0].RegistrationNumber);
+            Assert.Equal(ParkFailureReason.Full, result.Failures[0].Reason);
         }
 
         [Fact]
@@ -37,8 +39,8 @@ namespace SolutionSetupTests
             var result = garage.Populate(vehicles);
 
             // Assert
-            Assert.False(result.Success);
-            Assert.Contains("already parked", result.Message);
+            Assert.Single(result.Failures);
+            Assert.Equal(ParkFailureReason.Duplicate, result.Failures[0].Reason);
         }
 
         [Fact]
@@ -57,9 +59,9 @@ namespace SolutionSetupTests
             var result = garage.Populate(vehicles);
 
             // Assert
-            Assert.Contains("Parked 1 of 3", result.Message);
-            Assert.Contains("ABC124", result.Message);
-            Assert.Contains("ABC125", result.Message);
+            Assert.Equal(1, result.Parked);
+            Assert.Equal(3, result.Total);
+            Assert.Equal(new[] { "ABC124", "ABC125" }, result.Failures.Select(f => f.RegistrationNumber));
         }
     }
 }

@@ -115,7 +115,7 @@ namespace SolutionSetupTests
             garage.AddVehicle(new Car("BBB222", "Black", 4, FuelType.Diesel, 20));
             garage.AddVehicle(new Car("CCC333", "Black", 4, FuelType.Diesel, 30));
             var criteria = new SearchCriteria();
-            Assert.True(criteria.TrySetFilter("size", "15-30", out _));
+            Assert.True(SearchCriteriaParser.TrySetFilter(criteria, "size", "15-30", out _));
 
             // Act
             var results = garage.SearchByProperties(criteria);
@@ -145,7 +145,7 @@ namespace SolutionSetupTests
             var criteria = new SearchCriteria();
 
             // Act
-            bool isSet = criteria.TrySetFilter("size", "30-10", out string error);
+            bool isSet = SearchCriteriaParser.TrySetFilter(criteria, "size", "30-10", out string error);
 
             // Assert
             Assert.False(isSet);
@@ -156,7 +156,7 @@ namespace SolutionSetupTests
         public void ParkVehicle_PromptsForSizeWithTypeLimits_AndRetriesOutOfRange()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             using var output = new StringWriter();
             using var input = new StringReader("5\n3\nABC123\nBlack\n4\n99\n12\nGasoline\n");
             var ui = new ConsoleUI(input, output, handler);
@@ -176,7 +176,7 @@ namespace SolutionSetupTests
         public void SearchVehicles_FindsBySizeRange()
         {
             // Arrange
-            var handler = new GarageHandler();
+            var handler = new GarageHandler(new InMemoryGarageStorage(), new SampleDataProvider());
             using var output = new StringWriter();
             using var input = new StringReader(
                 "5\n" +

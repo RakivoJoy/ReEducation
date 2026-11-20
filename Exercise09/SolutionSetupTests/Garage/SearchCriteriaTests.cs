@@ -1,4 +1,5 @@
 using SolutionSetup;
+using SolutionSetup.UI;
 using SolutionSetup.Vehicles;
 using static SolutionSetupTests.TestVehicles;
 
@@ -17,7 +18,7 @@ namespace SolutionSetupTests
         {
             var criteria = new SearchCriteria();
 
-            bool ok = criteria.TrySetFilter("FUEL", "diesel", out string error);
+            bool ok = SearchCriteriaParser.TrySetFilter(criteria, "FUEL", "diesel", out string error);
 
             Assert.True(ok);
             Assert.Equal(string.Empty, error);
@@ -33,7 +34,7 @@ namespace SolutionSetupTests
         {
             var criteria = new SearchCriteria();
 
-            bool ok = criteria.TrySetFilter(property, text, out string error);
+            bool ok = SearchCriteriaParser.TrySetFilter(criteria, property, text, out string error);
 
             Assert.False(ok);
             Assert.Contains(expected, error);
@@ -68,7 +69,7 @@ namespace SolutionSetupTests
             garage.AddVehicle(new Car("CCC333", "Red", 4, FuelType.Diesel));
 
             var criteria = new SearchCriteria { Color = "black" };
-            Assert.True(criteria.TrySetFilter("fuel", "Diesel", out _));
+            Assert.True(SearchCriteriaParser.TrySetFilter(criteria, "fuel", "Diesel", out _));
 
             var results = garage.SearchByProperties(criteria);
 
